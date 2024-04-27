@@ -4,6 +4,9 @@
 
 USBMIDI_CREATE_DEFAULT_INSTANCE();
 
+uint8_t SYSEX_IDENT_REQ[]  = { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 };
+uint8_t SYSEX_IDENT_RES[]  = {       0x7e, 0x01, 0x06, 0x02, 0x00, 0x31, 0x00, 0x31, 0x06, 0x16 }; // 0x31: Viscount Manufacturer ID, 0x06 0x16 for RTE0616
+
 #define MIDI_CHANNEL 1
 
 #define TONES_IN_OCTAVE 12
@@ -30,10 +33,10 @@ uint8_t channel = MIDI_CHANNEL;
 pdlbrd_key_t currentKey = PDLBRD_KEY_NOT_PRESSED;
 pdlbrd_key_t newKey = currentKey;
 
-bool approxEquals(int32_t ref, int32_t val)
-{
-	return ((val >= ref-50) && (val <= ref+50));
-}
+void handleSysEx(uint8_t* array, unsigned size);
+
+bool approxEquals(int32_t ref, int32_t val);
+bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size);
 
 void setup() {
 	// put your setup code here, to run once:
@@ -43,6 +46,7 @@ void setup() {
 		pinMode(pin[i], INPUT_PULLUP);
 
 	MIDI.begin(MIDI_CHANNEL_OMNI);
+	MIDI.setHandleSystemExclusive(handleSysEx);
 }
 
 void loop() {
@@ -121,10 +125,44 @@ void loop() {
 #endif
 
 	if (currentKey != newKey) {
-		MIDI.sendNoteOff((octave*TONES_IN_OCTAVE)+currentKey, 0, channel);
+		if (currentKey != PDLBRD_KEY_NOT_PRESSED)
+			MIDI.sendNoteOff((octave*TONES_IN_OCTAVE)+currentKey, 0, channel);
 		if (newKey != PDLBRD_KEY_NOT_PRESSED)
 			MIDI.sendNoteOn((octave*TONES_IN_OCTAVE)+newKey, velocity, channel);
 		currentKey = newKey;
 	}
-	delay(100);
+
+	MIDI.read();
+}
+
+void handleSysEx(uint8_t* array, unsigned size)
+{
+#if defined (FW_DEBUG)
+    Serial.println("Handle SysEx");
+    for (unsigned i = 0; i < size; i++)
+    {
+        Serial.print(array[i], HEX);
+        Serial.print(" ");
+    }
+    Serial.println();
+#endif
+
+    if ((size == sizeof(SYSEX_IDENT_REQ)) && isArrayEqual(array, SYSEX_IDENT_REQ, size))
+    {
+        MIDI.sendSysEx(sizeof(SYSEX_IDENT_RES), SYSEX_IDENT_RES);
+    }
+}
+
+bool approxEquals(int32_t ref, int32_t val)
+{
+	return ((val >= ref-50) && (val <= ref+50));
+}
+
+bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size)
+{
+    for (unsigned i = 0; i < size; i++)
+        if (a[i] != b[i])
+            return false;
+
+    return true;
 }
