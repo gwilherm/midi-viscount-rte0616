@@ -4,8 +4,15 @@
 
 USBMIDI_CREATE_DEFAULT_INSTANCE();
 
-uint8_t SYSEX_IDENT_REQ[]  = { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 };
-uint8_t SYSEX_IDENT_RES[]  = {       0x7e, 0x01, 0x06, 0x02, 0x00, 0x31, 0x00, 0x31, 0x06, 0x16 }; // 0x31: Viscount Manufacturer ID, 0x06 0x16 for RTE0616
+uint8_t SYSEX_IDENT_REQ[]       = { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 };
+uint8_t SYSEX_IDENT_RES[]       = {       0x7e, 0x01, 0x06, 0x02, 0x00, 0x31, 0x00, 0x31, 0x06, 0x16 }; // 0x31: Viscount Manufacturer ID, 0x06 0x16 for RTE0616
+uint8_t SYSEX_CHANGE_MODE_REQ[] = { 0xf0, 0x31, 0x06, 0x16, 0x01, 0x00, 0xf7 };
+
+typedef enum {
+	MODE_STANDARD = 1,
+	MODE_MEASURE,
+	MODE_MAX
+} pdlbrd_mode_t;
 
 #define MIDI_CHANNEL 1
 
@@ -33,10 +40,14 @@ uint8_t channel = MIDI_CHANNEL;
 pdlbrd_key_t currentKey = PDLBRD_KEY_NOT_PRESSED;
 pdlbrd_key_t newKey = currentKey;
 
+pdlbrd_mode_t currentMode = MODE_STANDARD;
+
 void handleSysEx(uint8_t* array, unsigned size);
 
 bool approxEquals(int32_t ref, int32_t val);
 bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size);
+void processStandardMode(int* val);
+void processMeasureMode(int* val);
 
 void setup() {
 	// put your setup code here, to run once:
@@ -63,6 +74,22 @@ void loop() {
     }
 #endif
 
+	switch (currentMode) {
+	case MODE_STANDARD:
+		processStandardMode(val);
+		break;
+	case MODE_MEASURE:
+		processMeasureMode(val);
+		break;
+	default:
+		break;
+	}
+
+	MIDI.read();
+}
+
+void processStandardMode(int* val)
+{
 	if (approxEquals(SEG4, val[2]))
 		newKey = PDLBRD_KEY_D3;
 	else if (approxEquals(SEG4, val[1]))
@@ -131,26 +158,51 @@ void loop() {
 			MIDI.sendNoteOn((octave*TONES_IN_OCTAVE)+newKey, velocity, channel);
 		currentKey = newKey;
 	}
+}
 
-	MIDI.read();
+void processMeasureMode(int* val)
+{
+	uint8_t bytes[3+(8*2)] = { 0x31, 0x06, 0x16 };
+	for (int i = 0; i < 8; i++)
+	{
+		bytes[(i*2)+3] = (val[i] >> 7) & 0x7F;
+		bytes[(i*2)+4] =  val[i] & 0x7F;
+	}
+	MIDI.sendSysEx(sizeof(bytes), bytes);
 }
 
 void handleSysEx(uint8_t* array, unsigned size)
 {
 #if defined (FW_DEBUG)
-    Serial.println("Handle SysEx");
-    for (unsigned i = 0; i < size; i++)
-    {
-        Serial.print(array[i], HEX);
-        Serial.print(" ");
-    }
-    Serial.println();
+	Serial.println("Handle SysEx");
+	for (unsigned i = 0; i < size; i++)
+	{
+		Serial.print(array[i], HEX);
+		Serial.print(" ");
+	}
+	Serial.println();
 #endif
 
     if ((size == sizeof(SYSEX_IDENT_REQ)) && isArrayEqual(array, SYSEX_IDENT_REQ, size))
     {
         MIDI.sendSysEx(sizeof(SYSEX_IDENT_RES), SYSEX_IDENT_RES);
     }
+    else if ((size == sizeof(SYSEX_CHANGE_MODE_REQ)) && isArrayEqual(array, SYSEX_CHANGE_MODE_REQ, size - 2))
+    {
+		currentMode = static_cast<pdlbrd_mode_t>(array[5]);
+#if defined (FW_DEBUG)
+		switch (currentMode) {
+		case MODE_STANDARD:
+			Serial.println("ENTERING STANDARD MODE");
+			break;
+		case MODE_MEASURE:
+			Serial.println("ENTERING MEASURE MODE");
+			break;
+		default:
+			break;
+		}
+#endif
+	}
 }
 
 bool approxEquals(int32_t ref, int32_t val)
@@ -160,9 +212,9 @@ bool approxEquals(int32_t ref, int32_t val)
 
 bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size)
 {
-    for (unsigned i = 0; i < size; i++)
-        if (a[i] != b[i])
-            return false;
+	for (unsigned i = 0; i < size; i++)
+		if (a[i] != b[i])
+			return false;
 
-    return true;
+	return true;
 }
