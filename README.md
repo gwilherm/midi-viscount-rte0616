@@ -8,9 +8,10 @@ MIDIfied Viscount 270 Pedalboard "RTE0616"
 
 ## Compile and flash
 
+Compile using arduino-cli
+
 ```
-sudo apt install arduino-mk
-cd midi-viscount-rte0616
+cd firmware
 make
 make upload
 ```
