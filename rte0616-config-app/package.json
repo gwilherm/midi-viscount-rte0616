@@ -1,12 +1,15 @@
 {
   "name": "rte0616-config-app",
   "version": "0.0.0",
+  "main": "main.js", 
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "electron-tsc": "tsc main.ts && ng build --base-href ./ && electron .",
+    "electron": "ng build --base-href ./ && electron ."
   },
   "private": true,
   "dependencies": {
@@ -21,6 +24,7 @@
     "@ng-web-apis/common": "^3.0.6",
     "@ng-web-apis/midi": "^3.0.6",
     "component": "^1.1.0",
+    "ngx-electron": "^2.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
@@ -30,6 +34,7 @@
     "@angular/cli": "^17.3.6",
     "@angular/compiler-cli": "^17.3.0",
     "@types/jasmine": "~5.1.0",
+    "electron": "^30.0.1",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
