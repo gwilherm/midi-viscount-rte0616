@@ -109,59 +109,59 @@ void loop() {
 
 void processStandardMode(int* val)
 {
-	if (approxEquals(vSeg[4], val[2]))
+	if (approxEquals(vSeg[3], val[2]))
 		newKey = PDLBRD_KEY_D3;
-	else if (approxEquals(vSeg[4], val[1]))
-		newKey = PDLBRD_KEY_CS3;
-	else if (approxEquals(vSeg[4], val[0]))
-		newKey = PDLBRD_KEY_C3;
-	else if (approxEquals(vSeg[3], val[7]))
-		newKey = PDLBRD_KEY_B2;
-	else if (approxEquals(vSeg[3], val[6]))
-		newKey = PDLBRD_KEY_AS2;
-	else if (approxEquals(vSeg[3], val[5]))
-		newKey = PDLBRD_KEY_A2;
-	else if (approxEquals(vSeg[3], val[4]))
-		newKey = PDLBRD_KEY_GS2;
-	else if (approxEquals(vSeg[3], val[3]))
-		newKey = PDLBRD_KEY_G2;
-	else if (approxEquals(vSeg[3], val[2]))
-		newKey = PDLBRD_KEY_FS2;
 	else if (approxEquals(vSeg[3], val[1]))
-		newKey = PDLBRD_KEY_F2;
+		newKey = PDLBRD_KEY_CS3;
 	else if (approxEquals(vSeg[3], val[0]))
-		newKey = PDLBRD_KEY_E2;
+		newKey = PDLBRD_KEY_C3;
 	else if (approxEquals(vSeg[2], val[7]))
-		newKey = PDLBRD_KEY_DS2;
+		newKey = PDLBRD_KEY_B2;
 	else if (approxEquals(vSeg[2], val[6]))
-		newKey = PDLBRD_KEY_D2;
+		newKey = PDLBRD_KEY_AS2;
 	else if (approxEquals(vSeg[2], val[5]))
-		newKey = PDLBRD_KEY_CS2;
+		newKey = PDLBRD_KEY_A2;
 	else if (approxEquals(vSeg[2], val[4]))
-		newKey = PDLBRD_KEY_C2;
+		newKey = PDLBRD_KEY_GS2;
 	else if (approxEquals(vSeg[2], val[3]))
-		newKey = PDLBRD_KEY_B1;
+		newKey = PDLBRD_KEY_G2;
 	else if (approxEquals(vSeg[2], val[2]))
-		newKey = PDLBRD_KEY_AS1;
+		newKey = PDLBRD_KEY_FS2;
 	else if (approxEquals(vSeg[2], val[1]))
-		newKey = PDLBRD_KEY_A1;
+		newKey = PDLBRD_KEY_F2;
 	else if (approxEquals(vSeg[2], val[0]))
-		newKey = PDLBRD_KEY_GS1;
+		newKey = PDLBRD_KEY_E2;
 	else if (approxEquals(vSeg[1], val[7]))
-		newKey = PDLBRD_KEY_G1;
+		newKey = PDLBRD_KEY_DS2;
 	else if (approxEquals(vSeg[1], val[6]))
-		newKey = PDLBRD_KEY_FS1;
+		newKey = PDLBRD_KEY_D2;
 	else if (approxEquals(vSeg[1], val[5]))
-		newKey = PDLBRD_KEY_F1;
+		newKey = PDLBRD_KEY_CS2;
 	else if (approxEquals(vSeg[1], val[4]))
-		newKey = PDLBRD_KEY_E1;
+		newKey = PDLBRD_KEY_C2;
 	else if (approxEquals(vSeg[1], val[3]))
-		newKey = PDLBRD_KEY_DS1;
+		newKey = PDLBRD_KEY_B1;
 	else if (approxEquals(vSeg[1], val[2]))
-		newKey = PDLBRD_KEY_D1;
+		newKey = PDLBRD_KEY_AS1;
 	else if (approxEquals(vSeg[1], val[1]))
-		newKey = PDLBRD_KEY_CS1;
+		newKey = PDLBRD_KEY_A1;
 	else if (approxEquals(vSeg[1], val[0]))
+		newKey = PDLBRD_KEY_GS1;
+	else if (approxEquals(vSeg[0], val[7]))
+		newKey = PDLBRD_KEY_G1;
+	else if (approxEquals(vSeg[0], val[6]))
+		newKey = PDLBRD_KEY_FS1;
+	else if (approxEquals(vSeg[0], val[5]))
+		newKey = PDLBRD_KEY_F1;
+	else if (approxEquals(vSeg[0], val[4]))
+		newKey = PDLBRD_KEY_E1;
+	else if (approxEquals(vSeg[0], val[3]))
+		newKey = PDLBRD_KEY_DS1;
+	else if (approxEquals(vSeg[0], val[2]))
+		newKey = PDLBRD_KEY_D1;
+	else if (approxEquals(vSeg[0], val[1]))
+		newKey = PDLBRD_KEY_CS1;
+	else if (approxEquals(vSeg[0], val[0]))
 		newKey = PDLBRD_KEY_C1;
 	else
 		newKey = PDLBRD_KEY_NOT_PRESSED;
