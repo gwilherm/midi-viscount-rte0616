@@ -1,0 +1,17 @@
+<div>
+  <mat-form-field>
+    <mat-label>Device:</mat-label>
+    <ng-container *ngIf="outputs$ | async as outputDevices">
+      <mat-select required>
+        <mat-option *ngFor="let dev of outputDevices"
+                    [value]="dev"
+                    (onSelectionChange)="selectDevice($event, dev)">
+          {{dev.name}}
+        </mat-option>
+      </mat-select>
+    </ng-container>
+  </mat-form-field>
+</div>
+<div>
+  <button mat-raised-button [disabled]="!canCheck()">Check</button>
+</div>
