@@ -1,4 +1,4 @@
-<div>
+<div class="row">
   <mat-form-field>
     <mat-label>Device:</mat-label>
     <ng-container *ngIf="outputs$ | async as outputDevices">
@@ -6,12 +6,26 @@
         <mat-option *ngFor="let dev of outputDevices"
                     [value]="dev"
                     (onSelectionChange)="selectDevice($event, dev)">
-          {{dev.name}}
-        </mat-option>
+        {{dev.name}}
+      </mat-option>
+      <!-- 
+        Test with buttons in select:
+        @for (dev of outputDevices; track $index) {
+          <mat-option [value]="dev"
+          (onSelectionChange)="selectDevice($event, dev)">{{dev.name}}</mat-option>
+          <button mat-raised-button>Check <mat-spinner diameter="15"></mat-spinner>
+          </button>
+        } -->
       </mat-select>
     </ng-container>
   </mat-form-field>
+  <div class="button-container">
+    <div class="spinner-container" *ngIf="identifying">
+      <mat-spinner diameter="24"></mat-spinner>
+    </div>
+    <button mat-flat-button [disabled]="!deviceSelected() || identifying" (click)="identify()">Identify</button>
+  </div>
 </div>
-<div>
-  <button mat-raised-button [disabled]="!canCheck()">Check</button>
+<div class="row">
+  <button mat-flat-button [disabled]="!deviceSelected()" color="primary">Continue</button>
 </div>
