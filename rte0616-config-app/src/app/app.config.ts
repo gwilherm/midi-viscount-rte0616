@@ -6,6 +6,7 @@ import { SYSEX } from '@ng-web-apis/midi';
 
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MidiService } from './midi.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,6 +15,7 @@ export const appConfig: ApplicationConfig = {
       provide: SYSEX,
       useValue: true
     },
-    provideAnimations(), provideAnimationsAsync()
+    provideAnimations(), provideAnimationsAsync(),
+    MidiService
   ]
 };

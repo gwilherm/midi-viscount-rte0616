@@ -5,39 +5,26 @@ import { MatSelectModule } from '@angular/material/select';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
+import { MidiService } from '../midi.service';
 
 @Component({
   selector: 'app-devices',
   standalone: true,
   imports: [NgIf, NgFor, AsyncPipe, MatSelectModule, MatButtonModule,MatProgressSpinner],
   templateUrl: './devices.component.html',
-  styleUrl: './devices.component.css'
+  styleUrl: './devices.component.css',
 })
+
 export class DevicesComponent implements OnInit {
-  inputs$: Observable<MIDIInput[]>;
-  outputs$: Observable<MIDIOutput[]>;
   selectedDevice: MIDIOutput | undefined;
   identifying = false;
 
   constructor(
-    @Inject(MIDI_INPUTS) inputs$: Observable<MIDIInput[]>,
-    @Inject(MIDI_OUTPUTS) outputs$: Observable<MIDIOutput[]>,
+    private midiService: MidiService,
+    @Inject(MIDI_INPUTS) protected inputs$: Observable<MIDIInput[]>,
+    @Inject(MIDI_OUTPUTS) protected outputs$: Observable<MIDIOutput[]>,
   )
-  {
-    this.inputs$ = inputs$
-    this.outputs$ = outputs$
-
-    // outputs.subscribe({
-    //   next: outputs => { 
-    //     console.log(outputs)
-    //     const output = outputs.filter(o => o.name?.startsWith('Viscount RTE0616'))[0]
-    //     if (output) {
-    //       console.log(output.name)
-    //       output.send([0xF0, 0x7E, 0x7F, 0x06, 0x01, 0xF7])
-    //     }
-    //   }
-    // })
-  }
+  {}
 
   ngOnInit(): void {
 
@@ -45,6 +32,8 @@ export class DevicesComponent implements OnInit {
 
   selectDevice(ev: any, dev: MIDIOutput) {
     this.selectedDevice = dev
+    if (dev.name)
+      this.midiService.selectDevice(dev.name)  
   }
 
   deviceSelected(): boolean {
@@ -53,6 +42,7 @@ export class DevicesComponent implements OnInit {
 
   identify() {
     this.identifying = true
+    this.midiService.sendIdentSysex()
     setTimeout(() => this.identifying = false, 2000)
   }
 }
