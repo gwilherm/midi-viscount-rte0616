@@ -1,6 +1,18 @@
 import { Directive, Inject, Injectable, input } from '@angular/core';
 import { MIDI_INPUTS, MIDI_MESSAGES, MIDI_OUTPUT, MIDI_OUTPUTS } from '@ng-web-apis/midi';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+
+function isEqualBytes(ba1: Uint8Array, ba2: Uint8Array): boolean {
+  if (ba1.length !== ba2.length)
+      return false;
+
+  for (let i = 0; i < ba1.length; i++) {
+    if (ba1[i] !== ba2[i])
+      return false;
+  }
+
+  return true;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +21,8 @@ export class MidiService implements EventListenerObject {
   // Ugly.
   output: MIDIOutput|null = null;
   input: MIDIInput|null = null;
+
+  identified$: Observable<boolean> = of(false);
 
   constructor(
     @Inject(MIDI_INPUTS) private inputs$: Observable<MIDIInput[]>,
@@ -21,13 +35,26 @@ export class MidiService implements EventListenerObject {
 
   selectDevice(outputName: string) {
     // Horrible.
-    outputName = outputName.split(':')[0]
+    var outputName = outputName.split(':')[0]
+    var inputName = (outputName == 'receivemidi')? 'sendmidi' : outputName
+
     this.outputs$.subscribe({next: outputs => { this.output = outputs.filter(o => o.name?.startsWith(outputName))[0]; console.log(this.output)}})
-    this.inputs$.subscribe({next: inputs => { console.log(inputs); this.input = inputs.filter(i => i.name?.startsWith(outputName))[0]; console.log(this.input); this.input?.addEventListener('midimessage', this)}})
+    this.inputs$.subscribe({next: inputs => { console.log(inputs); this.input = inputs.filter(i => i.name?.startsWith(inputName))[0]; console.log(this.input); this.input?.addEventListener('midimessage', this)}})
   }
 
-  handleEvent(ev: Event) {
+  handleEvent(ev: MIDIMessageEvent) {
     console.log(ev)
+    if ((ev.data!.at(0) == 0xF0) && (ev.data!.at(-1) == 0xF7)) {
+      console.log('SYSEX: ' + ev.data!.slice(1,-1));
+      if (isEqualBytes(ev.data!.slice(1,5), Uint8Array.from([0x7E, 0x01, 0x06, 0x02])))
+      {
+        if (isEqualBytes(ev.data!.slice(5,11), Uint8Array.from([0x00, 0x31, 0x00, 0x31, 0x06, 0x16])))
+        {
+          console.log('IDENTIFIED')
+          this.identified$ = of(true)
+        }
+      }
+    }
   }
 
   sendIdentSysex() {

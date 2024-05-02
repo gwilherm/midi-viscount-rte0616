@@ -13,7 +13,7 @@ import { MidiService } from '../midi.service';
   imports: [NgIf, NgFor, AsyncPipe, MatSelectModule, MatButtonModule,MatProgressSpinner],
   templateUrl: './devices.component.html',
   styleUrl: './devices.component.css',
-})
+  })
 
 export class DevicesComponent implements OnInit {
   selectedDevice: MIDIOutput | undefined;
@@ -28,6 +28,9 @@ export class DevicesComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.midiService.identified$.subscribe(
+      value => console.log('Observable emitted the next value: ' + value)
+    )
   }
 
   selectDevice(ev: any, dev: MIDIOutput) {
