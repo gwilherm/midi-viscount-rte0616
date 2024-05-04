@@ -27,10 +27,7 @@ export class DevicesComponent implements OnInit {
   {}
 
   ngOnInit(): void {
-
-    this.midiService.identified$.subscribe(
-      value => console.log('Observable emitted the next value: ' + value)
-    )
+    
   }
 
   selectDevice(ev: any, dev: MIDIOutput) {
@@ -45,7 +42,10 @@ export class DevicesComponent implements OnInit {
 
   identify() {
     this.identifying = true
-    this.midiService.sendIdentSysex()
-    setTimeout(() => this.identifying = false, 2000)
+    this.midiService.sendIdentSysex().then(value => {
+      console.log('Firmware version: ' + value)
+    })
+    .catch(reason => console.log('Error: ' + reason))
+    .finally(() => this.identifying = false)
   }
 }
