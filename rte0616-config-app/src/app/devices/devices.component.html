@@ -1,7 +1,7 @@
 <div class="row">
   <mat-form-field>
     <mat-label>Device:</mat-label>
-    <ng-container *ngIf="outputs$ | async as outputDevices">
+    <ng-container *ngIf="_outputs$ | async as outputDevices">
       <mat-select required>
         <mat-option *ngFor="let dev of outputDevices"
                     [value]="dev"
@@ -24,6 +24,9 @@
       <mat-spinner diameter="24"></mat-spinner>
     </div>
     <button mat-flat-button [disabled]="!deviceSelected() || identifying" (click)="identify()">Identify</button>
+  </div>
+  <div *ngIf="fwVersion != undefined">
+      Firmware version: {{fwVersion}}
   </div>
 </div>
 <div class="row">

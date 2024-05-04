@@ -14,3 +14,9 @@
     display: inline-block;
     position: relative;
   }
+  
+  ::ng-deep .mat-mdc-snack-bar-container.error-snackbar {
+    --mdc-snackbar-container-color: #FFA000;
+    --mat-mdc-snack-bar-button-color: #000;
+    --mdc-snackbar-supporting-text-color: #000;
+  }

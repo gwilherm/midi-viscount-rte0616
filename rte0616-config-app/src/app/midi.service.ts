@@ -20,7 +20,7 @@ function isEqualBytes(ba1: Uint8Array, ba2: Uint8Array): boolean {
 function promiseWithTimeout<T>(
   promise: Promise<T>,
   ms: number,
-  timeoutError = new Error('Promise timed out')
+  timeoutError = new Error('Time out')
 ): Promise<T> {
   // create a promise that rejects in milliseconds
   const timeout = new Promise<never>((_, reject) => {
@@ -86,8 +86,11 @@ export class MidiService implements EventListenerObject {
       }), 2000)
     }
     else {
-      console.log('No output or input')
-      return new Promise((resolve, reject) => reject('No output or input'))
+      let error = new Error()
+      if (!this.input)  error.message = 'Invalid input device'
+      else if (!this.output) error.message = 'No output device matching ' + this.input!.name
+      console.log(error)
+      return new Promise((resolve, reject) => reject(error))
     }
   }
 
