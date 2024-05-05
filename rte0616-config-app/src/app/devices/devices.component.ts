@@ -7,11 +7,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { MidiService } from '../midi.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-devices',
   standalone: true,
-  imports: [NgIf, NgFor, AsyncPipe, MatSelectModule, MatButtonModule,MatProgressSpinner],
+  imports: [NgIf, NgFor, AsyncPipe, MatSelectModule, MatButtonModule, MatProgressSpinner],
   templateUrl: './devices.component.html',
   styleUrl: './devices.component.css',
   })
@@ -22,8 +23,9 @@ export class DevicesComponent implements OnInit {
   fwVersion: string|undefined = undefined
 
   constructor(
-    private _midiService: MidiService,
+    protected _router: Router,
     private _snackBar: MatSnackBar,
+    private _midiService: MidiService,
     @Inject(MIDI_INPUTS) protected _inputs$: Observable<MIDIInput[]>,
     @Inject(MIDI_OUTPUTS) protected _outputs$: Observable<MIDIOutput[]>,
   )
@@ -37,7 +39,7 @@ export class DevicesComponent implements OnInit {
     this.fwVersion = undefined
     this.selectedDevice = dev
     if (dev.name)
-      this._midiService.selectDevice(dev.name)  
+      this._midiService.selectDevice(dev.name)
   }
 
   deviceSelected(): boolean {
@@ -46,18 +48,22 @@ export class DevicesComponent implements OnInit {
 
   identify() {
     this.identifying = true
-    this._midiService.sendIdentSysex().then(value => {
+    this._midiService.sendIdentRequest().then(value => {
       console.log('Firmware version: ' + value)
       this.fwVersion = value.toString();
-      this._snackBar.open('Device identified !', undefined, {
+      this._snackBar.open('Viscount RTE0616 identified !', undefined, {
         duration: 2000,
         panelClass: [ 'mat-primary']
       })
     })
     .catch(reason => this._snackBar.open(reason, undefined, {
       duration: 2000,
-      panelClass: [ 'error-snackbar' ]
+      panelClass: [ /* 'mat-warn' */ 'error-snackbar' ]
     }))
     .finally(() => this.identifying = false)
+  }
+
+  onContinue() {
+    this._router.navigateByUrl('/configure')
   }
 }

@@ -1,0 +1,14 @@
+<div>
+    <mat-form-field>
+        <mat-label>MIDI Channel</mat-label>
+        <input matInput type="number" min="1" max="16" value="{{this._midiConfig.channel}}" >
+        
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Octave</mat-label>
+        <input matInput type="number" min="1" max="8" value="{{this._midiConfig.octave}}" >
+    </mat-form-field>
+    <div class="row">
+        <button mat-flat-button color="accent" (click)="onSend()">Send</button>
+    </div>
+</div>
