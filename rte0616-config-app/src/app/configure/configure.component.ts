@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 import { MidiService, DeviceMIDIConfig } from '../midi.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-configure',
   standalone: true,
-  imports: [ MatInputModule ],
+  imports: [ MatInputModule, MatButtonModule, FormsModule ],
   templateUrl: './configure.component.html',
   styleUrl: './configure.component.css',
 })

@@ -92,11 +92,11 @@ export class MidiService implements EventListenerObject {
 
   selectDevice(outputName: string) {
     // Horrible.
-    var outputName = outputName.split(':')[0]
-    var inputName = (outputName == 'receivemidi')? 'sendmidi' : outputName
+    let outClientName = outputName.split(':')[0]
+    var inClientName = (outClientName == 'receivemidi')? 'sendmidi' : outClientName
 
-    this.outputs$.subscribe({next: outputs => { this.output = outputs.filter(o => o.name?.startsWith(outputName))[0]; console.log(this.output)}})
-    this.inputs$.subscribe({next: inputs => { console.log(inputs); this.input = inputs.filter(i => i.name?.startsWith(inputName))[0]; console.log(this.input); this.input?.addEventListener('midimessage', this)}})
+    this.outputs$.subscribe({next: outputs => { this.output = outputs.filter(o => (o.name == outputName))[0]; console.log(this.output)}})
+    this.inputs$.subscribe({next: inputs => { console.log(inputs); this.input = inputs.filter(i => i.name?.startsWith(inClientName))[0]; console.log(this.input); this.input?.addEventListener('midimessage', this)}})
   }
 
   isDeviceSelected() {
