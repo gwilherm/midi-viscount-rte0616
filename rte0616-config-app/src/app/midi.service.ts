@@ -109,9 +109,9 @@ export class MidiService implements EventListenerObject {
       console.log('SYSEX: ' + ev.data!.slice(1,-1));
       if (isEqualBytes(ev.data!.slice(1,5), Uint8Array.from([0x7E, 0x01, 0x06, 0x02])))
       {
-        if (isEqualBytes(ev.data!.slice(5,11), Uint8Array.from([0x00, MANU_ID, 0x00, MANU_ID, ...PRODUCT_ID ])))
+        if (isEqualBytes(ev.data!.slice(5,10), Uint8Array.from([MANU_ID, 0x00, MANU_ID, ...PRODUCT_ID ])))
         {
-          this.fwVersion$.next(ev.data!.slice(11,14))
+          this.fwVersion$.next(ev.data!.slice(10,14))
         }
       }
       else {
