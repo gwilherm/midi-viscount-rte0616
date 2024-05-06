@@ -6,14 +6,16 @@ USBMIDI_CREATE_DEFAULT_INSTANCE();
 
 #define MANU_ID 0x31 			// Viscount Manufacturer ID
 #define PRODUCT_ID 0x06, 0x16	// for RTE0616
+#define DEVICE_ID MANU_ID, PRODUCT_ID
 
-uint8_t SYSEX_IDENT_REQ[]  = { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 };
-uint8_t SYSEX_IDENT_RES[]  = {       0x7e, 0x01, 0x06, 0x02, 0x00, MANU_ID, 0x00, MANU_ID, PRODUCT_ID };
-
-uint8_t SYSEX_CMD_PREFIX[] = { 0xf0, MANU_ID, PRODUCT_ID };
+uint8_t SYSEX_REQ_PREFIX[] = { 0xf0, DEVICE_ID };
+uint8_t SYSEX_IDENT_REQ[]  = { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 }; // f1,      f2,     p1, p2,   v1,   v2,   v3,   v4
+uint8_t SYSEX_IDENT_RES[]  = {       0x7e, 0x01, 0x06, 0x02, MANU_ID, 0x00, MANU_ID, PRODUCT_ID, 0x00, 0x00, 0x00, 0x00 };
+																	
 
 typedef enum {
-	CMD_CALIBRATION = 1,
+	CMD_CONFIGURATION = 1,
+	CMD_CALIBRATION,
 	CMD_CHANGE_MODE,
 	CMD_MAX
 } pdlbrd_sysex_cmd_t;
@@ -30,10 +32,12 @@ typedef enum {
 	MODE_MAX
 } pdlbrd_mode_t;
 
-#define MIDI_CHANNEL 1
-
-#define TONES_IN_OCTAVE 12
+#define DEFAULT_MIDI_CHANNEL 1
 #define DEFAULT_OCTAVE 3
+
+#define MIN_MIDI_CHANNEL 1
+#define MAX_MIDI_CHANNEL 16
+#define TONES_IN_OCTAVE 12
 #define MIN_OCTAVE 0
 #define MAX_OCTAVE 6
 
@@ -50,9 +54,9 @@ typedef enum {
 #define NB_PIN 8
 uint8_t pin[NB_PIN] = {A0, A1, A2, A3, A6, A7, A8, A9};
 
+uint8_t channel = DEFAULT_MIDI_CHANNEL;
 uint8_t octave = DEFAULT_OCTAVE;
 uint8_t velocity = 127;
-uint8_t channel = MIDI_CHANNEL;
 uint16_t vSeg[] = { DEFAULT_VSEG1, DEFAULT_VSEG2, DEFAULT_VSEG3, DEFAULT_VSEG4 };
 uint16_t margin = DEFAULT_MARGIN;
 
@@ -65,12 +69,15 @@ void handleSysEx(uint8_t* array, unsigned size);
 
 bool approxEquals(int32_t ref, int32_t val);
 bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size);
+void initSysexIdentResponse();
 void processStandardMode(int* val);
 void processMeasureMode(int* val);
 
-void setup() {
-	// put your setup code here, to run once:
+void setup()
+{
 	Serial.begin(9600);
+
+	initSysexIdentResponse();
 
 	for (int i = 0; i < NB_PIN; i++)
 		pinMode(pin[i], INPUT_PULLUP);
@@ -79,7 +86,8 @@ void setup() {
 	MIDI.setHandleSystemExclusive(handleSysEx);
 }
 
-void loop() {
+void loop()
+{
 	int val[NB_PIN] = {0};
 	for (int i = 0; i < NB_PIN; i++)
     {
@@ -179,6 +187,28 @@ void processStandardMode(int* val)
 	}
 }
 
+void initSysexIdentResponse()
+{
+	char* fwVersionStr = strdup(FW_VERSION);
+#if defined (FW_DEBUG)
+	Serial.print("Fw version: ");
+	Serial.println(fwVersionStr);
+#endif
+
+	// Major: 1 byte
+	int tmp = atoi(strtok(fwVersionStr, "."));
+    SYSEX_IDENT_RES[9] = tmp & 0xF7;
+
+	// Minor: 1 byte
+	tmp = atoi(strtok(NULL, "."));
+    SYSEX_IDENT_RES[10] = tmp & 0xF7;
+
+	// Patch: two bytes
+	tmp = atoi(strtok(NULL, "."));
+    SYSEX_IDENT_RES[11] = (tmp >> 7) & 0x7F; // MSB
+    SYSEX_IDENT_RES[12] = tmp & 0x7F;        // LSB
+}
+
 void processMeasureMode(int* val)
 {
 	uint8_t bytes[3+(8*2)] = { 0x31, 0x06, 0x16 };
@@ -207,13 +237,38 @@ void handleChangeMode(const pdlbrd_mode_t mode)
 #endif
 }
 
+void handleGetConfiguration()
+{
+#if defined (FW_DEBUG)
+	Serial.println("handleGetConfiguration");
+#endif
+	uint8_t data[] = { DEVICE_ID, CMD_CONFIGURATION, SUBCMD_GET, channel, octave };
+	MIDI.sendSysEx(sizeof(data), data);
+}
+
+void handleSetConfiguration(uint8_t* data)
+{
+#if defined (FW_DEBUG)
+	Serial.println("handleSetConfiguration");
+#endif
+
+	if ((data[0] >= MIN_MIDI_CHANNEL) && (data[0] <= MAX_MIDI_CHANNEL))
+		channel = data[0];
+
+	if ((data[1] >= MIN_OCTAVE) && (data[0] <= MAX_OCTAVE))
+		octave = data[1];
+
+	// Acknowledge
+	handleGetConfiguration();
+}
+
 void handleGetCalibration()
 {
 #if defined (FW_DEBUG)
 	Serial.println("handleGetCalibration");
 #endif
-	//                                                                     MARGIN       VSEG1       VSEG2       VSEG3       VSEG4
-	uint8_t data[] = { MANU_ID, PRODUCT_ID, CMD_CALIBRATION, SUBCMD_GET, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+	//                                                             MARGIN       VSEG1       VSEG2       VSEG3       VSEG4
+	uint8_t data[] = { DEVICE_ID, CMD_CALIBRATION, SUBCMD_GET, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 	data[5] = (margin >> 7) & 0x7F;
 	data[6] =  margin & 0x7F;
 
@@ -243,6 +298,7 @@ void handleSetCalibration(uint8_t* data)
 #endif
 	}
 
+	// Acknowledge
 	handleGetCalibration();
 }
 
@@ -256,6 +312,15 @@ void handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data, int data_size)
 #endif
 
 	switch (cmd) {
+	case CMD_CONFIGURATION:
+		if (data_size > 0)
+		{
+			if (data[0] == SUBCMD_GET)
+				handleGetConfiguration();
+			if ((data[0] == SUBCMD_SET) && (data_size == 3))
+				handleSetConfiguration(&data[1]);
+		}
+		break;
 	case CMD_CALIBRATION:
 		if (data_size > 0)
 		{
@@ -294,9 +359,9 @@ void handleSysEx(uint8_t* array, unsigned size)
     {
         MIDI.sendSysEx(sizeof(SYSEX_IDENT_RES), SYSEX_IDENT_RES);
     }
-    else if ((size > sizeof(SYSEX_CMD_PREFIX)) && isArrayEqual(array, SYSEX_CMD_PREFIX, sizeof(SYSEX_CMD_PREFIX)))
+    else if ((size > sizeof(SYSEX_REQ_PREFIX) && isArrayEqual(array, SYSEX_REQ_PREFIX, sizeof(SYSEX_REQ_PREFIX))))
     {
-		int offset = sizeof(SYSEX_CMD_PREFIX);
+		int offset = sizeof(SYSEX_REQ_PREFIX);
 		handleCommand(static_cast<pdlbrd_sysex_cmd_t>(array[offset]), &array[offset+1], size - (offset+2));
 	}
 }

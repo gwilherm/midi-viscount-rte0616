@@ -1,10 +1,12 @@
 # No way to write build-properties so a Makefile is needed
 # https://forum.arduino.cc/t/compiler-options-in-arduino-cli/938124/2
 
+FW_VERSION := 1.0.0
+
 FQBN := arduino:avr:micro
 PORT := /dev/ttyACM0
 BUILD := build
-FLAGS := -DFW_DEBUG
+FLAGS := -DFW_DEBUG -DFW_VERSION=\"$(FW_VERSION)\"
 USB_NAME := Viscount RTE0616
 
 ARDUINO := arduino-cli
