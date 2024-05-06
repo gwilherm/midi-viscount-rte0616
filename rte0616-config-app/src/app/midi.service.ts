@@ -1,4 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { MIDI_INPUTS, MIDI_MESSAGES, MIDI_OUTPUT, MIDI_OUTPUTS } from '@ng-web-apis/midi';
 import { Observable, Subject, firstValueFrom } from 'rxjs';
 
@@ -75,8 +76,8 @@ function promiseWithTimeout<T>(
 })
 export class MidiService implements EventListenerObject {
   // Ugly.
-  output: MIDIOutput|null = null;
-  input: MIDIInput|null = null;
+  output: MIDIOutput|undefined = undefined;
+  input: MIDIInput|undefined = undefined;
 
   fwVersion$ = new Subject<Uint8Array>
   midiConfig$ = new Subject<DeviceMIDIConfig>
@@ -99,8 +100,8 @@ export class MidiService implements EventListenerObject {
     this.inputs$.subscribe({next: inputs => { console.log(inputs); this.input = inputs.filter(i => i.name?.startsWith(inClientName))[0]; console.log(this.input); this.input?.addEventListener('midimessage', this)}})
   }
 
-  isDeviceSelected() {
-    return (this.input && this.output);
+  isDeviceSelected(): boolean {
+    return ((this.input!=undefined) && (this.output!=undefined))
   }
 
   handleEvent(ev: MIDIMessageEvent) {
@@ -182,5 +183,14 @@ export class MidiService implements EventListenerObject {
     else if (!this.output) error.message = 'No output device matching ' + this.input!.name
     console.log(error)
     return error;
+  }
+}
+
+export const DeviceSelectedGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean|UrlTree => {
+  if (inject(MidiService).isDeviceSelected()) {
+    return true;
+  }
+  else {
+    return inject(Router).parseUrl('devices');
   }
 }
