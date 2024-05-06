@@ -25,7 +25,7 @@ export class ConfigureComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._midiService.midiConfig$.subscribe(val => this._midiConfig = val)
+    this._midiService.midiConfig$.subscribe(val => { this._midiConfig = val })
     this._midiService.sendStandardModeRequest()
     this._midiService.sendGetConfigurationRequest()
   }
