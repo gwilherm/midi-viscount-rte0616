@@ -16,6 +16,7 @@ uint8_t SYSEX_IDENT_RES[]  = {       0x7e, 0x01, 0x06, 0x02, MANU_ID, 0x00, MANU
 typedef enum {
 	CMD_CONFIGURATION = 1,
 	CMD_CALIBRATION,
+	CMD_MEASURES,
 	CMD_CHANGE_MODE,
 	CMD_MAX
 } pdlbrd_sysex_cmd_t;
@@ -23,6 +24,7 @@ typedef enum {
 typedef enum {
 	SUBCMD_GET = 1,
 	SUBCMD_SET,
+	SUBCMD_PUSH,
 	SUBCMD_MAX
 } pdlbrd_sysex_sub_cmd_t;
 
@@ -211,11 +213,11 @@ void initSysexIdentResponse()
 
 void processMeasureMode(int* val)
 {
-	uint8_t bytes[3+(8*2)] = { 0x31, 0x06, 0x16 };
+	uint8_t bytes[5+(8*2)] = { DEVICE_ID, CMD_MEASURE, SUBCMD_PUSH };
 	for (int i = 0; i < 8; i++)
 	{
-		bytes[3+(i*2)] = (val[i] >> 7) & 0x7F;
-		bytes[4+(i*2)] =  val[i] & 0x7F;
+		bytes[5+(i*2)] = (val[i] >> 7) & 0x7F;
+		bytes[6+(i*2)] =  val[i] & 0x7F;
 	}
 	MIDI.sendSysEx(sizeof(bytes), bytes);
 }
