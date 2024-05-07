@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TabsComponent } from '../tabs/tabs.component';
-import { DeviceCalibration, MidiService } from '../midi.service';
+import { DeviceCalibration, DeviceMeasures as DeviceMeasures, MidiService } from '../midi.service';
 
 @Component({
   selector: 'app-calibrate',
@@ -11,6 +11,7 @@ import { DeviceCalibration, MidiService } from '../midi.service';
 })
 export class CalibrateComponent implements OnInit {
   protected calibration = new DeviceCalibration()
+  protected measures = new DeviceMeasures()
 
   constructor(
     private _midiService: MidiService)
@@ -18,6 +19,7 @@ export class CalibrateComponent implements OnInit {
 
     ngOnInit(): void {
       this._midiService.calibration$.subscribe(val => { this.calibration = val })
+      this._midiService.measure$.subscribe(val => { this.measures = val })
       this._midiService.sendMeasureModeRequest()
       this._midiService.sendGetCalibrationRequest()
   }

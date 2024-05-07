@@ -11,12 +11,14 @@ const PRODUCT_ID = [0x06, 0x16];
 enum SYSEX_CMD {
   CMD_CONFIGURATION = 1,
 	CMD_CALIBRATION,
+  CMD_MEASURES,
 	CMD_CHANGE_MODE
 }
 
 enum SYSEX_SUB_CMD {
 	SUBCMD_GET = 1,
-	SUBCMD_SET
+	SUBCMD_SET,
+	SUBCMD_PUSH
 }
 
 enum SYSEX_MODE {
@@ -34,6 +36,11 @@ export class DeviceCalibration {
   {}
 }
 
+export class DeviceMeasures {
+  constructor(public v1 = 0, public v2 = 0, public v3 = 0, public v4 = 0, public v5 = 0, public v6 = 0, public v7 = 0, public v8 = 0)
+  {}
+}
+
 function decodeDeviceMidiConfig(data: Uint8Array): DeviceMIDIConfig {
   let chan = data!.at(0)!
   let oct = data!.at(1)!
@@ -48,19 +55,40 @@ function decodeDeviceMidiConfig(data: Uint8Array): DeviceMIDIConfig {
 }
 
 function decodeDeviceCalibration(data: Uint8Array): DeviceCalibration {
-  let margin = (data!.at(0)! & 0xF7) << 7
-  margin = data!.at(1)! & 0xF7
+  let margin = (data!.at(0)! & 0x7F) << 7
+  margin += data!.at(1)! & 0x7F
 
-  let vSeg1 = (data!.at(2)! & 0xF7) << 7
-  vSeg1 += data!.at(3)! & 0xF7
-  let vSeg2 = (data!.at(4)! & 0xF7) << 7
-  vSeg2 += data!.at(5)! & 0xF7
-  let vSeg3 = (data!.at(6)! & 0xF7) << 7
-  vSeg3 += data!.at(7)! & 0xF7
-  let vSeg4 = (data!.at(8)! & 0xF7) << 7
-  vSeg4 += data!.at(9)! & 0xF7
+  let vSeg1 = (data!.at(2)! & 0x7F) << 7
+  vSeg1 += data!.at(3)! & 0x7F
+  let vSeg2 = (data!.at(4)! & 0x7F) << 7
+  vSeg2 += data!.at(5)! & 0x7F
+  let vSeg3 = (data!.at(6)! & 0x7F) << 7
+  vSeg3 += data!.at(7)! & 0x7F
+  let vSeg4 = (data!.at(8)! & 0x7F) << 7
+  vSeg4 += data!.at(9)! & 0x7F
 
   return new DeviceCalibration(margin, vSeg1, vSeg2, vSeg3, vSeg4)
+}
+
+function decodeDeviceMeasures(data: Uint8Array): DeviceMeasures {
+  let v1 = (data!.at(0)! & 0x7F) << 7
+  v1 += data!.at(1)! & 0x7F
+  let v2 = (data!.at(2)! & 0x7F) << 7
+  v2 += data!.at(3)! & 0x7F
+  let v3 = (data!.at(4)! & 0x7F) << 7
+  v3 += data!.at(5)! & 0x7F
+  let v4 = (data!.at(6)! & 0x7F) << 7
+  v4 += data!.at(7)! & 0x7F
+  let v5 = (data!.at(8)! & 0x7F) << 7
+  v5 += data!.at(9)! & 0x7F
+  let v6 = (data!.at(10)! & 0x7F) << 7
+  v6 += data!.at(11)! & 0x7F
+  let v7 = (data!.at(12)! & 0x7F) << 7
+  v7 += data!.at(13)! & 0x7F
+  let v8 = (data!.at(14)! & 0x7F) << 7
+  v8 += data!.at(15)! & 0x7F
+
+  return new DeviceMeasures(v1, v2, v3, v4, v5, v6, v7, v8)
 }
 
 function isEqualBytes(ba1: Uint8Array, ba2: Uint8Array): boolean {
@@ -103,6 +131,7 @@ export class MidiService implements EventListenerObject {
   fwVersion$ = new Subject<Uint8Array>
   midiConfig$ = new Subject<DeviceMIDIConfig>
   calibration$ = new Subject<DeviceCalibration>
+  measure$ = new Subject<DeviceMeasures>
 
   constructor(
     @Inject(MIDI_INPUTS) private inputs$: Observable<MIDIInput[]>,
@@ -144,10 +173,14 @@ export class MidiService implements EventListenerObject {
               if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_GET)
                 this.midiConfig$.next(decodeDeviceMidiConfig(ev.data!.slice(6, 8)));
               break;
-            case SYSEX_CMD.CMD_CALIBRATION:
-              if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_GET)
-                this.calibration$.next(decodeDeviceCalibration(ev.data!.slice(6, 16)));
-              break;
+              case SYSEX_CMD.CMD_CALIBRATION:
+                if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_GET)
+                  this.calibration$.next(decodeDeviceCalibration(ev.data!.slice(6, 16)));
+                break;
+              case SYSEX_CMD.CMD_MEASURES:
+                if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_PUSH)
+                  this.measure$.next(decodeDeviceMeasures(ev.data!.slice(6, 22)));
+                break;
             case SYSEX_CMD.CMD_CHANGE_MODE:
             default:
               console.log('Unknown command ' + ev.data!.at(4))
