@@ -26,6 +26,8 @@
     "@ng-web-apis/common": "^3.0.6",
     "@ng-web-apis/midi": "^3.0.6",
     "component": "^1.1.0",
+    "igniteui-angular-core": "^17.3.0",
+    "igniteui-angular-gauges": "^17.3.0",
     "ngx-electron": "^2.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

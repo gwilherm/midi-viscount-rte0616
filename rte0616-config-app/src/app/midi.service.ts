@@ -37,7 +37,7 @@ export class DeviceCalibration {
 }
 
 export class DeviceMeasures {
-  constructor(public v1 = 0, public v2 = 0, public v3 = 0, public v4 = 0, public v5 = 0, public v6 = 0, public v7 = 0, public v8 = 0)
+  constructor(public v: Array<number> = [])
   {}
 }
 
@@ -88,7 +88,7 @@ function decodeDeviceMeasures(data: Uint8Array): DeviceMeasures {
   let v8 = (data!.at(14)! & 0x7F) << 7
   v8 += data!.at(15)! & 0x7F
 
-  return new DeviceMeasures(v1, v2, v3, v4, v5, v6, v7, v8)
+  return new DeviceMeasures([v1, v2, v3, v4, v5, v6, v7, v8])
 }
 
 function isEqualBytes(ba1: Uint8Array, ba2: Uint8Array): boolean {
