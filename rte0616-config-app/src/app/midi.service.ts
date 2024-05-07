@@ -29,6 +29,11 @@ export class DeviceMIDIConfig {
   {}
 }
 
+export class DeviceCalibration {
+  constructor(public margin = 0, public vSeg1 = 0, public vSeg2 = 0, public vSeg3 = 0, public vSeg4 = 0)
+  {}
+}
+
 function decodeDeviceMidiConfig(data: Uint8Array): DeviceMIDIConfig {
   let chan = data!.at(0)!
   let oct = data!.at(1)!
@@ -40,6 +45,22 @@ function decodeDeviceMidiConfig(data: Uint8Array): DeviceMIDIConfig {
   if (chan > 8) oct = 8
 
   return new DeviceMIDIConfig(chan, oct)
+}
+
+function decodeDeviceCalibration(data: Uint8Array): DeviceCalibration {
+  let margin = (data!.at(0)! & 0xF7) << 7
+  margin = data!.at(1)! & 0xF7
+
+  let vSeg1 = (data!.at(2)! & 0xF7) << 7
+  vSeg1 += data!.at(3)! & 0xF7
+  let vSeg2 = (data!.at(4)! & 0xF7) << 7
+  vSeg2 += data!.at(5)! & 0xF7
+  let vSeg3 = (data!.at(6)! & 0xF7) << 7
+  vSeg3 += data!.at(7)! & 0xF7
+  let vSeg4 = (data!.at(8)! & 0xF7) << 7
+  vSeg4 += data!.at(9)! & 0xF7
+
+  return new DeviceCalibration(margin, vSeg1, vSeg2, vSeg3, vSeg4)
 }
 
 function isEqualBytes(ba1: Uint8Array, ba2: Uint8Array): boolean {
@@ -81,6 +102,7 @@ export class MidiService implements EventListenerObject {
 
   fwVersion$ = new Subject<Uint8Array>
   midiConfig$ = new Subject<DeviceMIDIConfig>
+  calibration$ = new Subject<DeviceCalibration>
 
   constructor(
     @Inject(MIDI_INPUTS) private inputs$: Observable<MIDIInput[]>,
@@ -123,6 +145,9 @@ export class MidiService implements EventListenerObject {
                 this.midiConfig$.next(decodeDeviceMidiConfig(ev.data!.slice(6, 8)));
               break;
             case SYSEX_CMD.CMD_CALIBRATION:
+              if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_GET)
+                this.calibration$.next(decodeDeviceCalibration(ev.data!.slice(6, 16)));
+              break;
             case SYSEX_CMD.CMD_CHANGE_MODE:
             default:
               console.log('Unknown command ' + ev.data!.at(4))
@@ -147,6 +172,26 @@ export class MidiService implements EventListenerObject {
     }
   }
 
+  async sendStandardModeRequest() {
+    if (this.input && this.output) {
+      console.log('Sending Change to standard mode Sysex request to ' + this.output.name)
+      this.output.send([SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CHANGE_MODE, SYSEX_MODE.MODE_STANDARD, SYSEX_SUFFIX])
+    }
+    else {
+      this.getInputOutputError()
+    }
+  }
+
+  async sendMeasureModeRequest() {
+    if (this.input && this.output) {
+      console.log('Sending Change to measure mode Sysex request to ' + this.output.name)
+      this.output.send([SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CHANGE_MODE, SYSEX_MODE.MODE_MEASURE, SYSEX_SUFFIX])
+    }
+    else {
+      this.getInputOutputError()
+    }
+  }
+
   async sendGetConfigurationRequest() {
     if (this.input && this.output) {
       console.log('Sending Get Config Sysex request to ' + this.output.name)
@@ -167,10 +212,10 @@ export class MidiService implements EventListenerObject {
     }
   }
 
-  async sendStandardModeRequest() {
+  async sendGetCalibrationRequest() {
     if (this.input && this.output) {
-      console.log('Sending Change to standard mode Sysex request to ' + this.output.name)
-      this.output.send([SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CHANGE_MODE, SYSEX_MODE.MODE_STANDARD, SYSEX_SUFFIX])
+      console.log('Sending Get Calibration Sysex request to ' + this.output.name)
+      this.output.send([SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CALIBRATION, SYSEX_SUB_CMD.SUBCMD_GET, SYSEX_SUFFIX])
     }
     else {
       this.getInputOutputError()
