@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MidiService, DeviceMIDIConfig } from '../midi.service';
@@ -15,14 +14,7 @@ import { FormsModule } from '@angular/forms';
 export class ConfigureComponent implements OnInit {
   _midiConfig = new DeviceMIDIConfig()
 
-  constructor(
-    private _router:Router,
-    private _midiService: MidiService) {
-      if (!_midiService.isDeviceSelected()) {
-        console.log('redirecting')
-        this._router.navigate(['devices']);
-      }
-  }
+  constructor(private _midiService: MidiService) {}
 
   ngOnInit(): void {
     this._midiService.midiConfig$.subscribe(val => { this._midiConfig = val })
