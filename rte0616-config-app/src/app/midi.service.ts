@@ -1,7 +1,7 @@
 import { Inject, Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { MIDI_INPUTS, MIDI_MESSAGES, MIDI_OUTPUT, MIDI_OUTPUTS } from '@ng-web-apis/midi';
-import { Observable, Subject, firstValueFrom } from 'rxjs';
+import { Observable, Subject, firstValueFrom, throttleTime } from 'rxjs';
 
 const SYSEX_PREFIX = 0xF0
 const SYSEX_SUFFIX = 0xF7
@@ -131,7 +131,8 @@ export class MidiService implements EventListenerObject {
   fwVersion$ = new Subject<Uint8Array>
   midiConfig$ = new Subject<DeviceMIDIConfig>
   calibration$ = new Subject<DeviceCalibration>
-  measure$ = new Subject<DeviceMeasures>
+  measures$ = new Observable<DeviceMeasures>
+  private m$ = new Subject<DeviceMeasures>
 
   constructor(
     @Inject(MIDI_INPUTS) private inputs$: Observable<MIDIInput[]>,
@@ -140,6 +141,7 @@ export class MidiService implements EventListenerObject {
   )
   {
     // messages$.subscribe(msg => console.log(msg))
+    this.measures$ = this.m$.pipe(throttleTime(200))
   }
 
   selectDevice(outputName: string) {
@@ -179,7 +181,7 @@ export class MidiService implements EventListenerObject {
                 break;
               case SYSEX_CMD.CMD_MEASURES:
                 if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_PUSH)
-                  this.measure$.next(decodeDeviceMeasures(ev.data!.slice(6, 22)));
+                  this.m$.next(decodeDeviceMeasures(ev.data!.slice(6, 22)));
                 break;
             case SYSEX_CMD.CMD_CHANGE_MODE:
             default:

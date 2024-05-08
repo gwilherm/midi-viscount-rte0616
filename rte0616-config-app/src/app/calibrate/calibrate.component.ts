@@ -111,7 +111,7 @@ export class CalibrateComponent implements AfterViewInit {
         }
       })
 
-      this._midiService.measure$.subscribe(meas => {
+      this._midiService.measures$.subscribe(meas => {
         this.measures = meas
         for (let i = 0; i < this.NB_GAUGE; i++) {
           this.gaugeList.get(i)!.value = meas.v[i]
