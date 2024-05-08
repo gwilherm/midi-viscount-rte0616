@@ -1,8 +1,7 @@
-<p>calibrate works:</p>
 <p>Calibration settings: {{this.calibration.margin}} - {{this.calibration.vSeg1}} - {{this.calibration.vSeg2}} - {{this.calibration.vSeg3}} - {{this.calibration.vSeg4}}</p>
-<p>Measures: {{this.measures.v[0]}} - {{this.measures.v[1]}} - {{this.measures.v[2]}} - {{this.measures.v[3]}} - {{this.measures.v[4]}} - {{this.measures.v[5]}} - {{this.measures.v[6]}} - {{this.measures.v[7]}}</p>
 <div>
     <div *ngFor="let idx of this.gaugeIdx" >
-        <igx-linear-gauge #gauge height="80px" width="400px" />
+        <div style="font-family: monospace; text-align: center">{{idx+1}}:&nbsp;<span style="text-align: right;display: inline-block; width: 5ch;">{{this.measures.v[idx]}}</span></div>
+        <igx-linear-gauge #gauge height="60px" width="500px" isScaleInverted=true />
     </div>
 </div>
