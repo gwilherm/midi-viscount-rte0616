@@ -54,6 +54,12 @@ function decodeDeviceMidiConfig(data: Uint8Array): DeviceMIDIConfig {
   return new DeviceMIDIConfig(chan, oct)
 }
 
+function encodeDeviceMidiConfig(midiConfig: DeviceMIDIConfig): Array<number> {
+  return [SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CONFIGURATION, SYSEX_SUB_CMD.SUBCMD_SET,
+    midiConfig.channel, midiConfig.octave,
+    SYSEX_SUFFIX]
+}
+
 function decodeDeviceCalibration(data: Uint8Array): DeviceCalibration {
   let margin = (data!.at(0)! & 0x7F) << 7
   margin += data!.at(1)! & 0x7F
@@ -68,6 +74,26 @@ function decodeDeviceCalibration(data: Uint8Array): DeviceCalibration {
   vSeg4 += data!.at(9)! & 0x7F
 
   return new DeviceCalibration(margin, vSeg1, vSeg2, vSeg3, vSeg4)
+}
+
+function encodeDeviceCalibration(calibration: DeviceCalibration): Array<number> {
+  let marginMsb = (calibration.margin >> 7) & 0x7F
+  let marginLsb = calibration.margin & 0x7F
+  let vSeg1Msb = (calibration.vSeg1 >> 7) & 0x7F
+  let vSeg1Lsb = calibration.vSeg1 & 0x7F
+  let vSeg2Msb = (calibration.vSeg2 >> 7) & 0x7F
+  let vSeg2Lsb = calibration.vSeg2 & 0x7F
+  let vSeg3Msb = (calibration.vSeg3 >> 7) & 0x7F
+  let vSeg3Lsb = calibration.vSeg3 & 0x7F
+  let vSeg4Msb = (calibration.vSeg4 >> 7) & 0x7F
+  let vSeg4Lsb = calibration.vSeg4 & 0x7F
+  return [SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CALIBRATION, SYSEX_SUB_CMD.SUBCMD_SET,
+    marginMsb, marginLsb,
+    vSeg1Msb, vSeg1Lsb,
+    vSeg2Msb, vSeg2Lsb,
+    vSeg3Msb, vSeg3Lsb,
+    vSeg4Msb, vSeg4Lsb,
+    SYSEX_SUFFIX]
 }
 
 function decodeDeviceMeasures(data: Uint8Array): DeviceMeasures {
@@ -239,8 +265,8 @@ export class MidiService implements EventListenerObject {
 
   async sendSetConfigurationRequest(midiConfig: DeviceMIDIConfig) {
     if (this.input && this.output) {
-      console.log('Sending Get Config Sysex request to ' + this.output.name)
-      this.output.send([SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CONFIGURATION, SYSEX_SUB_CMD.SUBCMD_SET, midiConfig.channel, midiConfig.octave, SYSEX_SUFFIX])
+      console.log('Sending Set Config Sysex request to ' + this.output.name)
+      this.output.send(encodeDeviceMidiConfig(midiConfig))
     }
     else {
       this.getInputOutputError()
@@ -257,6 +283,15 @@ export class MidiService implements EventListenerObject {
     }
   }
 
+  async sendSetCalibrationRequest(calibration: DeviceCalibration) {
+    if (this.input && this.output) {
+      console.log('Sending Set Calibration Sysex request to ' + this.output.name)
+      this.output.send(encodeDeviceCalibration(calibration))
+    }
+    else {
+      this.getInputOutputError()
+    }
+  }
   getInputOutputError(): Error {
     let error = new Error()
     if (!this.input)  error.message = 'Invalid input device'

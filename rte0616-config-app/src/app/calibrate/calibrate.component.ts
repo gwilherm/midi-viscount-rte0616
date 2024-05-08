@@ -1,13 +1,15 @@
 import { AfterViewInit, Component, QueryList, ViewChildren } from '@angular/core';
-import { TabsComponent } from '../tabs/tabs.component';
 import { DeviceCalibration, DeviceMeasures as DeviceMeasures, MidiService } from '../midi.service';
 import { IgxLinearGaugeComponent, IgxLinearGaugeModule, IgxLinearGraphRangeComponent, LinearGraphNeedleShape } from 'igniteui-angular-gauges';
 import { NgFor } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-calibrate',
   standalone: true,
-  imports: [ TabsComponent, IgxLinearGaugeModule, NgFor ],
+  imports: [ MatInputModule, MatButtonModule, FormsModule, IgxLinearGaugeModule, NgFor ],
   templateUrl: './calibrate.component.html',
   styleUrl: './calibrate.component.css'
 })
@@ -17,8 +19,8 @@ export class CalibrateComponent implements AfterViewInit {
   gaugeIdx = Array(this.NB_GAUGE).fill(1).map((x,i)=>i)
 
 
-  protected calibration = new DeviceCalibration()
-  protected measures = new DeviceMeasures()
+  protected _calibration = new DeviceCalibration()
+  protected _measures = new DeviceMeasures()
 
   constructor(
     private _midiService: MidiService)
@@ -77,7 +79,7 @@ export class CalibrateComponent implements AfterViewInit {
       }
 
       this._midiService.calibration$.subscribe(cal => {
-        this.calibration = cal
+        this._calibration = cal
 
         const seg1 = new IgxLinearGraphRangeComponent()
         seg1.startValue = cal.vSeg1 - cal.margin;
@@ -112,7 +114,7 @@ export class CalibrateComponent implements AfterViewInit {
       })
 
       this._midiService.measures$.subscribe(meas => {
-        this.measures = meas
+        this._measures = meas
         for (let i = 0; i < this.NB_GAUGE; i++) {
           this.gaugeList.get(i)!.value = meas.v[i]
         }
@@ -120,5 +122,9 @@ export class CalibrateComponent implements AfterViewInit {
 
       this._midiService.sendMeasureModeRequest()
       this._midiService.sendGetCalibrationRequest()
+  }
+
+  onSend() {
+    this._midiService.sendSetCalibrationRequest(this._calibration)
   }
 }

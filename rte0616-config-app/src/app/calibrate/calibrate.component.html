@@ -1,7 +1,31 @@
-<p>Calibration settings: {{this.calibration.margin}} - {{this.calibration.vSeg1}} - {{this.calibration.vSeg2}} - {{this.calibration.vSeg3}} - {{this.calibration.vSeg4}}</p>
 <div>
+    <form #calibrForm onsubmit="reset()">
+        <mat-form-field [style.width.px]=100>
+            <mat-label>Margin</mat-label>
+            <input matInput name="margin" type="number" min="0" max="1023" [(ngModel)]="this._calibration.margin" >
+        </mat-form-field>
+        <mat-form-field [style.width.px]=100>
+            <mat-label>vSeg1</mat-label>
+            <input matInput name="vSeg1" type="number" min="0" max="1023" [(ngModel)]="this._calibration.vSeg1" >
+        </mat-form-field>
+        <mat-form-field [style.width.px]=100>
+            <mat-label>vSeg2</mat-label>
+            <input matInput name="vSeg2" type="number" min="0" max="1023" [(ngModel)]="this._calibration.vSeg2" >
+        </mat-form-field>
+        <mat-form-field [style.width.px]=100>
+            <mat-label>vSeg3</mat-label>
+            <input matInput name="vSeg3" type="number" min="0" max="1023" [(ngModel)]="this._calibration.vSeg3" >
+        </mat-form-field>
+        <mat-form-field [style.width.px]=100>
+            <mat-label>vSeg4</mat-label>
+            <input matInput name="vSeg4" type="number" min="0" max="1023" [(ngModel)]="this._calibration.vSeg4" >
+        </mat-form-field>
+        <div class="row">
+            <button mat-flat-button type="submit" color="primary" (click)="onSend()">Send</button>
+        </div>
+    </form>
     <div *ngFor="let idx of this.gaugeIdx" >
-        <div style="font-family: monospace; text-align: center">{{idx+1}}:&nbsp;<span style="text-align: right;display: inline-block; width: 5ch;">{{this.measures.v[idx]}}</span></div>
+        <div style="font-family: monospace; text-align: center">{{idx+1}}:&nbsp;<span style="text-align: right;display: inline-block; width: 5ch;">{{this._measures.v[idx]}}</span></div>
         <igx-linear-gauge #gauge height="60px" width="500px" isScaleInverted=true />
     </div>
 </div>
