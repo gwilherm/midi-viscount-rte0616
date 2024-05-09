@@ -1,11 +1,6 @@
-.center{
-    width: 75%;
+main {
+    width: 50%;
     margin: 10px auto;
-}
-
-main{
-    height: 100vh;
-    display: flex;
     justify-content: center;
     align-items: center;
 }

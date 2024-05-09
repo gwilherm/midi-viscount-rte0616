@@ -1,5 +1,5 @@
 <div>
-    <form #configForm onsubmit="reset()">
+    <form #configForm onsubmit="reset()"  style="text-align: center">
         <mat-form-field>
             <mat-label>MIDI Channel</mat-label>
             <input matInput name="channel" type="number" min="1" max="16" [(ngModel)]="this._midiConfig.channel" >
