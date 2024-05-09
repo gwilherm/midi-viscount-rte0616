@@ -32,12 +32,12 @@ export class DeviceMIDIConfig {
 }
 
 export class DeviceCalibration {
-  constructor(public margin = 0, public vSeg1 = 0, public vSeg2 = 0, public vSeg3 = 0, public vSeg4 = 0)
+  constructor(public margin = 0, public vSeg = [0, 0, 0, 0])
   {}
 }
 
 export class DeviceMeasures {
-  constructor(public v: Array<number> = [])
+  constructor(public v = [0, 0, 0, 0, 0, 0, 0, 0])
   {}
 }
 
@@ -73,20 +73,20 @@ function decodeDeviceCalibration(data: Uint8Array): DeviceCalibration {
   let vSeg4 = (data!.at(8)! & 0x7F) << 7
   vSeg4 += data!.at(9)! & 0x7F
 
-  return new DeviceCalibration(margin, vSeg1, vSeg2, vSeg3, vSeg4)
+  return new DeviceCalibration(margin, [vSeg1, vSeg2, vSeg3, vSeg4])
 }
 
 function encodeDeviceCalibration(calibration: DeviceCalibration): Array<number> {
   let marginMsb = (calibration.margin >> 7) & 0x7F
   let marginLsb = calibration.margin & 0x7F
-  let vSeg1Msb = (calibration.vSeg1 >> 7) & 0x7F
-  let vSeg1Lsb = calibration.vSeg1 & 0x7F
-  let vSeg2Msb = (calibration.vSeg2 >> 7) & 0x7F
-  let vSeg2Lsb = calibration.vSeg2 & 0x7F
-  let vSeg3Msb = (calibration.vSeg3 >> 7) & 0x7F
-  let vSeg3Lsb = calibration.vSeg3 & 0x7F
-  let vSeg4Msb = (calibration.vSeg4 >> 7) & 0x7F
-  let vSeg4Lsb = calibration.vSeg4 & 0x7F
+  let vSeg1Msb = (calibration.vSeg[0] >> 7) & 0x7F
+  let vSeg1Lsb = calibration.vSeg[0] & 0x7F
+  let vSeg2Msb = (calibration.vSeg[1] >> 7) & 0x7F
+  let vSeg2Lsb = calibration.vSeg[1] & 0x7F
+  let vSeg3Msb = (calibration.vSeg[2] >> 7) & 0x7F
+  let vSeg3Lsb = calibration.vSeg[2] & 0x7F
+  let vSeg4Msb = (calibration.vSeg[3] >> 7) & 0x7F
+  let vSeg4Lsb = calibration.vSeg[3] & 0x7F
   return [SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CALIBRATION, SYSEX_SUB_CMD.SUBCMD_SET,
     marginMsb, marginLsb,
     vSeg1Msb, vSeg1Lsb,

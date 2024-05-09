@@ -5,22 +5,12 @@
                 <mat-label>Margin</mat-label>
                 <input matInput name="margin" type="number" min="0" max="1023" [(ngModel)]="this._calibration.margin" >
             </mat-form-field>
-            <mat-form-field [style.width.px]=100>
-                <mat-label>vSeg1</mat-label>
-                <input matInput name="vSeg1" type="number" min="0" max="1023" [(ngModel)]="this._calibration.vSeg1" >
-            </mat-form-field>
-            <mat-form-field [style.width.px]=100>
-                <mat-label>vSeg2</mat-label>
-                <input matInput name="vSeg2" type="number" min="0" max="1023" [(ngModel)]="this._calibration.vSeg2" >
-            </mat-form-field>
-            <mat-form-field [style.width.px]=100>
-                <mat-label>vSeg3</mat-label>
-                <input matInput name="vSeg3" type="number" min="0" max="1023" [(ngModel)]="this._calibration.vSeg3" >
-            </mat-form-field>
-            <mat-form-field [style.width.px]=100>
-                <mat-label>vSeg4</mat-label>
-                <input matInput name="vSeg4" type="number" min="0" max="1023" [(ngModel)]="this._calibration.vSeg4" >
-            </mat-form-field>
+            @for (vSeg of this._calibration.vSeg; track $index) {
+                <mat-form-field [style.width.px]=100>
+                    <mat-label>vSeg{{$index+1}}</mat-label>
+                    <input matInput name="vSeg{{$index+1}}" type="number" min="0" max="1023" [(ngModel)]="this._calibration.vSeg[$index]" >
+                </mat-form-field>
+            }
             <div class="row">
                 <button mat-flat-button type="submit" color="primary" (click)="onSend()">Send</button>
             </div>
