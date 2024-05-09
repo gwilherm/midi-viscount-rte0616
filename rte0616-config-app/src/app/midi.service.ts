@@ -5,8 +5,21 @@ import { Observable, Subject, firstValueFrom, throttleTime } from 'rxjs';
 
 const SYSEX_PREFIX = 0xF0
 const SYSEX_SUFFIX = 0xF7
-const MANU_ID = 0x31;
-const PRODUCT_ID = [0x06, 0x16];
+const MANU_ID = 0x31
+const PRODUCT_ID = [0x06, 0x16]
+
+const MIDI_MIN_CHAN = 1
+const MIDI_MAX_CHAN = 16
+const MIDI_MAX_BYTE = 0x7F
+
+const PDLBRD_NB_SEGMENTS = 4
+const PDLBRD_NB_OUT_PINS = 8
+const PDLBRD_MIN_OCTAVE = 1
+const PDLBRD_MAX_OCTAVE = 6
+const PDLBRD_MIN_PIN_VAL = 0
+const PDLBRD_MAX_PIN_VAL = 1023
+const PDLBRD_MIN_MARGIN = 1
+const PDLBRD_MAX_MARGIN = 1023
 
 enum SYSEX_CMD {
   CMD_CONFIGURATION = 1,
@@ -27,18 +40,26 @@ enum SYSEX_MODE {
 }
 
 export class DeviceMIDIConfig {
-  constructor(public channel = 0, public octave = 0)
+  constructor(public channel = MIDI_MIN_CHAN, public octave = PDLBRD_MIN_OCTAVE)
   {}
 }
 
 export class DeviceCalibration {
-  constructor(public margin = 0, public vSeg = [0, 0, 0, 0])
+  constructor(public margin = PDLBRD_MIN_MARGIN, public vSeg = Array<number>(PDLBRD_NB_SEGMENTS).fill(PDLBRD_MIN_PIN_VAL))
   {}
 }
 
 export class DeviceMeasures {
-  constructor(public v = [0, 0, 0, 0, 0, 0, 0, 0])
+  constructor(public v = Array<number>(PDLBRD_NB_OUT_PINS).fill(PDLBRD_MIN_PIN_VAL))
   {}
+}
+
+function toMIDILsbMsb(val: number): [number, number] {
+  return [(val >> 7) & MIDI_MAX_BYTE, val & MIDI_MAX_BYTE];
+}
+
+function fromMIDILsbMsb(val: [number, number]): number {
+  return ((val[0] & MIDI_MAX_BYTE) << 7) + (val[1] & MIDI_MAX_BYTE);
 }
 
 function decodeDeviceMidiConfig(data: Uint8Array): DeviceMIDIConfig {
@@ -46,75 +67,54 @@ function decodeDeviceMidiConfig(data: Uint8Array): DeviceMIDIConfig {
   let oct = data!.at(1)!
 
   // Clamp
-  if (chan < 1) chan = 0
-  if (chan > 16) chan = 16
-  if (oct < 1) oct = 1
-  if (chan > 8) oct = 8
+  if (chan < MIDI_MIN_CHAN) chan = MIDI_MIN_CHAN
+  if (chan > MIDI_MAX_CHAN) chan = MIDI_MAX_CHAN
+  if (oct < PDLBRD_MIN_OCTAVE) oct = PDLBRD_MIN_OCTAVE
+  if (oct > PDLBRD_MAX_OCTAVE) oct = PDLBRD_MAX_OCTAVE
 
-  return new DeviceMIDIConfig(chan, oct)
+  return new DeviceMIDIConfig(chan, oct);
 }
 
 function encodeDeviceMidiConfig(midiConfig: DeviceMIDIConfig): Array<number> {
   return [SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CONFIGURATION, SYSEX_SUB_CMD.SUBCMD_SET,
     midiConfig.channel, midiConfig.octave,
-    SYSEX_SUFFIX]
+    SYSEX_SUFFIX];
 }
 
 function decodeDeviceCalibration(data: Uint8Array): DeviceCalibration {
-  let margin = (data!.at(0)! & 0x7F) << 7
-  margin += data!.at(1)! & 0x7F
+  let margin = fromMIDILsbMsb([data!.at(0)!, data!.at(1)!])
+  let vSeg1  = fromMIDILsbMsb([data!.at(2)!, data!.at(3)!])
+  let vSeg2  = fromMIDILsbMsb([data!.at(4)!, data!.at(5)!])
+  let vSeg3  = fromMIDILsbMsb([data!.at(6)!, data!.at(7)!])
+  let vSeg4  = fromMIDILsbMsb([data!.at(8)!, data!.at(9)!])
 
-  let vSeg1 = (data!.at(2)! & 0x7F) << 7
-  vSeg1 += data!.at(3)! & 0x7F
-  let vSeg2 = (data!.at(4)! & 0x7F) << 7
-  vSeg2 += data!.at(5)! & 0x7F
-  let vSeg3 = (data!.at(6)! & 0x7F) << 7
-  vSeg3 += data!.at(7)! & 0x7F
-  let vSeg4 = (data!.at(8)! & 0x7F) << 7
-  vSeg4 += data!.at(9)! & 0x7F
-
-  return new DeviceCalibration(margin, [vSeg1, vSeg2, vSeg3, vSeg4])
+  return new DeviceCalibration(margin, [vSeg1, vSeg2, vSeg3, vSeg4]);
 }
 
 function encodeDeviceCalibration(calibration: DeviceCalibration): Array<number> {
-  let marginMsb = (calibration.margin >> 7) & 0x7F
-  let marginLsb = calibration.margin & 0x7F
-  let vSeg1Msb = (calibration.vSeg[0] >> 7) & 0x7F
-  let vSeg1Lsb = calibration.vSeg[0] & 0x7F
-  let vSeg2Msb = (calibration.vSeg[1] >> 7) & 0x7F
-  let vSeg2Lsb = calibration.vSeg[1] & 0x7F
-  let vSeg3Msb = (calibration.vSeg[2] >> 7) & 0x7F
-  let vSeg3Lsb = calibration.vSeg[2] & 0x7F
-  let vSeg4Msb = (calibration.vSeg[3] >> 7) & 0x7F
-  let vSeg4Lsb = calibration.vSeg[3] & 0x7F
-  return [SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CALIBRATION, SYSEX_SUB_CMD.SUBCMD_SET,
-    marginMsb, marginLsb,
-    vSeg1Msb, vSeg1Lsb,
-    vSeg2Msb, vSeg2Lsb,
-    vSeg3Msb, vSeg3Lsb,
-    vSeg4Msb, vSeg4Lsb,
-    SYSEX_SUFFIX]
+  let margin = toMIDILsbMsb(calibration.margin)
+  let vSeg1 = toMIDILsbMsb(calibration.vSeg[0])
+  let vSeg2 = toMIDILsbMsb(calibration.vSeg[1])
+  let vSeg3 = toMIDILsbMsb(calibration.vSeg[2])
+  let vSeg4 = toMIDILsbMsb(calibration.vSeg[3])
+
+  return [SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID,
+    SYSEX_CMD.CMD_CALIBRATION, SYSEX_SUB_CMD.SUBCMD_SET,
+    ...margin, ...vSeg1, ...vSeg2, ...vSeg3, ...vSeg4,
+    SYSEX_SUFFIX];
 }
 
 function decodeDeviceMeasures(data: Uint8Array): DeviceMeasures {
-  let v1 = (data!.at(0)! & 0x7F) << 7
-  v1 += data!.at(1)! & 0x7F
-  let v2 = (data!.at(2)! & 0x7F) << 7
-  v2 += data!.at(3)! & 0x7F
-  let v3 = (data!.at(4)! & 0x7F) << 7
-  v3 += data!.at(5)! & 0x7F
-  let v4 = (data!.at(6)! & 0x7F) << 7
-  v4 += data!.at(7)! & 0x7F
-  let v5 = (data!.at(8)! & 0x7F) << 7
-  v5 += data!.at(9)! & 0x7F
-  let v6 = (data!.at(10)! & 0x7F) << 7
-  v6 += data!.at(11)! & 0x7F
-  let v7 = (data!.at(12)! & 0x7F) << 7
-  v7 += data!.at(13)! & 0x7F
-  let v8 = (data!.at(14)! & 0x7F) << 7
-  v8 += data!.at(15)! & 0x7F
+  let v1 = fromMIDILsbMsb([data!.at(0)!, data!.at(1)!])
+  let v2 = fromMIDILsbMsb([data!.at(2)!, data!.at(3)!])
+  let v3 = fromMIDILsbMsb([data!.at(4)!, data!.at(5)!])
+  let v4 = fromMIDILsbMsb([data!.at(6)!, data!.at(7)!])
+  let v5 = fromMIDILsbMsb([data!.at(8)!, data!.at(9)!])
+  let v6 = fromMIDILsbMsb([data!.at(10)!, data!.at(11)!])
+  let v7 = fromMIDILsbMsb([data!.at(12)!, data!.at(13)!])
+  let v8 = fromMIDILsbMsb([data!.at(14)!, data!.at(15)!])
 
-  return new DeviceMeasures([v1, v2, v3, v4, v5, v6, v7, v8])
+  return new DeviceMeasures([v1, v2, v3, v4, v5, v6, v7, v8]);
 }
 
 function isEqualBytes(ba1: Uint8Array, ba2: Uint8Array): boolean {
