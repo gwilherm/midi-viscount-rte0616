@@ -1,0 +1,43 @@
+<div class="splash">
+  <div class="column">
+    <div class="row">
+      <!-- <div *ngIf="_outputs$ | async as outputDevices">
+        @for (dev of outputDevices; track $index) {
+          {{dev.name}}
+        }
+      </div> -->
+      <mat-form-field>
+        <mat-label>Device:</mat-label>
+        <ng-container *ngIf="_outputs$ | async as outputDevices">
+          <mat-select required>
+            <mat-option *ngFor="let dev of outputDevices"
+                        [value]="dev"
+                        (onSelectionChange)="selectDevice($event, dev)">
+            {{dev.name}}
+          </mat-option>
+          <!-- 
+            Test with buttons in select:
+            @for (dev of outputDevices; track $index) {
+              <mat-option [value]="dev"
+              (onSelectionChange)="selectDevice($event, dev)">{{dev.name}}</mat-option>
+              <button mat-raised-button>Check <mat-spinner diameter="15"></mat-spinner>
+              </button>
+            } -->
+          </mat-select>
+        </ng-container>
+      </mat-form-field>
+      <div class="button-container">
+        <div class="spinner-container" *ngIf="identifying">
+          <mat-spinner diameter="24"></mat-spinner>
+        </div>
+        <button mat-flat-button [disabled]="!deviceSelected() || identifying" (click)="identify()">Identify</button>
+      </div>
+      <div *ngIf="fwVersion != undefined">
+          Firmware version: {{fwVersion}}
+      </div>
+    </div>
+    <div class="row">
+      <button mat-flat-button [disabled]="!deviceSelected()" color="primary" (click)="onContinue()">Continue</button>
+    </div>
+  </div>
+</div>

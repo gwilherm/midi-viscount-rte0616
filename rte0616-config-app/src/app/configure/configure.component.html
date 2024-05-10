@@ -1,0 +1,15 @@
+<div>
+    <form #configForm onsubmit="reset()"  style="text-align: center">
+        <mat-form-field>
+            <mat-label>MIDI Channel</mat-label>
+            <input matInput name="channel" type="number" min="1" max="16" [(ngModel)]="this._midiConfig.channel" >
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Octave</mat-label>
+            <input matInput name="octave" type="number" min="1" max="6" [(ngModel)]="this._midiConfig.octave" >
+        </mat-form-field>
+        <div class="row">
+            <button mat-flat-button type="submit" color="primary" (click)="onSend()">Send</button>
+        </div>
+    </form>
+</div>

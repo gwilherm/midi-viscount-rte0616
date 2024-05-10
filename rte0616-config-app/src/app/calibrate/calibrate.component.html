@@ -1,0 +1,23 @@
+<div>
+    <div style="text-align: center">
+        <form #calibrForm onsubmit="reset()">
+            <mat-form-field [style.width.px]=100>
+                <mat-label>Margin</mat-label>
+                <input matInput name="margin" type="number" min="0" max="1023" [(ngModel)]="this._calibration.margin" >
+            </mat-form-field>
+            @for (vSeg of this._calibration.vSeg; track $index) {
+                <mat-form-field [style.width.px]=100>
+                    <mat-label>vSeg{{$index+1}}</mat-label>
+                    <input matInput name="vSeg{{$index+1}}" type="number" min="0" max="1023" [(ngModel)]="this._calibration.vSeg[$index]" >
+                </mat-form-field>
+            }
+            <div class="row">
+                <button mat-flat-button type="submit" color="primary" (click)="onSend()">Send</button>
+            </div>
+        </form>
+    </div>
+    <div *ngFor="let idx of this.gaugeIdx" >
+        <div style="font-family: monospace; text-align: center">{{idx+1}}:&nbsp;<span style="text-align: right;display: inline-block; width: 5ch;">{{this._measures.v[idx]}}</span></div>
+        <div><igx-linear-gauge #gauge height="60px" width="100%" isScaleInverted=true /></div>
+    </div>
+</div>

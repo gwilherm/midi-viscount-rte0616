@@ -1,0 +1,30 @@
+.spinner-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-container {
+  display: inline-block;
+  position: relative;
+}
+
+/* mat-warn not working... */
+::ng-deep .mat-mdc-snack-bar-container.error-snackbar {
+  --mdc-snackbar-container-color: #FFA000;
+  --mat-mdc-snack-bar-button-color: #000;
+  --mdc-snackbar-supporting-text-color: #000;
+}
+
+.splash {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
