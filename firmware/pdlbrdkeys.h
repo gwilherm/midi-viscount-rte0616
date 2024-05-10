@@ -1,6 +1,18 @@
 #ifndef PDLBRD_KEYS_H
 #define PDLBRD_KEYS_H
 
+#define NB_PIN 8
+
+typedef enum
+{
+	PDLBRD_NO_SEG = -1,
+	PDLBRD_SEG_1,
+	PDLBRD_SEG_2,
+	PDLBRD_SEG_3,
+	PDLBRD_SEG_4,
+	PDLBRD_NB_SEG
+} pdlbrd_seg_t;
+
 typedef enum
 {
 	PDLBRD_KEY_C1,
@@ -34,6 +46,6 @@ typedef enum
 	PDLBRD_NB_KEYS,
 } pdlbrd_key_t;
 
-extern const char* PDLBRD_KEY_STR[];
-
+extern const char* PDLBRD_KEY_STR[PDLBRD_NB_KEYS];
+extern const pdlbrd_key_t PDLBRD_KEY_MAP[PDLBRD_NB_SEG][NB_PIN];
 #endif // PDLBRD_KEYS_H

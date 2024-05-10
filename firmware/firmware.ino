@@ -43,6 +43,7 @@ typedef enum {
 #define MIN_OCTAVE 0
 #define MAX_OCTAVE 6
 
+#define NB_SEGMENT 4
 #define DEFAULT_VSEG1 933
 #define DEFAULT_VSEG2 625
 #define DEFAULT_VSEG3 442
@@ -53,7 +54,6 @@ typedef enum {
 // #define DEFAULT_VSEG4 14
 #define DEFAULT_MARGIN 50
 
-#define NB_PIN 8
 uint8_t pin[NB_PIN] = {A0, A1, A2, A3, A6, A7, A8, A9};
 
 uint8_t channel = DEFAULT_MIDI_CHANNEL;
@@ -62,12 +62,16 @@ uint8_t velocity = 127;
 uint16_t vSeg[] = { DEFAULT_VSEG1, DEFAULT_VSEG2, DEFAULT_VSEG3, DEFAULT_VSEG4 };
 uint16_t margin = DEFAULT_MARGIN;
 
+int8_t pinSegment[NB_PIN] = {	PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG,
+								PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG };
+int8_t lastPinSegment[NB_PIN] = {	PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG,
+									PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG };
+unsigned long lastTick[NB_PIN] = {};
+
 pdlbrd_key_t currentKey = PDLBRD_NO_KEY_PRESSED;
-pdlbrd_key_t newKey = currentKey;
 
 pdlbrd_mode_t currentMode = MODE_STANDARD;
 
-unsigned long lastTick = 0;
 
 void handleSysEx(uint8_t* array, unsigned size);
 
@@ -105,11 +109,7 @@ void loop()
 	}
 #endif
 
-	unsigned long time = millis();
-	if ((time - lastTick) > 75) {
-		processStandardMode(val);
-		lastTick = time;
-	}
+	processStandardMode(val);
 
 	if (currentMode == MODE_MEASURE)
 		processMeasureMode(val);
@@ -119,64 +119,50 @@ void loop()
 
 void processStandardMode(int* val)
 {
-	if (approxEquals(vSeg[3], val[2]))
-		newKey = PDLBRD_KEY_D3;
-	else if (approxEquals(vSeg[3], val[1]))
-		newKey = PDLBRD_KEY_CS3;
-	else if (approxEquals(vSeg[3], val[0]))
-		newKey = PDLBRD_KEY_C3;
-	else if (approxEquals(vSeg[2], val[7]))
-		newKey = PDLBRD_KEY_B2;
-	else if (approxEquals(vSeg[2], val[6]))
-		newKey = PDLBRD_KEY_AS2;
-	else if (approxEquals(vSeg[2], val[5]))
-		newKey = PDLBRD_KEY_A2;
-	else if (approxEquals(vSeg[2], val[4]))
-		newKey = PDLBRD_KEY_GS2;
-	else if (approxEquals(vSeg[2], val[3]))
-		newKey = PDLBRD_KEY_G2;
-	else if (approxEquals(vSeg[2], val[2]))
-		newKey = PDLBRD_KEY_FS2;
-	else if (approxEquals(vSeg[2], val[1]))
-		newKey = PDLBRD_KEY_F2;
-	else if (approxEquals(vSeg[2], val[0]))
-		newKey = PDLBRD_KEY_E2;
-	else if (approxEquals(vSeg[1], val[7]))
-		newKey = PDLBRD_KEY_DS2;
-	else if (approxEquals(vSeg[1], val[6]))
-		newKey = PDLBRD_KEY_D2;
-	else if (approxEquals(vSeg[1], val[5]))
-		newKey = PDLBRD_KEY_CS2;
-	else if (approxEquals(vSeg[1], val[4]))
-		newKey = PDLBRD_KEY_C2;
-	else if (approxEquals(vSeg[1], val[3]))
-		newKey = PDLBRD_KEY_B1;
-	else if (approxEquals(vSeg[1], val[2]))
-		newKey = PDLBRD_KEY_AS1;
-	else if (approxEquals(vSeg[1], val[1]))
-		newKey = PDLBRD_KEY_A1;
-	else if (approxEquals(vSeg[1], val[0]))
-		newKey = PDLBRD_KEY_GS1;
-	else if (approxEquals(vSeg[0], val[7]))
-		newKey = PDLBRD_KEY_G1;
-	else if (approxEquals(vSeg[0], val[6]))
-		newKey = PDLBRD_KEY_FS1;
-	else if (approxEquals(vSeg[0], val[5]))
-		newKey = PDLBRD_KEY_F1;
-	else if (approxEquals(vSeg[0], val[4]))
-		newKey = PDLBRD_KEY_E1;
-	else if (approxEquals(vSeg[0], val[3]))
-		newKey = PDLBRD_KEY_DS1;
-	else if (approxEquals(vSeg[0], val[2]))
-		newKey = PDLBRD_KEY_D1;
-	else if (approxEquals(vSeg[0], val[1]))
-		newKey = PDLBRD_KEY_CS1;
-	else if (approxEquals(vSeg[0], val[0]))
-		newKey = PDLBRD_KEY_C1;
-	else
-		newKey = PDLBRD_NO_KEY_PRESSED;
+	pdlbrd_key_t newKey = PDLBRD_NO_KEY_PRESSED;
+	int8_t newPinSegment[NB_PIN] = { 	PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG,
+										PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG };
+	for (uint8_t pin = 0; pin < NB_PIN; pin++)
+	{
+		for (uint8_t seg = PDLBRD_SEG_1; seg < PDLBRD_NB_SEG; seg++)
+		{
+			if (approxEquals(vSeg[seg], val[pin]))
+			{
+				newPinSegment[pin] = seg;
+			}
+		}
 
-#if defined (FW_DEBUG_VERBOSE)
+		if (newPinSegment[pin] != lastPinSegment[pin])
+			lastTick[pin] = millis();
+
+		if ((millis() - lastTick[pin]) > 50)
+		{
+			if (pinSegment[pin] != newPinSegment[pin])
+				pinSegment[pin] = newPinSegment[pin];
+		}
+
+#if defined (FW_DEBUG_VERBOSE_2)
+	    Serial.print(pinSegment[pin]);
+	    Serial.print(" ");
+#endif
+		lastPinSegment[pin] = newPinSegment[pin];
+	}
+	Serial.println();
+
+	for (uint8_t seg = 0; seg < PDLBRD_NB_SEG; seg++)
+	{
+		for (uint8_t pin = 0; pin < NB_PIN; pin++)
+		{
+			if (pinSegment[pin] != PDLBRD_NO_SEG)
+			{
+				pdlbrd_key_t k = PDLBRD_KEY_MAP[pinSegment[pin]][pin];
+				if ((newKey == PDLBRD_NO_KEY_PRESSED) || (k != PDLBRD_NO_KEY_PRESSED) && (k > newKey))
+					newKey = k;
+			}
+		}
+	}
+
+#if defined (FW_DEBUG_VERBOSE_3)
     Serial.println(PDLBRD_KEY_STR[newKey]);
 #endif
 
