@@ -30,7 +30,8 @@ typedef enum
 	PDLBRD_KEY_C3,
 	PDLBRD_KEY_CS3,
 	PDLBRD_KEY_D3,
-	PDLBRD_KEY_NOT_PRESSED
+	PDLBRD_NO_KEY_PRESSED,
+	PDLBRD_NB_KEYS,
 } pdlbrd_key_t;
 
 extern const char* PDLBRD_KEY_STR[];

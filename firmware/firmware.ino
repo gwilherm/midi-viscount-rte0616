@@ -43,14 +43,14 @@ typedef enum {
 #define MIN_OCTAVE 0
 #define MAX_OCTAVE 6
 
-//#define DEFAULT_VSEG1 933
-//#define DEFAULT_VSEG2 625
-//#define DEFAULT_VSEG3 442
-//#define DEFAULT_VSEG4 130
-#define DEFAULT_VSEG1 830
-#define DEFAULT_VSEG2 512
-#define DEFAULT_VSEG3 326
-#define DEFAULT_VSEG4 14
+#define DEFAULT_VSEG1 933
+#define DEFAULT_VSEG2 625
+#define DEFAULT_VSEG3 442
+#define DEFAULT_VSEG4 130
+// #define DEFAULT_VSEG1 830
+// #define DEFAULT_VSEG2 512
+// #define DEFAULT_VSEG3 326
+// #define DEFAULT_VSEG4 14
 #define DEFAULT_MARGIN 50
 
 #define NB_PIN 8
@@ -62,10 +62,12 @@ uint8_t velocity = 127;
 uint16_t vSeg[] = { DEFAULT_VSEG1, DEFAULT_VSEG2, DEFAULT_VSEG3, DEFAULT_VSEG4 };
 uint16_t margin = DEFAULT_MARGIN;
 
-pdlbrd_key_t currentKey = PDLBRD_KEY_NOT_PRESSED;
+pdlbrd_key_t currentKey = PDLBRD_NO_KEY_PRESSED;
 pdlbrd_key_t newKey = currentKey;
 
 pdlbrd_mode_t currentMode = MODE_STANDARD;
+
+unsigned long lastTick = 0;
 
 void handleSysEx(uint8_t* array, unsigned size);
 
@@ -92,7 +94,7 @@ void loop()
 {
 	int val[NB_PIN] = {0};
 	for (int i = 0; i < NB_PIN; i++)
-    {
+	{
 		val[i] = analogRead(pin[i]);
 #if defined (FW_DEBUG_VERBOSE)
 		Serial.print(val[i]);
@@ -100,19 +102,17 @@ void loop()
 	}
 	Serial.println();
 #else
-    }
+	}
 #endif
 
-	switch (currentMode) {
-	case MODE_STANDARD:
+	unsigned long time = millis();
+	if ((time - lastTick) > 75) {
 		processStandardMode(val);
-		break;
-	case MODE_MEASURE:
-		processMeasureMode(val);
-		break;
-	default:
-		break;
+		lastTick = time;
 	}
+
+	if (currentMode == MODE_MEASURE)
+		processMeasureMode(val);
 
 	MIDI.read();
 }
@@ -174,16 +174,16 @@ void processStandardMode(int* val)
 	else if (approxEquals(vSeg[0], val[0]))
 		newKey = PDLBRD_KEY_C1;
 	else
-		newKey = PDLBRD_KEY_NOT_PRESSED;
+		newKey = PDLBRD_NO_KEY_PRESSED;
 
 #if defined (FW_DEBUG_VERBOSE)
     Serial.println(PDLBRD_KEY_STR[newKey]);
 #endif
 
 	if (currentKey != newKey) {
-		if (currentKey != PDLBRD_KEY_NOT_PRESSED)
+		if (currentKey != PDLBRD_NO_KEY_PRESSED)
 			MIDI.sendNoteOff((octave*TONES_IN_OCTAVE)+currentKey, 0, channel);
-		if (newKey != PDLBRD_KEY_NOT_PRESSED)
+		if (newKey != PDLBRD_NO_KEY_PRESSED)
 			MIDI.sendNoteOn((octave*TONES_IN_OCTAVE)+newKey, velocity, channel);
 		currentKey = newKey;
 	}
@@ -213,7 +213,7 @@ void initSysexIdentResponse()
 
 void processMeasureMode(int* val)
 {
-	uint8_t bytes[5+(8*2)] = { DEVICE_ID, CMD_MEASURE, SUBCMD_PUSH };
+	uint8_t bytes[5+(8*2)] = { DEVICE_ID, CMD_MEASURES, SUBCMD_PUSH };
 	for (int i = 0; i < 8; i++)
 	{
 		bytes[5+(i*2)] = (val[i] >> 7) & 0x7F;
