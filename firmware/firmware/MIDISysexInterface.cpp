@@ -1,4 +1,5 @@
 #include "MIDISysexInterface.h"
+#include "CalibrationConfig.h"
 
 #include <stdint.h>
 
@@ -16,7 +17,6 @@ uint8_t SYSEX_REQ_PREFIX[] = { 0xf0, DEVICE_ID };
 uint8_t SYSEX_IDENT_REQ[]  = { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 }; // f1,      f2,     p1, p2,   v1,   v2,   v3,   v4
 uint8_t SYSEX_IDENT_RES[]  = {       0x7e, 0x01, 0x06, 0x02, MANU_ID, 0x00, MANU_ID, PRODUCT_ID, 0x00, 0x00, 0x00, 0x00 };
 
-
 typedef enum {
 	SUBCMD_GET = 1,
 	SUBCMD_SET,
@@ -33,16 +33,14 @@ bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size)
 	return true;
 }
 
-MIDISysexInterface::MIDISysexInterface(MIDI_NAMESPACE::MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport>& usbMidiInterface, MidiConfig& config):
+MIDISysexInterface::MIDISysexInterface(MIDI_NAMESPACE::MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport>& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig):
 	_usbMidiInterface(usbMidiInterface),
-	_config(config)
+	_midiConfig(midiConfig),
+	_calibrationConfig(calibrationConfig),
+	_shouldSendMeasures(false)
 {
     initSysexIdentResponse();
 }
-
-MIDISysexInterface::~MIDISysexInterface()
-{}
-
 
 void MIDISysexInterface::initSysexIdentResponse()
 {
@@ -90,22 +88,22 @@ void MIDISysexInterface::handleSysEx(uint8_t* array, unsigned size)
 }
 
 
-void MIDISysexInterface::handleChangeMode(const pdlbrd_mode_t mode)
+void MIDISysexInterface::handleMeasuresRequest(const pdlbrd_measures_request_t measuresRequest)
 {
-	if ((mode > 0) && (mode < MODE_MAX)) {
 #if defined (FW_DEBUG)
-		Serial.print("Handle change mode ");
-		Serial.println(mode);
+		Serial.print("Handle Measures Request ");
+		Serial.println(measuresRequest);
 #endif
-// TODO:
-		// currentMode = mode;
+
+	switch (measuresRequest) {
+	case MEASURES_ON:
+		_shouldSendMeasures = true;
+		break;
+	case MEASURES_OFF:
+	default:
+		_shouldSendMeasures = false;
+		break;
 	}
-#if defined (FW_DEBUG)
-	else {
-		Serial.print("Unknown mode ");
-		Serial.println(mode);
-	}
-#endif
 }
 
 void MIDISysexInterface::handleGetConfiguration()
@@ -113,7 +111,7 @@ void MIDISysexInterface::handleGetConfiguration()
 #if defined (FW_DEBUG)
 	Serial.println("handleGetConfiguration");
 #endif
-	uint8_t data[] = { DEVICE_ID, CMD_CONFIGURATION, SUBCMD_GET, _config.getChannel(), _config.getOctave() };
+	uint8_t data[] = { DEVICE_ID, CMD_CONFIGURATION, SUBCMD_GET, _midiConfig.getChannel(), _midiConfig.getOctave() };
 	_usbMidiInterface.sendSysEx(sizeof(data), data);
 }
 
@@ -124,10 +122,10 @@ void MIDISysexInterface::handleSetConfiguration(uint8_t* data)
 #endif
 
 	if ((data[0] >= MIN_MIDI_CHANNEL) && (data[0] <= MAX_MIDI_CHANNEL))
-		_config.setChannel(data[0]);
+		_midiConfig.setChannel(data[0]);
 
 	if ((data[1] >= MIN_OCTAVE) && (data[0] <= MAX_OCTAVE))
-		_config.setOctave(data[1]);
+		_midiConfig.setOctave(data[1]);
 
 	// Acknowledge
 	handleGetConfiguration();
@@ -140,12 +138,12 @@ void MIDISysexInterface::handleGetCalibration()
 #endif
 	//                                                             MARGIN       VSEG1       VSEG2       VSEG3       VSEG4
 	uint8_t data[] = { DEVICE_ID, CMD_CALIBRATION, SUBCMD_GET, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-	data[5] = (margin >> 7) & 0x7F;
-	data[6] =  margin & 0x7F;
+	data[5] = (_calibrationConfig.getMargin() >> 7) & 0x7F;
+	data[6] =  _calibrationConfig.getMargin() & 0x7F;
 
 	for (int i = 0; i < 4; i++) {
-		data[7+(i*2)] = (vSeg[i] >> 7) & 0x7F;
-		data[8+(i*2)] =  vSeg[i] & 0x7F;
+		data[7+(i*2)] = (_calibrationConfig.getVSeg(i) >> 7) & 0x7F;
+		data[8+(i*2)] =  _calibrationConfig.getVSeg(i) & 0x7F;
 	}
 
 	_usbMidiInterface.sendSysEx(sizeof(data), data);
@@ -157,15 +155,15 @@ void MIDISysexInterface::handleSetCalibration(uint8_t* data)
 	Serial.println("handlesetCalibration");
 #endif
 
-	margin = ((data[0] << 7) & 0x7F) + (data[1] & 0x7F);
+	_calibrationConfig.setMargin(((data[0] << 7) & 0x7F) + (data[1] & 0x7F));
 
 	for (int i = 0; i < 4; i++) {
-		vSeg[i] = ((data[2+(i*2)] & 0x7F) << 7) + (data[3+(i*2)] & 0x7F);
+		_calibrationConfig.setVSeg(i, ((data[2+(i*2)] & 0x7F) << 7) + (data[3+(i*2)] & 0x7F));
 #if defined (FW_DEBUG)
 	Serial.print("SEG");
 	Serial.print(i+1);
 	Serial.print(": ");
-	Serial.println(vSeg[i]);
+	Serial.println(_calibrationConfig.getVSeg(i));
 #endif
 	}
 
@@ -201,9 +199,9 @@ void MIDISysexInterface::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* da
 				handleSetCalibration(&data[1]);
 		}
 		break;
-	case CMD_CHANGE_MODE:
+	case CMD_MEASURES_REQUEST:
 		if (data_size > 0)
-			handleChangeMode(static_cast<pdlbrd_mode_t>(data[0]));
+			handleMeasuresRequest(static_cast<pdlbrd_measures_request_t>(data[0]));
 		break;
 	default:
 #if defined (FW_DEBUG)

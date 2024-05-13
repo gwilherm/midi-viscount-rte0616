@@ -8,26 +8,17 @@
 USBMIDI_CREATE_DEFAULT_INSTANCE();
 
 MidiConfig gMidiConfig;
-MIDISysexInterface gSysexInterface(MIDI, gMidiConfig);
+CalibrationConfig gCalibrationConfig;
+MIDISysexInterface gSysexInterface(MIDI, gMidiConfig, gCalibrationConfig);
 
 #define TONES_IN_OCTAVE 12
 
-#define DEFAULT_VSEG1 933
-#define DEFAULT_VSEG2 625
-#define DEFAULT_VSEG3 442
-#define DEFAULT_VSEG4 130
-// #define DEFAULT_VSEG1 830
-// #define DEFAULT_VSEG2 512
-// #define DEFAULT_VSEG3 326
-// #define DEFAULT_VSEG4 14
-#define DEFAULT_MARGIN 50
 
 uint8_t pin[NB_PIN] = {A0, A1, A2, A3, A6, A7, A8, A9};
 
 
 uint8_t velocity = 127;
-uint16_t vSeg[] = { DEFAULT_VSEG1, DEFAULT_VSEG2, DEFAULT_VSEG3, DEFAULT_VSEG4 };
-uint16_t margin = DEFAULT_MARGIN;
+
 
 int8_t pinSegment[NB_PIN] = {	PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG,
 								PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG };
@@ -37,15 +28,11 @@ unsigned long lastTick[NB_PIN] = {};
 
 pdlbrd_key_t currentKey = PDLBRD_NO_KEY_PRESSED;
 
-pdlbrd_mode_t currentMode = MODE_STANDARD;
-
-
 void handleSysEx(uint8_t* array, unsigned size);
 
 bool approxEquals(int32_t ref, int32_t val);
 bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size);
-void processStandardMode(int* val);
-void processMeasureMode(int* val);
+void process(int* val);
 
 void setup()
 {
@@ -77,15 +64,15 @@ void loop()
 	}
 #endif
 
-	processStandardMode(val);
+	process(val);
 
-	if (currentMode == MODE_MEASURE)
-		processMeasureMode(val);
+	if (gSysexInterface.shouldSendMeasures())
+		gSysexInterface.sendMesures(val, NB_PIN);
 
 	MIDI.read();
 }
 
-void processStandardMode(int* val)
+void process(int* val)
 {
 	pdlbrd_key_t newKey = PDLBRD_NO_KEY_PRESSED;
 	int8_t newPinSegment[NB_PIN] = { 	PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG,
@@ -94,7 +81,7 @@ void processStandardMode(int* val)
 	{
 		for (uint8_t seg = PDLBRD_SEG_1; seg < PDLBRD_NB_SEG; seg++)
 		{
-			if (approxEquals(vSeg[seg], val[pin]))
+			if (approxEquals(gCalibrationConfig.getVSeg(seg), val[pin]))
 			{
 				newPinSegment[pin] = seg;
 			}
@@ -147,6 +134,5 @@ void processStandardMode(int* val)
 
 bool approxEquals(int32_t ref, int32_t val)
 {
-	return ((val >= ref-margin) && (val <= ref+margin));
+	return ((val >= ref - gCalibrationConfig.getMargin()) && (val <= ref + gCalibrationConfig.getMargin()));
 }
-
