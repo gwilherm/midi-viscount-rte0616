@@ -5,6 +5,7 @@
 #include "CalibrationConfig.h"
 #include "MIDIConfig.h"
 #include "MIDISysexInterface.h"
+#include "HardwareInterface.h"
 
 class RTE0616Pedalboard
 {
@@ -16,13 +17,12 @@ public:
     void loop();
 
 protected:
-    void process(int* val);
-    bool approxEquals(int32_t ref, int32_t val);
+    void process(int8_t* pinSegment);
 
 public:
-
     static MidiConfig _midiConfig;
     static CalibrationConfig _calibrationConfig;
+    static HardwareInterface _hwInterface;
     static MIDISysexInterface _sysexInterface;
 };
 
