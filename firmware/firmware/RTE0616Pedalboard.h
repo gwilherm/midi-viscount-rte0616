@@ -20,6 +20,10 @@ protected:
     bool approxEquals(int32_t ref, int32_t val);
 
 public:
+
+    static MidiConfig _midiConfig;
+    static CalibrationConfig _calibrationConfig;
+    static MIDISysexInterface _sysexInterface;
 };
 
 #endif

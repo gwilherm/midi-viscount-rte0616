@@ -1,13 +1,14 @@
 #include "RTE0616Pedalboard.h"
 
 #include <Arduino.h>
-#include <USB-MIDI.h>
-
+#include "CalibrationConfig.h"
+#include "MIDIConfig.h"
+#include "MIDISysexInterface.h"
 #include "pdlbrdkeys.h"
 
 
+#include <USB-MIDI.h>
 USBMIDI_CREATE_DEFAULT_INSTANCE();
-
 
 #define TONES_IN_OCTAVE 12
 
@@ -32,10 +33,9 @@ bool approxEquals(int32_t ref, int32_t val);
 bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size);
 void process(int* val);
 
-
-MidiConfig _midiConfig;
-CalibrationConfig _calibrationConfig;
-MIDISysexInterface _sysexInterface(MIDI, _midiConfig, _calibrationConfig);
+MidiConfig RTE0616Pedalboard::_midiConfig;
+CalibrationConfig RTE0616Pedalboard::_calibrationConfig;
+MIDISysexInterface RTE0616Pedalboard::_sysexInterface(MIDI, RTE0616Pedalboard::_midiConfig, RTE0616Pedalboard::_calibrationConfig);
 
 RTE0616Pedalboard::RTE0616Pedalboard()
 {}
