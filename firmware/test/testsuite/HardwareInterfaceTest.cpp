@@ -106,8 +106,8 @@ TEST_F(HardwareInterfaceTest, loop_segmented_values_first_loop)
 
 TEST_F(HardwareInterfaceTest, loop_segmented_values_50ms)
 {
-    ON_CALL(*_arduinoMock, millis())
-        .WillByDefault(::testing::Return(0));
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(0));
 
     EXPECT_CALL(*_arduinoMock, analogRead)
         .WillOnce(::testing::Return(15))
@@ -121,8 +121,8 @@ TEST_F(HardwareInterfaceTest, loop_segmented_values_50ms)
 
     _hwInterface.loop();
 
-    ON_CALL(*_arduinoMock, millis())
-        .WillByDefault(::testing::Return(50));
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(50));
 
     EXPECT_CALL(*_arduinoMock, analogRead)
         .WillOnce(::testing::Return(15))
@@ -151,8 +151,8 @@ TEST_F(HardwareInterfaceTest, loop_segmented_values_50ms)
 
 TEST_F(HardwareInterfaceTest, loop_segmented_values_51ms)
 {
-    ON_CALL(*_arduinoMock, millis())
-        .WillByDefault(::testing::Return(0));
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(0));
 
     EXPECT_CALL(*_arduinoMock, analogRead)
         .WillOnce(::testing::Return(15))
@@ -166,8 +166,8 @@ TEST_F(HardwareInterfaceTest, loop_segmented_values_51ms)
 
     _hwInterface.loop();
 
-    ON_CALL(*_arduinoMock, millis())
-        .WillByDefault(::testing::Return(51));
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(51));
 
     EXPECT_CALL(*_arduinoMock, analogRead)
         .WillOnce(::testing::Return(15))
