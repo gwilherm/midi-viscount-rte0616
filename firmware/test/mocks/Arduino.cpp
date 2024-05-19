@@ -1,18 +1,18 @@
 #include "Arduino.h"
-
 #include "ArduinoMock.h"
+#include "ArduinoTestFixture.h"
 
 void pinMode(uint8_t pin, uint8_t mode)
 {
-    ArduinoMock::getInstance().pinMode(pin, mode);
+    ArduinoTestFixture::_arduinoMock->pinMode(pin, mode);
 }
 
 int analogRead(uint8_t pin)
 {
-    return ArduinoMock::getInstance().analogRead(pin);
+    return ArduinoTestFixture::_arduinoMock->analogRead(pin);
 }
 
 unsigned long millis(void)
 {
-    return ArduinoMock::getInstance().millis();
+    return ArduinoTestFixture::_arduinoMock->millis();
 }

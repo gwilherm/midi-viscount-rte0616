@@ -3,4 +3,5 @@ project(rte0616-firmware)
 
 set(firmware_src_dir ${CMAKE_CURRENT_SOURCE_DIR}/firmware)
 
+enable_testing()
 add_subdirectory(test)
