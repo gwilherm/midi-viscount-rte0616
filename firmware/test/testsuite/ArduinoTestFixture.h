@@ -1,5 +1,5 @@
-#ifndef TEST_FIXTURE_H
-#define TEST_FIXTURE_H
+#ifndef ARDUINO_TEST_FIXTURE_H
+#define ARDUINO_TEST_FIXTURE_H
 
 #include "ArduinoMock.h"
 

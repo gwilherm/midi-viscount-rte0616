@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#include "SerialPrinter.h"
+
 #define INPUT_PULLUP 1
 
 enum AnalogPin {

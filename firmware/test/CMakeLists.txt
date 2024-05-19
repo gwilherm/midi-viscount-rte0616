@@ -44,9 +44,11 @@ set(mocks_dir ${CMAKE_CURRENT_SOURCE_DIR}/mocks)
 add_executable(hw_int_test
         ${firmware_src_dir}/HardwareInterface.cpp
         ${mocks_dir}/Arduino.cpp
+        ${mocks_dir}/SerialPrinter.cpp
         ${testsuite}/HardwareInterfaceTest.cpp)
 target_include_directories(hw_int_test PUBLIC
         ${firmware_src_dir}
         ${testsuite}
         ${mocks_dir})
+target_compile_options(hw_int_test PRIVATE -g -DFW_DEBUG_VERBOSE_HWINT_PROCESS -DFW_DEBUG_VERBOSE_HWINT_READ)
 configure_test(hw_int_test)

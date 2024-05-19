@@ -1,10 +1,13 @@
 #include "gtest/gtest.h"
 
 #include "ArduinoMock.h"
+#include "SerialPrinter.h"
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
 #include "HardwareInterface.h"
 #include "ArduinoTestFixture.h"
+
+SerialPrinter Serial;
 
 class HardwareInterfaceTest : public ArduinoTestFixture
 {
