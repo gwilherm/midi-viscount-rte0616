@@ -1,7 +1,5 @@
 #include "HardwareInterface.h"
 
-#include <Arduino.h>
-
 HardwareInterface::HardwareInterface(CalibrationConfig& calibrationConfig):
 	_calibrationConfig(calibrationConfig)
 {}

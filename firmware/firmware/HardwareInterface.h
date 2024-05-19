@@ -4,6 +4,8 @@
 #include "CalibrationConfig.h"
 #include "pdlbrdkeys.h"
 
+#include <Arduino.h>
+
 class HardwareInterface {
 public:
     HardwareInterface(CalibrationConfig& calibrationConfig);
