@@ -5,7 +5,11 @@
 
 #include "SerialPrinter.h"
 
-#define INPUT_PULLUP 1
+enum PinMode {
+    INPUT,
+    OUTPUT,
+    INPUT_PULLUP
+};
 
 enum AnalogPin {
     A0,
