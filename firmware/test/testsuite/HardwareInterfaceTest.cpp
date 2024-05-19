@@ -194,3 +194,155 @@ TEST_F(HardwareInterfaceTest, loop_segmented_values_51ms)
     EXPECT_EQ(segmentedValues[6], PDLBRD_SEG_1);
     EXPECT_EQ(segmentedValues[7], PDLBRD_NO_SEG);
 }
+
+TEST_F(HardwareInterfaceTest, loop_segmented_values_release_50ms)
+{
+    int8_t* segmentedValues;
+    int millis = 0;
+
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(millis));
+
+    EXPECT_CALL(*_arduinoMock, analogRead)
+        .WillOnce(::testing::Return(15))
+        .WillOnce(::testing::Return(255))
+        .WillOnce(::testing::Return(326))
+        .WillOnce(::testing::Return(511))
+        .WillOnce(::testing::Return(639))
+        .WillOnce(::testing::Return(767))
+        .WillOnce(::testing::Return(850))
+        .WillOnce(::testing::Return(1023));
+
+    _hwInterface.loop();
+
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(millis+=51));
+
+    EXPECT_CALL(*_arduinoMock, analogRead)
+        .WillOnce(::testing::Return(15))
+        .WillOnce(::testing::Return(255))
+        .WillOnce(::testing::Return(326))
+        .WillOnce(::testing::Return(511))
+        .WillOnce(::testing::Return(639))
+        .WillOnce(::testing::Return(767))
+        .WillOnce(::testing::Return(850))
+        .WillOnce(::testing::Return(1023));
+
+    _hwInterface.loop();
+
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(millis));
+
+    EXPECT_CALL(*_arduinoMock, analogRead)
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023));
+
+    _hwInterface.loop();
+
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(millis+=50));
+
+    EXPECT_CALL(*_arduinoMock, analogRead)
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023));
+
+    _hwInterface.loop();
+
+    segmentedValues = _hwInterface.getSegmentedValues();
+    EXPECT_EQ(segmentedValues[0], PDLBRD_SEG_4);
+    EXPECT_EQ(segmentedValues[1], PDLBRD_NO_SEG);
+    EXPECT_EQ(segmentedValues[2], PDLBRD_SEG_3);
+    EXPECT_EQ(segmentedValues[3], PDLBRD_SEG_2);
+    EXPECT_EQ(segmentedValues[4], PDLBRD_NO_SEG);
+    EXPECT_EQ(segmentedValues[5], PDLBRD_NO_SEG);
+    EXPECT_EQ(segmentedValues[6], PDLBRD_SEG_1);
+    EXPECT_EQ(segmentedValues[7], PDLBRD_NO_SEG);
+}
+
+TEST_F(HardwareInterfaceTest, loop_segmented_values_release_51ms)
+{
+    int8_t* segmentedValues;
+    int millis = 0;
+
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(millis));
+
+    EXPECT_CALL(*_arduinoMock, analogRead)
+        .WillOnce(::testing::Return(15))
+        .WillOnce(::testing::Return(255))
+        .WillOnce(::testing::Return(326))
+        .WillOnce(::testing::Return(511))
+        .WillOnce(::testing::Return(639))
+        .WillOnce(::testing::Return(767))
+        .WillOnce(::testing::Return(850))
+        .WillOnce(::testing::Return(1023));
+
+    _hwInterface.loop();
+
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(millis+=51));
+
+    EXPECT_CALL(*_arduinoMock, analogRead)
+        .WillOnce(::testing::Return(15))
+        .WillOnce(::testing::Return(255))
+        .WillOnce(::testing::Return(326))
+        .WillOnce(::testing::Return(511))
+        .WillOnce(::testing::Return(639))
+        .WillOnce(::testing::Return(767))
+        .WillOnce(::testing::Return(850))
+        .WillOnce(::testing::Return(1023));
+
+    _hwInterface.loop();
+
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(millis));
+
+    EXPECT_CALL(*_arduinoMock, analogRead)
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023));
+
+    _hwInterface.loop();
+
+    EXPECT_CALL(*_arduinoMock, millis())
+        .WillRepeatedly(::testing::Return(millis+=51));
+
+    EXPECT_CALL(*_arduinoMock, analogRead)
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023))
+        .WillOnce(::testing::Return(1023));
+
+    _hwInterface.loop();
+
+    segmentedValues = _hwInterface.getSegmentedValues();
+    EXPECT_EQ(segmentedValues[0], PDLBRD_NO_SEG);
+    EXPECT_EQ(segmentedValues[1], PDLBRD_NO_SEG);
+    EXPECT_EQ(segmentedValues[2], PDLBRD_NO_SEG);
+    EXPECT_EQ(segmentedValues[3], PDLBRD_NO_SEG);
+    EXPECT_EQ(segmentedValues[4], PDLBRD_NO_SEG);
+    EXPECT_EQ(segmentedValues[5], PDLBRD_NO_SEG);
+    EXPECT_EQ(segmentedValues[6], PDLBRD_NO_SEG);
+    EXPECT_EQ(segmentedValues[7], PDLBRD_NO_SEG);
+}
