@@ -28,7 +28,7 @@ public:
 
 public:
     void handleSysEx(uint8_t* array, unsigned size);
-    void sendMesures(int* val, int nbVal);
+    void sendMeasures(int* val, int nbVal);
     inline bool shouldSendMeasures() { return _shouldSendMeasures; };
 
 protected:

@@ -43,7 +43,7 @@ void RTE0616Pedalboard::loop()
 	process(_hwInterface.getSegmentedValues());
 
 	if (_sysexInterface.shouldSendMeasures())
-		_sysexInterface.sendMesures(_hwInterface.getRawValues(), NB_PIN);
+		_sysexInterface.sendMeasures(_hwInterface.getRawValues(), NB_PIN);
 
 	_midiInterface.loop();
 }

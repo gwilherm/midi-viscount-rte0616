@@ -51,7 +51,7 @@ TEST_F(MIDISysexInterfaceTest, handle_ident_msg)
 TEST_F(MIDISysexInterfaceTest, handle_get_midi_config)
 {
     uint8_t req[] = { 0xF0, 0x31, 0x06, 0x16, 0x01, 0x01, 0xF7 };
-                                                            // Default values
+                                                             // Default values
     const uint8_t exp_resp1[] = { 0x31, 0x06, 0x16, 0x01, 0x01, 1, 3 };
 
     using namespace ::testing;
@@ -88,7 +88,7 @@ TEST_F(MIDISysexInterfaceTest, handle_set_midi_config)
 TEST_F(MIDISysexInterfaceTest, handle_get_calibration_config)
 {
     uint8_t req[] = { 0xF0, 0x31, 0x06, 0x16, 0x02, 0x01, 0xF7 };
-                                                            // Default values
+                                                             // Default values
     const uint8_t exp_resp1[] = { 0x31, 0x06, 0x16, 0x02, 0x01, 0, 50, 6, 62, 4, 0, 2, 70, 0, 14 };
     // const uint8_t exp_resp1[] = { 0x31, 0x06, 0x16, 0x02, 0x01, 0, 50, 7, 37, 4, 113, 3, 58, 1, 2 };
 
@@ -128,4 +128,23 @@ TEST_F(MIDISysexInterfaceTest, handle_set_calibration_config)
     EXPECT_EQ(_calibrationConfig.getVSeg(1), 2);
     EXPECT_EQ(_calibrationConfig.getVSeg(2), 3);
     EXPECT_EQ(_calibrationConfig.getVSeg(3), 4);
+}
+
+TEST_F(MIDISysexInterfaceTest, handle_measures_request)
+{
+    uint8_t req[] = { 0xF0, 0x31, 0x06, 0x16, 0x04, 0x02, 0xF7 };
+    _sysexInterface.handleSysEx(req, sizeof(req));
+    EXPECT_EQ(_sysexInterface.shouldSendMeasures(), true);
+}
+
+TEST_F(MIDISysexInterfaceTest, send_measures)
+{
+    int measures[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    const uint8_t exp_resp[] = { 0x31, 0x06, 0x16, 0x03, 0x03, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8 };
+
+    using namespace ::testing;
+    EXPECT_CALL(_usbMidiMock, sendSysEx(_, _))
+    .WillOnce(Invoke(EXPECT_SYSEX(exp_resp)));
+
+    _sysexInterface.sendMeasures(measures, 8);
 }

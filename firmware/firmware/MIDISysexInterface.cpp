@@ -212,7 +212,7 @@ void MIDISysexInterface::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* da
 	}
 }
 
-void MIDISysexInterface::sendMesures(int* val, int nbVal)
+void MIDISysexInterface::sendMeasures(int* val, int nbVal)
 {
 	uint8_t bytes[5+(nbVal*2)] = { DEVICE_ID, CMD_MEASURES, SUBCMD_PUSH };
 	for (int i = 0; i < nbVal; i++)
