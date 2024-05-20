@@ -12,13 +12,21 @@ public:
     MidiConfig() : _channel(DEFAULT_MIDI_CHANNEL), _octave(DEFAULT_OCTAVE) {}
     virtual ~MidiConfig() = default;
 
-    uint8_t getChannel() { return _channel; };
-    void setChannel(uint8_t c) { _channel = c; };
-    uint8_t getOctave() { return _octave; };
-    void setOctave(uint8_t o) { _octave = o; };
+    inline uint8_t getChannel() { return _channel; };
+    inline void setChannel(uint8_t c) { _channel = c; };
+    inline uint8_t getOctave() { return _octave; };
+    inline void setOctave(uint8_t o) { _octave = o; };
+    inline void reset();
 
 private:
     uint8_t _channel;
     uint8_t _octave;
 };
+
+void MidiConfig::reset()
+{
+    _channel = DEFAULT_MIDI_CHANNEL;
+    _octave = DEFAULT_OCTAVE;
+}
+
 #endif

@@ -23,12 +23,12 @@ size_t SerialPrinter::println(void)
 
 size_t SerialPrinter::println(int v)
 {
-    std::cout << v;
+    std::cout << v << std::endl;
     return 0;
 }
 
 size_t SerialPrinter::println(const char* v)
 {
-    std::cout << v;
+    std::cout << v << std::endl;
     return 0;
 }
