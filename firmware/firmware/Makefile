@@ -6,7 +6,7 @@ FW_VERSION := 1.0.0
 FQBN := arduino:avr:micro
 PORT := /dev/ttyACM0
 BUILD := build
-FLAGS := -DFW_DEBUG -DFW_DEBUG_VERBOSE_2 -DFW_VERSION=\"$(FW_VERSION)\"
+FLAGS := -DFW_DEBUG -DFW_VERSION=\"$(FW_VERSION)\"
 USB_NAME := Viscount RTE0616
 
 ARDUINO := arduino-cli
