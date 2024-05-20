@@ -4,7 +4,8 @@
 
 #include "CalibrationConfig.h"
 #include "MIDIConfig.h"
-#include "MIDISysexInterface.h"
+#include "MIDINotesService.h"
+#include "MIDISysexService.h"
 #include "HardwareInterface.h"
 #include "USBMIDIInterface.h"
 
@@ -17,15 +18,13 @@ public:
     void setup();
     void loop();
 
-protected:
-    void process(int8_t* pinSegment);
-
 public:
     static MidiConfig _midiConfig;
     static CalibrationConfig _calibrationConfig;
     static HardwareInterface _hwInterface;
     static USBMIDIInterface _midiInterface;
-    static MIDISysexInterface _sysexInterface;
+    static MIDISysexService _sysexService;
+    static MIDINotesService _notesService;
 };
 
 #endif

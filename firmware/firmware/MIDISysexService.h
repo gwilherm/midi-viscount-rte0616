@@ -1,5 +1,5 @@
-#ifndef SYSEX_INTERFACE_H
-#define SYSEX_INTERFACE_H
+#ifndef SYSEX_SERVICE_H
+#define SYSEX_SERVICE_H
 
 #include <Arduino.h>
 
@@ -20,11 +20,11 @@ typedef enum {
 	MEASURES_ON
 } pdlbrd_measures_request_t;
 
-class MIDISysexInterface
+class MIDISysexService
 {
 public:
-    MIDISysexInterface(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig);
-    virtual ~MIDISysexInterface() = default;
+    MIDISysexService(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig);
+    virtual ~MIDISysexService() = default;
 
 public:
     void handleSysEx(uint8_t* array, unsigned size);

@@ -54,14 +54,29 @@ target_compile_options(hw_int_test PRIVATE -g -DFW_DEBUG_VERBOSE_HWINT_PROCESS -
 configure_test(hw_int_test)
 
 
-# MIDISysexInterface test
-add_executable(sysex_int_test
-        ${firmware_src_dir}/MIDISysexInterface.cpp
+# MIDISysexService test
+add_executable(sysex_service_test
+        ${firmware_src_dir}/MIDISysexService.cpp
         ${mocks_dir}/SerialPrinter.cpp
-        ${testsuite}/MIDISysexInterfaceTest.cpp)
-target_include_directories(sysex_int_test PUBLIC
+        ${testsuite}/MIDISysexServiceTest.cpp)
+target_include_directories(sysex_service_test PUBLIC
         ${firmware_src_dir}
         ${testsuite}
         ${mocks_dir})
-target_compile_options(sysex_int_test PRIVATE -g -DFW_DEBUG -DFW_VERSION="1.2.3")
-configure_test(sysex_int_test)
+target_compile_options(sysex_service_test PRIVATE -g -DFW_DEBUG -DFW_VERSION="1.2.3")
+configure_test(sysex_service_test)
+
+# MIDINotesService test
+add_executable(notes_service_test
+        ${firmware_src_dir}/MIDINotesService.cpp
+        ${firmware_src_dir}/pdlbrdkeys.cpp
+        ${firmware_src_dir}/HardwareInterface.cpp # TODO: Mock this
+        ${mocks_dir}/Arduino.cpp
+        ${mocks_dir}/SerialPrinter.cpp
+        ${testsuite}/MIDINotesServiceTest.cpp)
+target_include_directories(notes_service_test PUBLIC
+        ${firmware_src_dir}
+        ${testsuite}
+        ${mocks_dir})
+target_compile_options(notes_service_test PRIVATE -g -DFW_DEBUG)
+configure_test(notes_service_test)

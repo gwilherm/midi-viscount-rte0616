@@ -1,4 +1,4 @@
-#include "MIDISysexInterface.h"
+#include "MIDISysexService.h"
 #include "CalibrationConfig.h"
 
 #include <stdint.h>
@@ -33,7 +33,7 @@ bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size)
 	return true;
 }
 
-MIDISysexInterface::MIDISysexInterface(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig):
+MIDISysexService::MIDISysexService(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig):
 	_usbMidiInterface(usbMidiInterface),
 	_midiConfig(midiConfig),
 	_calibrationConfig(calibrationConfig),
@@ -42,7 +42,7 @@ MIDISysexInterface::MIDISysexInterface(AMIDIInterface& usbMidiInterface, MidiCon
     initSysexIdentResponse();
 }
 
-void MIDISysexInterface::initSysexIdentResponse()
+void MIDISysexService::initSysexIdentResponse()
 {
 	char* fwVersionStr = strdup(FW_VERSION);
 #if defined (FW_DEBUG)
@@ -64,7 +64,7 @@ void MIDISysexInterface::initSysexIdentResponse()
     SYSEX_IDENT_RES[12] = tmp & 0x7F;        // LSB
 }
 
-void MIDISysexInterface::handleSysEx(uint8_t* array, unsigned size)
+void MIDISysexService::handleSysEx(uint8_t* array, unsigned size)
 {
 #if defined (FW_DEBUG)
 	Serial.println("Handle SysEx");
@@ -88,7 +88,7 @@ void MIDISysexInterface::handleSysEx(uint8_t* array, unsigned size)
 }
 
 
-void MIDISysexInterface::handleMeasuresRequest(const pdlbrd_measures_request_t measuresRequest)
+void MIDISysexService::handleMeasuresRequest(const pdlbrd_measures_request_t measuresRequest)
 {
 #if defined (FW_DEBUG)
 		Serial.print("Handle Measures Request ");
@@ -106,7 +106,7 @@ void MIDISysexInterface::handleMeasuresRequest(const pdlbrd_measures_request_t m
 	}
 }
 
-void MIDISysexInterface::handleGetConfiguration()
+void MIDISysexService::handleGetConfiguration()
 {
 #if defined (FW_DEBUG)
 	Serial.println("handleGetConfiguration");
@@ -115,7 +115,7 @@ void MIDISysexInterface::handleGetConfiguration()
 	_usbMidiInterface.sendSysEx(sizeof(data), data);
 }
 
-void MIDISysexInterface::handleSetConfiguration(uint8_t* data)
+void MIDISysexService::handleSetConfiguration(uint8_t* data)
 {
 #if defined (FW_DEBUG)
 	Serial.println("handleSetConfiguration");
@@ -131,7 +131,7 @@ void MIDISysexInterface::handleSetConfiguration(uint8_t* data)
 	handleGetConfiguration();
 }
 
-void MIDISysexInterface::handleGetCalibration()
+void MIDISysexService::handleGetCalibration()
 {
 #if defined (FW_DEBUG)
 	Serial.println("handleGetCalibration");
@@ -149,7 +149,7 @@ void MIDISysexInterface::handleGetCalibration()
 	_usbMidiInterface.sendSysEx(sizeof(data), data);
 }
 
-void MIDISysexInterface::handleSetCalibration(uint8_t* data)
+void MIDISysexService::handleSetCalibration(uint8_t* data)
 {
 #if defined (FW_DEBUG)
 	Serial.println("handlesetCalibration");
@@ -171,7 +171,7 @@ void MIDISysexInterface::handleSetCalibration(uint8_t* data)
 	handleGetCalibration();
 }
 
-void MIDISysexInterface::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data, int data_size)
+void MIDISysexService::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data, int data_size)
 {
 #if defined (FW_DEBUG)
 		Serial.print("Handle cmd ");
@@ -212,7 +212,7 @@ void MIDISysexInterface::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* da
 	}
 }
 
-void MIDISysexInterface::sendMeasures(int* val, int nbVal)
+void MIDISysexService::sendMeasures(int* val, int nbVal)
 {
 	uint8_t bytes[5+(nbVal*2)] = { DEVICE_ID, CMD_MEASURES, SUBCMD_PUSH };
 	for (int i = 0; i < nbVal; i++)

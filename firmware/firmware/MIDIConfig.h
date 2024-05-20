@@ -9,7 +9,8 @@
 class MidiConfig
 {
 public:
-    MidiConfig() : _channel(DEFAULT_MIDI_CHANNEL), _octave(DEFAULT_OCTAVE) {}
+    MidiConfig() : _channel(DEFAULT_MIDI_CHANNEL), _octave(DEFAULT_OCTAVE) {};
+    MidiConfig(uint8_t channel, uint8_t octave) : _channel(channel), _octave(octave) {};
     virtual ~MidiConfig() = default;
 
     inline uint8_t getChannel() { return _channel; };

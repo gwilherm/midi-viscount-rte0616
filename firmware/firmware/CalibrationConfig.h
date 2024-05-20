@@ -17,7 +17,14 @@
 class CalibrationConfig
 {
 public:
-    CalibrationConfig() : _margin(DEFAULT_MARGIN), _vSeg{ DEFAULT_VSEG1, DEFAULT_VSEG2, DEFAULT_VSEG3, DEFAULT_VSEG4 } {}
+    CalibrationConfig() : _margin(DEFAULT_MARGIN), _vSeg{ DEFAULT_VSEG1, DEFAULT_VSEG2, DEFAULT_VSEG3, DEFAULT_VSEG4 } {};
+    CalibrationConfig(uint16_t margin, uint16_t vSeg1, uint16_t vSeg2, uint16_t vSeg3, uint16_t vSeg4): _margin(margin)
+    {
+        _vSeg[0] = vSeg1;
+        _vSeg[1] = vSeg2;
+        _vSeg[2] = vSeg3;
+        _vSeg[3] = vSeg4;
+    };
     virtual ~CalibrationConfig() = default;
 
     inline uint16_t getMargin() { return _margin; };
