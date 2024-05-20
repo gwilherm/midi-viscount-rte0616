@@ -1,19 +1,17 @@
 #include "RTE0616Pedalboard.h"
 
 #include <Arduino.h>
+#include "AMIDIInterface.h"
 #include "CalibrationConfig.h"
 #include "HardwareInterface.h"
 #include "MIDIConfig.h"
 #include "MIDISysexInterface.h"
+#include "USBMIDIInterface.h"
 #include "pdlbrdkeys.h"
 
 
-#include <USB-MIDI.h>
-USBMIDI_CREATE_DEFAULT_INSTANCE();
-
 #define TONES_IN_OCTAVE 12
 
-uint8_t velocity = 127;
 
 pdlbrd_key_t currentKey = PDLBRD_NO_KEY_PRESSED;
 
@@ -21,7 +19,8 @@ pdlbrd_key_t currentKey = PDLBRD_NO_KEY_PRESSED;
 MidiConfig RTE0616Pedalboard::_midiConfig;
 CalibrationConfig RTE0616Pedalboard::_calibrationConfig;
 HardwareInterface RTE0616Pedalboard::_hwInterface(RTE0616Pedalboard::_calibrationConfig);
-MIDISysexInterface RTE0616Pedalboard::_sysexInterface(MIDI, RTE0616Pedalboard::_midiConfig, RTE0616Pedalboard::_calibrationConfig);
+USBMIDIInterface RTE0616Pedalboard::_midiInterface;
+MIDISysexInterface RTE0616Pedalboard::_sysexInterface(RTE0616Pedalboard::_midiInterface, RTE0616Pedalboard::_midiConfig, RTE0616Pedalboard::_calibrationConfig);
 
 RTE0616Pedalboard::RTE0616Pedalboard()
 {}
@@ -29,11 +28,10 @@ RTE0616Pedalboard::RTE0616Pedalboard()
 void RTE0616Pedalboard::setup()
 {
 	_hwInterface.setup();
-
-	MIDI.begin(MIDI_CHANNEL_OMNI);
+	_midiInterface.setup();
 
 	// No std::bind so lambda.
-	MIDI.setHandleSystemExclusive([&_sysexInterface](uint8_t* array, unsigned size) {
+	_midiInterface.setHandleSystemExclusive([&_sysexInterface](uint8_t* array, unsigned size) {
 		_sysexInterface.handleSysEx(array, size);
 	});
 }
@@ -47,7 +45,7 @@ void RTE0616Pedalboard::loop()
 	if (_sysexInterface.shouldSendMeasures())
 		_sysexInterface.sendMesures(_hwInterface.getRawValues(), NB_PIN);
 
-	MIDI.read();
+	_midiInterface.loop();
 }
 
 void RTE0616Pedalboard::process(int8_t* pinSegment)
@@ -71,9 +69,9 @@ void RTE0616Pedalboard::process(int8_t* pinSegment)
 
 	if (currentKey != newKey) {
 		if (currentKey != PDLBRD_NO_KEY_PRESSED)
-			MIDI.sendNoteOff((_midiConfig.getOctave()*TONES_IN_OCTAVE)+currentKey, 0, _midiConfig.getChannel());
+			_midiInterface.sendNoteOff((_midiConfig.getOctave()*TONES_IN_OCTAVE)+currentKey, _midiConfig.getChannel());
 		if (newKey != PDLBRD_NO_KEY_PRESSED)
-			MIDI.sendNoteOn((_midiConfig.getOctave()*TONES_IN_OCTAVE)+newKey, velocity, _midiConfig.getChannel());
+			_midiInterface.sendNoteOn((_midiConfig.getOctave()*TONES_IN_OCTAVE)+newKey, _midiConfig.getChannel());
 		currentKey = newKey;
 	}
 }

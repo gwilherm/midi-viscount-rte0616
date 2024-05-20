@@ -2,6 +2,8 @@
 #define ARDUINO_H
 
 #include <cstdint>
+#include <string.h>
+#include <stdlib.h>
 
 #include "SerialPrinter.h"
 

@@ -33,7 +33,7 @@ bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size)
 	return true;
 }
 
-MIDISysexInterface::MIDISysexInterface(MIDI_NAMESPACE::MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport>& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig):
+MIDISysexInterface::MIDISysexInterface(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig):
 	_usbMidiInterface(usbMidiInterface),
 	_midiConfig(midiConfig),
 	_calibrationConfig(calibrationConfig),

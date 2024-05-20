@@ -52,3 +52,16 @@ target_include_directories(hw_int_test PUBLIC
         ${mocks_dir})
 target_compile_options(hw_int_test PRIVATE -g -DFW_DEBUG_VERBOSE_HWINT_PROCESS -DFW_DEBUG_VERBOSE_HWINT_READ)
 configure_test(hw_int_test)
+
+
+# MIDISysexInterface test
+add_executable(sysex_int_test
+        ${firmware_src_dir}/MIDISysexInterface.cpp
+        ${mocks_dir}/SerialPrinter.cpp
+        ${testsuite}/MIDISysexInterfaceTest.cpp)
+target_include_directories(sysex_int_test PUBLIC
+        ${firmware_src_dir}
+        ${testsuite}
+        ${mocks_dir})
+target_compile_options(sysex_int_test PRIVATE -g -DFW_DEBUG -DFW_VERSION="1.2.3")
+configure_test(sysex_int_test)

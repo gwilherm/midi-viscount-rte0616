@@ -2,10 +2,10 @@
 #define SYSEX_INTERFACE_H
 
 #include <Arduino.h>
-#include <USB-MIDI.h>
 
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
+#include "AMIDIInterface.h"
 
 typedef enum {
 	CMD_CONFIGURATION = 1,
@@ -23,7 +23,7 @@ typedef enum {
 class MIDISysexInterface
 {
 public:
-    MIDISysexInterface(MIDI_NAMESPACE::MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport>& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig);
+    MIDISysexInterface(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig);
     virtual ~MIDISysexInterface() = default;
 
 public:
@@ -41,7 +41,7 @@ protected:
     void handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data, int data_size);
 
 private:
-    MIDI_NAMESPACE::MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport>& _usbMidiInterface;
+    AMIDIInterface& _usbMidiInterface;
     MidiConfig& _midiConfig;
     CalibrationConfig& _calibrationConfig;
     bool _shouldSendMeasures;

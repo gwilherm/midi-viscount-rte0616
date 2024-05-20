@@ -6,6 +6,7 @@
 #include "MIDIConfig.h"
 #include "MIDISysexInterface.h"
 #include "HardwareInterface.h"
+#include "USBMIDIInterface.h"
 
 class RTE0616Pedalboard
 {
@@ -23,6 +24,7 @@ public:
     static MidiConfig _midiConfig;
     static CalibrationConfig _calibrationConfig;
     static HardwareInterface _hwInterface;
+    static USBMIDIInterface _midiInterface;
     static MIDISysexInterface _sysexInterface;
 };
 
