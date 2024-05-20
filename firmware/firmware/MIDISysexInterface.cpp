@@ -124,7 +124,7 @@ void MIDISysexInterface::handleSetConfiguration(uint8_t* data)
 	if ((data[0] >= MIN_MIDI_CHANNEL) && (data[0] <= MAX_MIDI_CHANNEL))
 		_midiConfig.setChannel(data[0]);
 
-	if ((data[1] >= MIN_OCTAVE) && (data[0] <= MAX_OCTAVE))
+	if ((data[1] >= MIN_OCTAVE) && (data[1] <= MAX_OCTAVE))
 		_midiConfig.setOctave(data[1]);
 
 	// Acknowledge
