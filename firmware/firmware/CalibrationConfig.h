@@ -24,7 +24,7 @@ public:
     inline void setMargin(uint16_t m) { _margin = m; };
     inline uint16_t getVSeg(int i) { return ((i >= 0) && (i < NB_VSEG))? _vSeg[i] : 0; }
     inline void setVSeg(int i, uint16_t v) { if ((i >= 0) && (i < NB_VSEG)) _vSeg[i] = v; }
-
+    inline void reset();
 
 private:
     uint16_t _margin;
