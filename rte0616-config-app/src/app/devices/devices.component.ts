@@ -6,7 +6,7 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { MatSnackBar } from '@angular/material/snack-bar'
-import { MidiService } from '../midi.service';
+import { FirmwareVersion, MidiService } from '../midi.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -48,9 +48,9 @@ export class DevicesComponent implements OnInit {
 
   identify() {
     this.identifying = true
-    this._midiService.sendIdentRequest().then(value => {
-      console.log('Firmware version: ' + value)
-      this.fwVersion = value.toString();
+    this._midiService.sendIdentRequest().then(fwVersion => {
+      console.log('Firmware version: ' + fwVersion)
+      this.fwVersion = fwVersion.toString();
       this._snackBar.open('Viscount RTE0616 identified !', undefined, {
         duration: 2000,
         panelClass: [ 'mat-primary']

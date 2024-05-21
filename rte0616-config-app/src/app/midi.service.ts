@@ -39,6 +39,15 @@ enum SYSEX_MODE {
 	MODE_MEASURE,
 }
 
+export class FirmwareVersion {
+  constructor(public major = 0, public minor = 0, public patch = 0)
+  {}
+
+  toString() {
+    return this.major + '.' + this.minor + '.' + this.patch;
+  }
+}
+
 export class DeviceMIDIConfig {
   constructor(public channel = MIDI_MIN_CHAN, public octave = PDLBRD_MIN_OCTAVE)
   {}
@@ -60,6 +69,14 @@ function toMIDILsbMsb(val: number): [number, number] {
 
 function fromMIDILsbMsb(val: [number, number]): number {
   return ((val[0] & MIDI_MAX_BYTE) << 7) + (val[1] & MIDI_MAX_BYTE);
+}
+
+function decodeFirmwareVersion(data: Uint8Array): FirmwareVersion {
+  let major = data!.at(0)
+  let minor = data!.at(1)
+  let patch = fromMIDILsbMsb([data!.at(2)!, data!.at(3)!])
+
+  return new FirmwareVersion(major, minor, patch)
 }
 
 function decodeDeviceMidiConfig(data: Uint8Array): DeviceMIDIConfig {
@@ -154,7 +171,7 @@ export class MidiService implements EventListenerObject {
   output: MIDIOutput|undefined = undefined;
   input: MIDIInput|undefined = undefined;
 
-  fwVersion$ = new Subject<Uint8Array>
+  fwVersion$ = new Subject<FirmwareVersion>
   midiConfig$ = new Subject<DeviceMIDIConfig>
   calibration$ = new Subject<DeviceCalibration>
   measures$ = new Observable<DeviceMeasures>
@@ -191,7 +208,7 @@ export class MidiService implements EventListenerObject {
       {
         if (isEqualBytes(ev.data!.slice(5,10), Uint8Array.from([MANU_ID, 0x00, MANU_ID, ...PRODUCT_ID ])))
         {
-          this.fwVersion$.next(ev.data!.slice(10,14))
+          this.fwVersion$.next(decodeFirmwareVersion(ev.data!.slice(10,14)))
         }
       }
       else {
@@ -199,15 +216,15 @@ export class MidiService implements EventListenerObject {
           switch (ev.data!.at(4)) {
             case SYSEX_CMD.CMD_CONFIGURATION:
               if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_GET)
-                this.midiConfig$.next(decodeDeviceMidiConfig(ev.data!.slice(6, 8)));
+                this.midiConfig$.next(decodeDeviceMidiConfig(ev.data!.slice(6, 8)))
               break;
               case SYSEX_CMD.CMD_CALIBRATION:
                 if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_GET)
-                  this.calibration$.next(decodeDeviceCalibration(ev.data!.slice(6, 16)));
+                  this.calibration$.next(decodeDeviceCalibration(ev.data!.slice(6, 16)))
                 break;
               case SYSEX_CMD.CMD_MEASURES:
                 if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_PUSH)
-                  this.m$.next(decodeDeviceMeasures(ev.data!.slice(6, 22)));
+                  this.m$.next(decodeDeviceMeasures(ev.data!.slice(6, 22)))
                 break;
             case SYSEX_CMD.CMD_CHANGE_MODE:
             default:
@@ -219,7 +236,7 @@ export class MidiService implements EventListenerObject {
     }
   }
 
-  async sendIdentRequest(): Promise<Uint8Array> {
+  async sendIdentRequest(): Promise<FirmwareVersion> {
     if (this.input && this.output) {
       console.log('Sending Ident Sysex request to ' + this.output.name)
       this.output.send([SYSEX_PREFIX, 0x7E, 0x7F, 0x06, 0x01, SYSEX_SUFFIX])
