@@ -2,12 +2,13 @@
 #define MIDI_NOTES_SERVICE_H
 
 #include "AMIDIInterface.h"
-#include "HardwareInterface.h"
+#include "AHardwareInterface.h"
 #include "MIDIConfig.h"
+#include "pdlbrdkeys.h"
 
 class MIDINotesService {
 public:
-    MIDINotesService(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, HardwareInterface& hwInterface);
+    MIDINotesService(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, AHardwareInterface& hwInterface);
     virtual ~MIDINotesService() = default;
 
     void setup() {};
@@ -16,7 +17,7 @@ public:
 private:
     AMIDIInterface& _usbMidiInterface;
     MidiConfig& _midiConfig;
-    HardwareInterface& _hwInterface;
+    AHardwareInterface& _hwInterface;
 
     pdlbrd_key_t _currentKey;
 };

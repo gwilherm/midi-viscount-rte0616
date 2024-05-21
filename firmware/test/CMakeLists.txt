@@ -40,6 +40,7 @@ endfunction(configure_test)
 set(testsuite ${CMAKE_CURRENT_SOURCE_DIR}/testsuite)
 set(mocks_dir ${CMAKE_CURRENT_SOURCE_DIR}/mocks)
 
+
 # HardwareInterface test
 add_executable(hw_int_test
         ${firmware_src_dir}/HardwareInterface.cpp
@@ -66,12 +67,11 @@ target_include_directories(sysex_service_test PUBLIC
 target_compile_options(sysex_service_test PRIVATE -g -DFW_DEBUG -DFW_VERSION="1.2.3")
 configure_test(sysex_service_test)
 
+
 # MIDINotesService test
 add_executable(notes_service_test
         ${firmware_src_dir}/MIDINotesService.cpp
         ${firmware_src_dir}/pdlbrdkeys.cpp
-        ${firmware_src_dir}/HardwareInterface.cpp # TODO: Mock this
-        ${mocks_dir}/Arduino.cpp
         ${mocks_dir}/SerialPrinter.cpp
         ${testsuite}/MIDINotesServiceTest.cpp)
 target_include_directories(notes_service_test PUBLIC
@@ -80,3 +80,19 @@ target_include_directories(notes_service_test PUBLIC
         ${mocks_dir})
 target_compile_options(notes_service_test PRIVATE -g -DFW_DEBUG)
 configure_test(notes_service_test)
+
+
+# FullChain test
+add_executable(full_chain_test
+        ${firmware_src_dir}/MIDINotesService.cpp
+        ${firmware_src_dir}/HardwareInterface.cpp
+        ${firmware_src_dir}/pdlbrdkeys.cpp
+        ${mocks_dir}/Arduino.cpp
+        ${mocks_dir}/SerialPrinter.cpp
+        ${testsuite}/FullChainTest.cpp)
+target_include_directories(full_chain_test PUBLIC
+        ${firmware_src_dir}
+        ${testsuite}
+        ${mocks_dir})
+target_compile_options(full_chain_test PRIVATE -g -DFW_DEBUG)
+configure_test(full_chain_test)

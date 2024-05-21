@@ -2,124 +2,138 @@
 #include "ArduinoTestFixture.h"
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
-#include "HardwareInterface.h"
+#include "HardwareInterfaceMock.h"
 #include "MIDINotesService.h"
 #include "USBMIDIMock.h"
 #include "SerialPrinter.h"
+#include <cstdint>
 
 SerialPrinter Serial;
 
 using namespace ::testing;
 
-class MIDINotesServiceTest : public ArduinoTestFixture {
+class MIDINotesServiceTest : public Test {
 public:
     MIDINotesServiceTest():
-        _calibrationConfig(50, 830, 512, 326, 14),
-        _hwInterface(_calibrationConfig),
-        _notesService(_usbMidiMock, _midiConfig, _hwInterface)
+        _midiConfig(1, 3),
+        _notesService(_usbMidiMock, _midiConfig, _hwInterfaceMock)
     {};
+
+    void SetUp() { for (int i = 0; i < NB_PIN; i++) _segmentedValues[i] = PDLBRD_NO_SEG; };
 
 protected:
     StrictMock<USBMIDIMock> _usbMidiMock;
     MidiConfig _midiConfig;
     CalibrationConfig _calibrationConfig;
-    HardwareInterface _hwInterface;
+    HardwareInterfaceMock _hwInterfaceMock;
     MIDINotesService _notesService;
-};
 
-std::unique_ptr<NiceMock<ArduinoMock>> ArduinoTestFixture::_arduinoMock;
+    int8_t _segmentedValues[NB_PIN];
+};
 
 TEST_F(MIDINotesServiceTest, setup)
 {
     _notesService.setup();
 }
 
-TEST_F(MIDINotesServiceTest, note_c2_on_off)
+// Press and release every pedal from C2 to D4
+TEST_F(MIDINotesServiceTest, note_each_on_off)
 {
-    int millis = 0;
+    int expected_note = 36; // C2
+    for (int seg = 0; seg < PDLBRD_NB_SEG; seg++)
+    {
+        for (int pin = 0; pin < NB_PIN; pin++)
+        {
+            _segmentedValues[pin] = seg;
+            EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
+            .WillOnce(Return(_segmentedValues));
 
-    EXPECT_CALL(*_arduinoMock, millis())
-        .WillRepeatedly(Return(millis));
+            EXPECT_CALL(_usbMidiMock, sendNoteOn(expected_note, 1));
+            
+            _notesService.loop();
 
-    EXPECT_CALL(*_arduinoMock, analogRead)
-        .WillOnce(Return(830)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
+            _segmentedValues[pin] = PDLBRD_NO_SEG;
+            EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
+            .WillOnce(Return(_segmentedValues));
 
-    _hwInterface.loop();
+            EXPECT_CALL(_usbMidiMock, sendNoteOff(expected_note, 1));
+
+            _notesService.loop();
+
+            if(++expected_note > 62) break; // D4
+        }
+    }
+}
+
+// Press every pedal from C2 to D4 but do not release any
+TEST_F(MIDINotesServiceTest, monodic_up_prio)
+{
+    int expected_note = 36; // C2
+    for (int seg = 0; seg < PDLBRD_NB_SEG; seg++)
+    {
+        for (int pin = 0; pin < NB_PIN; pin++)
+        {
+            if (expected_note > 36) // Nothing to set to off for the first pedal
+            {
+                // Previous note is automatically set to off when pressing an upper pedal
+                EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
+                .WillOnce(Return(_segmentedValues));
+
+                EXPECT_CALL(_usbMidiMock, sendNoteOff(expected_note-1, 1));
+
+                _notesService.loop();
+            }
+
+            _segmentedValues[pin] = seg;
+            EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
+            .WillOnce(Return(_segmentedValues));
+
+            EXPECT_CALL(_usbMidiMock, sendNoteOn(expected_note, 1));
+            
+            _notesService.loop();
+
+            if(++expected_note > 62) break; // D4
+        }
+    }
+}
+
+// Press D4, nothing happens if we press any lower key
+TEST_F(MIDINotesServiceTest, monodic_down_not_prio)
+{
+    _segmentedValues[2] = PDLBRD_SEG_4; //D4
+    EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
+    .WillOnce(Return(_segmentedValues));
+
+    EXPECT_CALL(_usbMidiMock, sendNoteOn(62, 1));
+    
     _notesService.loop();
 
-    EXPECT_CALL(*_arduinoMock, millis())
-        .WillRepeatedly(Return(millis+=51));
+    for (int seg = 0; seg < PDLBRD_NB_SEG; seg++)
+    {
+        for (int pin = 0; pin < NB_PIN; pin++)
+        {
+            // Physically impossible to change pin2 value, it is already on the highest raw value
+            if (pin != 2) {
+                _segmentedValues[pin] = seg;
+                EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
+                .WillOnce(Return(_segmentedValues));
+                
+                _notesService.loop();
+            }
+        }
+    }
+}
 
-    EXPECT_CALL(*_arduinoMock, analogRead)
-        .WillOnce(Return(830)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
+TEST_F(MIDINotesServiceTest, note_octave_6)
+{
+    _midiConfig.setOctave(6);
 
-    EXPECT_CALL(_usbMidiMock, sendNoteOn(36, 1));
+    _segmentedValues[0] = PDLBRD_SEG_1;
+    EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
+    .WillOnce(Return(_segmentedValues));
 
-    _hwInterface.loop();
-    _notesService.loop();
-
-    EXPECT_CALL(*_arduinoMock, millis())
-        .WillRepeatedly(Return(millis+=51));
-
-    EXPECT_CALL(*_arduinoMock, analogRead)
-        .WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
-
-    _hwInterface.loop();
-    _notesService.loop();
-
-    EXPECT_CALL(*_arduinoMock, millis())
-        .WillRepeatedly(Return(millis+=51));
-
-    EXPECT_CALL(*_arduinoMock, analogRead)
-        .WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
-
-    EXPECT_CALL(_usbMidiMock, sendNoteOff(36, 1));
-
-    _hwInterface.loop();
+    EXPECT_CALL(_usbMidiMock, sendNoteOn(72, 1));
+    
     _notesService.loop();
 }
 
-TEST_F(MIDINotesServiceTest, note_f3_on_off)
-{
-    int millis = 0;
-
-    EXPECT_CALL(*_arduinoMock, millis())
-        .WillRepeatedly(Return(millis));
-
-    EXPECT_CALL(*_arduinoMock, analogRead)
-        .WillOnce(Return(1023)).WillOnce(Return(326)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
-
-    _hwInterface.loop();
-    _notesService.loop();
-
-    EXPECT_CALL(*_arduinoMock, millis())
-        .WillRepeatedly(Return(millis+=51));
-
-    EXPECT_CALL(*_arduinoMock, analogRead)
-        .WillOnce(Return(1023)).WillOnce(Return(326)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
-
-    EXPECT_CALL(_usbMidiMock, sendNoteOn(53, 1));
-
-    _hwInterface.loop();
-    _notesService.loop();
-
-    EXPECT_CALL(*_arduinoMock, millis())
-        .WillRepeatedly(Return(millis+=51));
-
-    EXPECT_CALL(*_arduinoMock, analogRead)
-        .WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
-
-    _hwInterface.loop();
-    _notesService.loop();
-
-    EXPECT_CALL(*_arduinoMock, millis())
-        .WillRepeatedly(Return(millis+=51));
-
-    EXPECT_CALL(*_arduinoMock, analogRead)
-        .WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
-
-    EXPECT_CALL(_usbMidiMock, sendNoteOff(53, 1));
-
-    _hwInterface.loop();
-    _notesService.loop();
-}

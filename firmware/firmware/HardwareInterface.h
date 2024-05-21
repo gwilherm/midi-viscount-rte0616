@@ -1,12 +1,13 @@
 #ifndef HARDWARE_INTERFACE_H
 #define HARDWARE_INTERFACE_H
 
+#include "AHardwareInterface.h"
 #include "CalibrationConfig.h"
 #include "pdlbrdkeys.h"
 
 #include <Arduino.h>
 
-class HardwareInterface {
+class HardwareInterface : public AHardwareInterface {
 public:
     HardwareInterface(CalibrationConfig& calibrationConfig);
     virtual ~HardwareInterface() = default;
@@ -14,8 +15,8 @@ public:
     void setup();
     void loop();
 
-    int* getRawValues() { return &_rawValues[0]; };
-    int8_t* getSegmentedValues() { return &_pinSegment[0]; };
+    virtual int* getRawValues() { return &_rawValues[0]; };
+    virtual int8_t* getSegmentedValues() { return &_pinSegment[0]; };
 
 protected:
     void read();
