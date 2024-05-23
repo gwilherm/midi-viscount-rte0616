@@ -24,14 +24,13 @@ void PedalInterface::loop()
     for (int i = 0; i < NB_SWITCH; i++)
     {
         int state = digitalRead(_switchPin[i]);
+
         if (state != _lastSwitchState[i])
             _lastSwitchChange[i] = time;
 
         if ((time - _lastSwitchChange[i]) > 50)
-        {
-            if (state != _switchState[i]) {
-                _switchState[i] = state;
-            }
-        }
+            _switchState[i] = state;
+
+        _lastSwitchState[i] = state;
     }
 }
