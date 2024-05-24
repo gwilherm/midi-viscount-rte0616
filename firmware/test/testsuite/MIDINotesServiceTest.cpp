@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "ArduinoTestFixture.h"
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
 #include "HardwareInterfaceMock.h"

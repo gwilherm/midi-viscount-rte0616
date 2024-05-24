@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-class AMIDIInterface {
+class IMIDIInterface {
 public:
     virtual void sendSysEx(unsigned inLength,
                           const uint8_t* inArray) = 0;
@@ -15,6 +15,10 @@ public:
 
     virtual void sendNoteOff(uint8_t inNoteNumber,
                             uint8_t inChannel) = 0;
+
+    virtual void sendCC(uint8_t inControlNumber,
+                        uint8_t inControlValue,
+                        uint8_t inChannel) = 0;
 };
 
 #endif

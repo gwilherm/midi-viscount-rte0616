@@ -1,7 +1,7 @@
 #include "RTE0616Pedalboard.h"
 
 #include <Arduino.h>
-#include "AMIDIInterface.h"
+#include "IMIDIInterface.h"
 #include "CalibrationConfig.h"
 #include "HardwareInterface.h"
 #include "MIDIConfig.h"

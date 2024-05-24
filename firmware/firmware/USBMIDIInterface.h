@@ -1,11 +1,11 @@
 #ifndef USB_MIDI_INTERFACE_H
 #define USB_MIDI_INTERFACE_H
 
-#include "AMIDIInterface.h"
+#include "IMIDIInterface.h"
 
 #include <USB-MIDI.h>
 
-class USBMIDIInterface : public AMIDIInterface {
+class USBMIDIInterface : public IMIDIInterface {
 public:
     USBMIDIInterface();
     virtual ~USBMIDIInterface() = default;

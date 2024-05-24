@@ -1,13 +1,13 @@
 #ifndef HARDWARE_INTERFACE_H
 #define HARDWARE_INTERFACE_H
 
-#include "AHardwareInterface.h"
+#include "IHardwareInterface.h"
 #include "CalibrationConfig.h"
 #include "pdlbrdkeys.h"
 
 #include <Arduino.h>
 
-class HardwareInterface : public AHardwareInterface {
+class HardwareInterface : public IHardwareInterface {
 public:
     HardwareInterface(CalibrationConfig& calibrationConfig);
     virtual ~HardwareInterface() = default;

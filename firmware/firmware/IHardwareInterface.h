@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-class AHardwareInterface {
+class IHardwareInterface {
 public:
     virtual int* getRawValues() = 0;
     virtual int8_t* getSegmentedValues() = 0;
