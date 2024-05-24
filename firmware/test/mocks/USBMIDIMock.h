@@ -1,11 +1,11 @@
 #ifndef USB_MIDI_MOCK_H
 #define USB_MIDI_MOCK_H
 
-#include "AMIDIInterface.h"
+#include "IMIDIInterface.h"
 
 #include <gmock/gmock.h>
 
-class USBMIDIMock : public AMIDIInterface {
+class USBMIDIMock : public IMIDIInterface {
   public:
     USBMIDIMock() = default;
     virtual ~USBMIDIMock() = default;
@@ -17,6 +17,8 @@ class USBMIDIMock : public AMIDIInterface {
     MOCK_METHOD(void, sendNoteOn, (uint8_t, uint8_t));
 
     MOCK_METHOD(void, sendNoteOff, (uint8_t, uint8_t));
+
+    MOCK_METHOD(void, sendCC, (uint8_t, uint8_t, uint8_t));
 };
 
 #endif

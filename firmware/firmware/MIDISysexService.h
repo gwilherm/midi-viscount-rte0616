@@ -5,7 +5,7 @@
 
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
-#include "AMIDIInterface.h"
+#include "IMIDIInterface.h"
 
 typedef enum {
 	CMD_CONFIGURATION = 1,
@@ -23,7 +23,7 @@ typedef enum {
 class MIDISysexService
 {
 public:
-    MIDISysexService(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig);
+    MIDISysexService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig);
     virtual ~MIDISysexService() = default;
 
 public:
@@ -41,7 +41,7 @@ protected:
     void handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data, int data_size);
 
 private:
-    AMIDIInterface& _usbMidiInterface;
+    IMIDIInterface& _usbMidiInterface;
     MidiConfig& _midiConfig;
     CalibrationConfig& _calibrationConfig;
     bool _shouldSendMeasures;

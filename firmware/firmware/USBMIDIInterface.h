@@ -1,11 +1,11 @@
 #ifndef USB_MIDI_INTERFACE_H
 #define USB_MIDI_INTERFACE_H
 
-#include "AMIDIInterface.h"
+#include "IMIDIInterface.h"
 
 #include <USB-MIDI.h>
 
-class USBMIDIInterface : public AMIDIInterface {
+class USBMIDIInterface : public IMIDIInterface {
 public:
     USBMIDIInterface();
     virtual ~USBMIDIInterface() = default;
@@ -24,6 +24,9 @@ public:
     virtual void sendNoteOff(uint8_t inNoteNumber,
                             uint8_t inChannel);
 
+    virtual void sendCC(uint8_t inControlNumber,
+                        uint8_t inControlValue,
+                        uint8_t inChannel);
 protected:
     USBMIDI_NAMESPACE::usbMidiTransport _usbMidi;
     MIDI_NAMESPACE::MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport> _usbMidiInterface;

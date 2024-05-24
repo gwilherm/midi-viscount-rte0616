@@ -55,6 +55,20 @@ target_compile_options(hw_int_test PRIVATE -g -DFW_DEBUG_VERBOSE_HWINT_PROCESS -
 configure_test(hw_int_test)
 
 
+# PedalInterface test
+add_executable(pedal_int_test
+        ${firmware_src_dir}/PedalInterface.cpp
+        ${mocks_dir}/Arduino.cpp
+        ${mocks_dir}/SerialPrinter.cpp
+        ${testsuite}/PedalInterfaceTest.cpp)
+target_include_directories(pedal_int_test PUBLIC
+        ${firmware_src_dir}
+        ${testsuite}
+        ${mocks_dir})
+target_compile_options(pedal_int_test PRIVATE -g)
+configure_test(pedal_int_test)
+
+
 # MIDISysexService test
 add_executable(sysex_service_test
         ${firmware_src_dir}/MIDISysexService.cpp
@@ -80,6 +94,20 @@ target_include_directories(notes_service_test PUBLIC
         ${mocks_dir})
 target_compile_options(notes_service_test PRIVATE -g -DFW_DEBUG)
 configure_test(notes_service_test)
+
+
+# MIDICCService test
+add_executable(cc_service_test
+        ${firmware_src_dir}/MIDICCService.cpp
+        ${firmware_src_dir}/pdlbrdkeys.cpp
+        ${mocks_dir}/SerialPrinter.cpp
+        ${testsuite}/MIDICCServiceTest.cpp)
+target_include_directories(cc_service_test PUBLIC
+        ${firmware_src_dir}
+        ${testsuite}
+        ${mocks_dir})
+target_compile_options(cc_service_test PRIVATE -g)
+configure_test(cc_service_test)
 
 
 # FullChain test

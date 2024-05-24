@@ -1,11 +1,11 @@
 #ifndef HARDWARE_INTERFACE_MOCK_H
 #define HARDWARE_INTERFACE_MOCK_H
 
-#include "AHardwareInterface.h"
+#include "IHardwareInterface.h"
 
 #include <gmock/gmock.h>
 
-class HardwareInterfaceMock : public AHardwareInterface {
+class HardwareInterfaceMock : public IHardwareInterface {
   public:
     HardwareInterfaceMock() = default;
     virtual ~HardwareInterfaceMock() = default;

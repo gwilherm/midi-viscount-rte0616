@@ -2,7 +2,7 @@
 
 #define TONES_IN_OCTAVE 12
 
-MIDINotesService::MIDINotesService(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, AHardwareInterface& hwInterface) :
+MIDINotesService::MIDINotesService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, IHardwareInterface& hwInterface) :
     _usbMidiInterface(usbMidiInterface),
 	_midiConfig(midiConfig),
     _hwInterface(hwInterface),

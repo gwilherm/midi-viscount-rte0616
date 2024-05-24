@@ -12,6 +12,11 @@ int analogRead(uint8_t pin)
     return ArduinoTestFixture::_arduinoMock->analogRead(pin);
 }
 
+int digitalRead(uint8_t pin)
+{
+    return ArduinoTestFixture::_arduinoMock->digitalRead(pin);
+}
+
 unsigned long millis(void)
 {
     return ArduinoTestFixture::_arduinoMock->millis();
