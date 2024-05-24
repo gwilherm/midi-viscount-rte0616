@@ -1,24 +1,28 @@
 #ifndef MIDI_CC_SERVICE_H
 #define MIDI_CC_SERVICE_H
 
-#include "AMIDIInterface.h"
+#include "IMIDIInterface.h"
 #include "MIDIConfig.h"
-#include "PedalInterface.h"
+#include "IPedalInterface.h"
 #include "pdlbrdkeys.h"
 
 class MIDICCService {
 public:
-    MIDICCService(AMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, PedalInterface& pedalInterface);
+    MIDICCService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, IPedalInterface& pedalInterface);
     virtual ~MIDICCService() = default;
 
     void setup() {};
     void loop();
 
 private:
-    AMIDIInterface& _usbMidiInterface;
+    IMIDIInterface& _usbMidiInterface;
     MidiConfig& _midiConfig;
-    PedalInterface& _pedalInterface;
+    IPedalInterface& _pedalInterface;
 
+    const uint8_t _expressionCC = 11;
+    const uint8_t _sustainCC = 64;
+    uint8_t _lastExpressionValue;
+    bool _lastSustainState;
 };
 
 #endif

@@ -1,11 +1,13 @@
 #ifndef PEDAL_INTERFACE_H
 #define PEDAL_INTERFACE_H
 
+#include "IPedalInterface.h"
+
 #include <Arduino.h>
 
 #define NB_SWITCH 5
 
-class PedalInterface {
+class PedalInterface : public IPedalInterface {
 public:
     PedalInterface();
     virtual ~PedalInterface() = default;
@@ -13,8 +15,8 @@ public:
     void setup();
     void loop();
 
-    uint32_t getExpressionValue() { return 1023-_expressionValue; };
-    bool getSwitchState(int i) { return (_switchState[i] == LOW); };
+    virtual uint32_t getExpressionValue() { return _expressionValue; };
+    virtual bool getSwitchState(int i) { return (_switchState[i] == LOW); };
 
 protected:
     const int _expressionPin = A10;

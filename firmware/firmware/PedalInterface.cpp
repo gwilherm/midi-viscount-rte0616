@@ -2,8 +2,9 @@
 
 PedalInterface::PedalInterface():
     _expressionValue(1023),
-    _lastSwitchState{HIGH},
-    _lastSwitchChange{0}
+    _switchState{HIGH, HIGH, HIGH, HIGH, HIGH},
+    _lastSwitchState{HIGH, HIGH, HIGH, HIGH, HIGH},
+    _lastSwitchChange{0, 0, 0, 0, 0}
 {}
 
 void PedalInterface::setup()
