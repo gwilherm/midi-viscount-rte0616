@@ -39,3 +39,10 @@ void USBMIDIInterface::sendNoteOff(uint8_t inNoteNumber,
 {
     _usbMidiInterface.sendNoteOff(inNoteNumber, 0, inChannel);
 }
+
+void USBMIDIInterface::sendCC(uint8_t inControlNumber,
+                                uint8_t inControlValue,
+                                uint8_t inChannel)
+{
+    _usbMidiInterface.sendControlChange(inControlNumber, inControlValue, inChannel);
+}

@@ -24,6 +24,9 @@ public:
     virtual void sendNoteOff(uint8_t inNoteNumber,
                             uint8_t inChannel);
 
+    virtual void sendCC(uint8_t inControlNumber,
+                        uint8_t inControlValue,
+                        uint8_t inChannel);
 protected:
     USBMIDI_NAMESPACE::usbMidiTransport _usbMidi;
     MIDI_NAMESPACE::MidiInterface<USBMIDI_NAMESPACE::usbMidiTransport> _usbMidiInterface;
