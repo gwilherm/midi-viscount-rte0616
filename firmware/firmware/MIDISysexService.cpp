@@ -17,6 +17,16 @@ uint8_t SYSEX_REQ_PREFIX[] = { 0xf0, DEVICE_ID };
 uint8_t SYSEX_IDENT_REQ[]  = { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 }; // f1,      f2,     p1, p2,   v1,   v2,   v3,   v4
 uint8_t SYSEX_IDENT_RES[]  = {       0x7e, 0x01, 0x06, 0x02, MANU_ID, 0x00, MANU_ID, PRODUCT_ID, 0x00, 0x00, 0x00, 0x00 };
 
+typedef union
+{
+    struct cfg
+    {
+        uint8_t channel;
+        uint8_t octave;
+    } cfg;
+    uint8_t bytes[sizeof(struct cfg)];
+} midi_config_t;
+
 typedef enum {
 	SUBCMD_NO_SUBCMD = 0,
 	SUBCMD_GET,
