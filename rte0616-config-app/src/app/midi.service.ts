@@ -29,9 +29,9 @@ enum SYSEX_CMD {
 }
 
 enum SYSEX_SUB_CMD {
-	SUBCMD_GET = 1,
+  SUBCMD_NO_SUBCMD = 0,
+	SUBCMD_GET,
 	SUBCMD_SET,
-	SUBCMD_PUSH
 }
 
 enum SYSEX_MODE {
@@ -215,15 +215,12 @@ export class MidiService implements EventListenerObject {
         if (isEqualBytes(ev.data!.slice(1,4), Uint8Array.from([MANU_ID, ...PRODUCT_ID]))) {
           switch (ev.data!.at(4)) {
             case SYSEX_CMD.CMD_CONFIGURATION:
-              if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_GET)
                 this.midiConfig$.next(decodeDeviceMidiConfig(ev.data!.slice(6, 8)))
               break;
               case SYSEX_CMD.CMD_CALIBRATION:
-                if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_GET)
                   this.calibration$.next(decodeDeviceCalibration(ev.data!.slice(6, 16)))
                 break;
               case SYSEX_CMD.CMD_MEASURES:
-                if (ev.data!.at(5) == SYSEX_SUB_CMD.SUBCMD_PUSH)
                   this.m$.next(decodeDeviceMeasures(ev.data!.slice(6, 22)))
                 break;
             case SYSEX_CMD.CMD_CHANGE_MODE:

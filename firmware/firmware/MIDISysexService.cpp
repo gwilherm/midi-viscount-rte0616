@@ -18,9 +18,9 @@ uint8_t SYSEX_IDENT_REQ[]  = { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 }; // f1,     
 uint8_t SYSEX_IDENT_RES[]  = {       0x7e, 0x01, 0x06, 0x02, MANU_ID, 0x00, MANU_ID, PRODUCT_ID, 0x00, 0x00, 0x00, 0x00 };
 
 typedef enum {
-	SUBCMD_GET = 1,
+	SUBCMD_NO_SUBCMD = 0,
+	SUBCMD_GET,
 	SUBCMD_SET,
-	SUBCMD_PUSH,
 	SUBCMD_MAX
 } pdlbrd_sysex_sub_cmd_t;
 
@@ -111,7 +111,7 @@ void MIDISysexService::handleGetConfiguration()
 #if defined (FW_DEBUG)
 	Serial.println("handleGetConfiguration");
 #endif
-	uint8_t data[] = { DEVICE_ID, CMD_CONFIGURATION, SUBCMD_GET, _midiConfig.getChannel(), _midiConfig.getOctave() };
+	uint8_t data[] = { DEVICE_ID, CMD_CONFIGURATION, SUBCMD_NO_SUBCMD, _midiConfig.getChannel(), _midiConfig.getOctave() };
 	_usbMidiInterface.sendSysEx(sizeof(data), data);
 }
 
@@ -137,7 +137,7 @@ void MIDISysexService::handleGetCalibration()
 	Serial.println("handleGetCalibration");
 #endif
 	//                                                             MARGIN       VSEG1       VSEG2       VSEG3       VSEG4
-	uint8_t data[] = { DEVICE_ID, CMD_CALIBRATION, SUBCMD_GET, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+	uint8_t data[] = { DEVICE_ID, CMD_CALIBRATION, SUBCMD_NO_SUBCMD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 	data[5] = (_calibrationConfig.getMargin() >> 7) & 0x7F;
 	data[6] =  _calibrationConfig.getMargin() & 0x7F;
 
@@ -214,7 +214,7 @@ void MIDISysexService::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data
 
 void MIDISysexService::sendMeasures(int* val, int nbVal)
 {
-	uint8_t bytes[5+(nbVal*2)] = { DEVICE_ID, CMD_MEASURES, SUBCMD_PUSH };
+	uint8_t bytes[5+(nbVal*2)] = { DEVICE_ID, CMD_MEASURES, SUBCMD_NO_SUBCMD };
 	for (int i = 0; i < nbVal; i++)
 	{
 		bytes[5+(i*2)] = (val[i] >> 7) & 0x7F;
