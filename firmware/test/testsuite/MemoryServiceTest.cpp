@@ -26,39 +26,57 @@ protected:
 
 TEST_F(MemoryServiceTest, store)
 {
-    // MIDI Config
-    EXPECT_CALL(_eepromInterfaceMock, update(0,1));
-    EXPECT_CALL(_eepromInterfaceMock, update(1,3));
+    /* Device Version */
+    EXPECT_CALL(_eepromInterfaceMock, update( 0,0x31));
+    EXPECT_CALL(_eepromInterfaceMock, update( 1,0x06));
+    EXPECT_CALL(_eepromInterfaceMock, update( 2,0x16));
+    EXPECT_CALL(_eepromInterfaceMock, update( 3,1)); // v1.
+    EXPECT_CALL(_eepromInterfaceMock, update( 4,2)); //  2.
+    EXPECT_CALL(_eepromInterfaceMock, update( 5,0));
+    EXPECT_CALL(_eepromInterfaceMock, update( 6,3)); //  3
 
-    // Calibration config
-    EXPECT_CALL(_eepromInterfaceMock, update(2,12));
-    EXPECT_CALL(_eepromInterfaceMock, update(3,0));
-    EXPECT_CALL(_eepromInterfaceMock, update(4,255));
-    EXPECT_CALL(_eepromInterfaceMock, update(5,3));
-    EXPECT_CALL(_eepromInterfaceMock, update(6,255));
-    EXPECT_CALL(_eepromInterfaceMock, update(7,2));
-    EXPECT_CALL(_eepromInterfaceMock, update(8,255));
-    EXPECT_CALL(_eepromInterfaceMock, update(9,1));
-    EXPECT_CALL(_eepromInterfaceMock, update(10,63));
-    EXPECT_CALL(_eepromInterfaceMock, update(11,0));
+    /* MIDI Config */
+    EXPECT_CALL(_eepromInterfaceMock, update( 7,1));
+    EXPECT_CALL(_eepromInterfaceMock, update( 8,3));
+
+    /* Calibration config */
+    EXPECT_CALL(_eepromInterfaceMock, update( 9,12));
+    EXPECT_CALL(_eepromInterfaceMock, update(10,0));
+    EXPECT_CALL(_eepromInterfaceMock, update(11,255));
+    EXPECT_CALL(_eepromInterfaceMock, update(12,3));
+    EXPECT_CALL(_eepromInterfaceMock, update(13,255));
+    EXPECT_CALL(_eepromInterfaceMock, update(14,2));
+    EXPECT_CALL(_eepromInterfaceMock, update(15,255));
+    EXPECT_CALL(_eepromInterfaceMock, update(16,1));
+    EXPECT_CALL(_eepromInterfaceMock, update(17,63));
+    EXPECT_CALL(_eepromInterfaceMock, update(18,0));
 
     _memoryService.store();
 
-    // MIDI Config
-    EXPECT_CALL(_eepromInterfaceMock, update(0,15));
-    EXPECT_CALL(_eepromInterfaceMock, update(1,6));
+    /* Device Version */
+    EXPECT_CALL(_eepromInterfaceMock, update( 0,0x31));
+    EXPECT_CALL(_eepromInterfaceMock, update( 1,0x06));
+    EXPECT_CALL(_eepromInterfaceMock, update( 2,0x16));
+    EXPECT_CALL(_eepromInterfaceMock, update( 3,1)); // v1.
+    EXPECT_CALL(_eepromInterfaceMock, update( 4,2)); //  2.
+    EXPECT_CALL(_eepromInterfaceMock, update( 5,0));
+    EXPECT_CALL(_eepromInterfaceMock, update( 6,3)); //  3
 
-    // Calibration config
-    EXPECT_CALL(_eepromInterfaceMock, update(2,12));
-    EXPECT_CALL(_eepromInterfaceMock, update(3,0));
-    EXPECT_CALL(_eepromInterfaceMock, update(4,255));
-    EXPECT_CALL(_eepromInterfaceMock, update(5,3));
-    EXPECT_CALL(_eepromInterfaceMock, update(6,255));
-    EXPECT_CALL(_eepromInterfaceMock, update(7,2));
-    EXPECT_CALL(_eepromInterfaceMock, update(8,255));
-    EXPECT_CALL(_eepromInterfaceMock, update(9,1));
-    EXPECT_CALL(_eepromInterfaceMock, update(10,63));
-    EXPECT_CALL(_eepromInterfaceMock, update(11,0));
+    /* MIDI Config */
+    EXPECT_CALL(_eepromInterfaceMock, update( 7,15));
+    EXPECT_CALL(_eepromInterfaceMock, update( 8,6));
+
+    /* Calibration config */
+    EXPECT_CALL(_eepromInterfaceMock, update( 9,12));
+    EXPECT_CALL(_eepromInterfaceMock, update(10,0));
+    EXPECT_CALL(_eepromInterfaceMock, update(11,255));
+    EXPECT_CALL(_eepromInterfaceMock, update(12,3));
+    EXPECT_CALL(_eepromInterfaceMock, update(13,255));
+    EXPECT_CALL(_eepromInterfaceMock, update(14,2));
+    EXPECT_CALL(_eepromInterfaceMock, update(15,255));
+    EXPECT_CALL(_eepromInterfaceMock, update(16,1));
+    EXPECT_CALL(_eepromInterfaceMock, update(17,63));
+    EXPECT_CALL(_eepromInterfaceMock, update(18,0));
 
     _midiConfig.setChannel(15);
     _midiConfig.setOctave(6);
@@ -68,32 +86,40 @@ TEST_F(MemoryServiceTest, store)
 
 TEST_F(MemoryServiceTest, restore)
 {
-    // MIDI Config
+    /* Device Version */
     EXPECT_CALL(_eepromInterfaceMock, read(0))
-        .WillOnce(Return(15));
+        .WillOnce(Return(0x31));
     EXPECT_CALL(_eepromInterfaceMock, read(1))
+        .WillOnce(Return(0x06));
+    EXPECT_CALL(_eepromInterfaceMock, read(2))
+        .WillOnce(Return(0x16));
+
+    /* MIDI Config */
+    EXPECT_CALL(_eepromInterfaceMock, read(7))
+        .WillOnce(Return(15));
+    EXPECT_CALL(_eepromInterfaceMock, read(8))
         .WillOnce(Return(6));
 
-    // Calibration Config
-    EXPECT_CALL(_eepromInterfaceMock, read(2))
-        .WillOnce(Return(12));
-    EXPECT_CALL(_eepromInterfaceMock, read(3))
-        .WillOnce(Return(0));
-    EXPECT_CALL(_eepromInterfaceMock, read(4))
-        .WillOnce(Return(255));
-    EXPECT_CALL(_eepromInterfaceMock, read(5))
-        .WillOnce(Return(3));
-    EXPECT_CALL(_eepromInterfaceMock, read(6))
-        .WillOnce(Return(255));
-    EXPECT_CALL(_eepromInterfaceMock, read(7))
-        .WillOnce(Return(2));
-    EXPECT_CALL(_eepromInterfaceMock, read(8))
-        .WillOnce(Return(255));
+    /* Calibration Config */
     EXPECT_CALL(_eepromInterfaceMock, read(9))
-        .WillOnce(Return(1));
+        .WillOnce(Return(12));
     EXPECT_CALL(_eepromInterfaceMock, read(10))
-        .WillOnce(Return(63));
+        .WillOnce(Return(0));
     EXPECT_CALL(_eepromInterfaceMock, read(11))
+        .WillOnce(Return(255));
+    EXPECT_CALL(_eepromInterfaceMock, read(12))
+        .WillOnce(Return(3));
+    EXPECT_CALL(_eepromInterfaceMock, read(13))
+        .WillOnce(Return(255));
+    EXPECT_CALL(_eepromInterfaceMock, read(14))
+        .WillOnce(Return(2));
+    EXPECT_CALL(_eepromInterfaceMock, read(15))
+        .WillOnce(Return(255));
+    EXPECT_CALL(_eepromInterfaceMock, read(16))
+        .WillOnce(Return(1));
+    EXPECT_CALL(_eepromInterfaceMock, read(17))
+        .WillOnce(Return(63));
+    EXPECT_CALL(_eepromInterfaceMock, read(18))
         .WillOnce(Return(0));
 
     _memoryService.restore();
@@ -107,24 +133,36 @@ TEST_F(MemoryServiceTest, restore)
     EXPECT_EQ(_calibrationConfig.getVSeg(3), 63);
 }
 
+#define EXPECT_FACTORY_RESET_CALLS() \
+    /* Device Version */ \
+    EXPECT_CALL(_eepromInterfaceMock, update( 0,0x31)); \
+    EXPECT_CALL(_eepromInterfaceMock, update( 1,0x06)); \
+    EXPECT_CALL(_eepromInterfaceMock, update( 2,0x16)); \
+    EXPECT_CALL(_eepromInterfaceMock, update( 3,1)); \
+    EXPECT_CALL(_eepromInterfaceMock, update( 4,2)); \
+    EXPECT_CALL(_eepromInterfaceMock, update( 5,0)); \
+    EXPECT_CALL(_eepromInterfaceMock, update( 6,3)); \
+ \
+    /* MIDI Config */ \
+    EXPECT_CALL(_eepromInterfaceMock, update( 7,1)); \
+    EXPECT_CALL(_eepromInterfaceMock, update( 8,3)); \
+ \
+    /* Calibration Config */ \
+    EXPECT_CALL(_eepromInterfaceMock, update( 9,50)); \
+    EXPECT_CALL(_eepromInterfaceMock, update(10,0)); \
+    EXPECT_CALL(_eepromInterfaceMock, update(11,62)); \
+    EXPECT_CALL(_eepromInterfaceMock, update(12,3)); \
+    EXPECT_CALL(_eepromInterfaceMock, update(13,0)); \
+    EXPECT_CALL(_eepromInterfaceMock, update(14,2)); \
+    EXPECT_CALL(_eepromInterfaceMock, update(15,70)); \
+    EXPECT_CALL(_eepromInterfaceMock, update(16,1)); \
+    EXPECT_CALL(_eepromInterfaceMock, update(17,14)); \
+    EXPECT_CALL(_eepromInterfaceMock, update(18,0)); \
+
 TEST_F(MemoryServiceTest, factory_reset)
 {
-    // MIDI Config
-    EXPECT_CALL(_eepromInterfaceMock, update(0,1));
-    EXPECT_CALL(_eepromInterfaceMock, update(1,3));
+    EXPECT_FACTORY_RESET_CALLS();
 
-    // Calibration Config
-    EXPECT_CALL(_eepromInterfaceMock, update(2,50));
-    EXPECT_CALL(_eepromInterfaceMock, update(3,0));
-    EXPECT_CALL(_eepromInterfaceMock, update(4,62));
-    EXPECT_CALL(_eepromInterfaceMock, update(5,3));
-    EXPECT_CALL(_eepromInterfaceMock, update(6,0));
-    EXPECT_CALL(_eepromInterfaceMock, update(7,2));
-    EXPECT_CALL(_eepromInterfaceMock, update(8,70));
-    EXPECT_CALL(_eepromInterfaceMock, update(9,1));
-    EXPECT_CALL(_eepromInterfaceMock, update(10,14));
-    EXPECT_CALL(_eepromInterfaceMock, update(11,0));
- 
     _midiConfig.setChannel(15);
     _midiConfig.setOctave(6);
     _calibrationConfig.setMargin(12);
@@ -134,4 +172,19 @@ TEST_F(MemoryServiceTest, factory_reset)
     _calibrationConfig.setVSeg(3, 63);
 
     _memoryService.factoryReset();
+}
+
+TEST_F(MemoryServiceTest, restore_unexpected_data)
+{
+    /* Device Version */
+    EXPECT_CALL(_eepromInterfaceMock, read(0))
+        .WillOnce(Return('B'));
+    EXPECT_CALL(_eepromInterfaceMock, read(1))
+        .WillOnce(Return('A'));
+    EXPECT_CALL(_eepromInterfaceMock, read(2))
+        .WillOnce(Return('D'));
+
+    EXPECT_FACTORY_RESET_CALLS();
+
+    _memoryService.restore();
 }

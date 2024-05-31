@@ -119,7 +119,7 @@ target_include_directories(memory_service_test PUBLIC
         ${firmware_src_dir}
         ${testsuite}
         ${mocks_dir})
-target_compile_options(memory_service_test PRIVATE -g)
+target_compile_options(memory_service_test PRIVATE -g -DFW_VERSION="1.2.3")
 configure_test(memory_service_test)
 
 

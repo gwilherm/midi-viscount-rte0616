@@ -29,6 +29,7 @@ RTE0616Pedalboard::RTE0616Pedalboard()
 
 void RTE0616Pedalboard::setup()
 {
+	_memService.restore();
 	_hwInterface.setup();
 	_pedalInterface.setup();
 	_midiInterface.setup();

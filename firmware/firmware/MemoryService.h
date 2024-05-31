@@ -16,6 +16,10 @@ public:
     void factoryReset();
 
 protected:
+    void writeDeviceVersion(int& offset);
+    bool readDeviceVersion(int& offset);
+
+protected:
     IEEPROMInterface& _eepromInterface;
     MidiConfig& _midiConfig;
     CalibrationConfig& _calibrationConfig;
