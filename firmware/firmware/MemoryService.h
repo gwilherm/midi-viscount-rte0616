@@ -15,9 +15,12 @@ public:
     void store();
     void factoryReset();
 
+    int updateMidiConfig();
+    int updateCalibration();
+
 protected:
-    void writeDeviceVersion(int& offset);
-    bool readDeviceVersion(int& offset);
+    int updateDeviceInfo();
+    bool readDeviceInfo(int& offset);
 
 protected:
     IEEPROMInterface& _eepromInterface;

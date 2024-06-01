@@ -3,9 +3,32 @@
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
 
-#define MANUFACTURER_ID 0x31 		// Viscount Manufacturer ID
+#define MANUFACTURER_ID 0x31 	// Viscount Manufacturer ID
 #define PRODUCT_ID_MSB  0x06
 #define PRODUCT_ID_LSB  0x16	// for RTE0616
+
+struct device_info_store_s {
+    device_info_store_s() {
+        char* fwVersionStr = strdup(FW_VERSION);
+    	int tmp = atoi(strtok(fwVersionStr, "."));
+        v[0] = tmp & 0xFF;
+    	tmp = atoi(strtok(NULL, "."));
+        v[1] = tmp & 0xFF;
+        tmp = atoi(strtok(NULL, "."));
+        v[2] = (tmp >> 8) & 0xFF;
+        v[3] = tmp & 0xFF;
+    };
+    uint8_t m = MANUFACTURER_ID;
+    uint8_t p[2] = {PRODUCT_ID_MSB,PRODUCT_ID_LSB};
+    uint8_t v[4];
+};
+
+typedef union device_info_store_u
+{
+    device_info_store_u() : info() {};
+    struct device_info_store_s info;
+    uint8_t bytes[sizeof(struct device_info_store_s)];
+} device_info_store_t;
 
 typedef union midi_config_store_u
 {
@@ -39,55 +62,59 @@ MemoryService::MemoryService(IEEPROMInterface& eepromInterface, MidiConfig& midi
     _calibrationConfig(calibrationConfig)
 {}
 
-bool MemoryService::readDeviceVersion(int& offset)
+bool MemoryService::readDeviceInfo(int& offset)
 {
     bool ret = true;
+
     ret &= (MANUFACTURER_ID == _eepromInterface.read(offset++));
     ret &= (PRODUCT_ID_MSB  == _eepromInterface.read(offset++));
     ret &= (PRODUCT_ID_LSB  == _eepromInterface.read(offset++));
 
-    // Version do not matter atm.
     offset += 4;
 
     return ret;
 }
 
-void MemoryService::writeDeviceVersion(int& offset)
+int MemoryService::updateDeviceInfo()
 {
-    char* fwVersionStr = strdup(FW_VERSION);
+    int offset = 0;
+    device_info_store_t dev;
 
-    _eepromInterface.update(offset++, MANUFACTURER_ID);
-    _eepromInterface.update(offset++, PRODUCT_ID_MSB);
-    _eepromInterface.update(offset++, PRODUCT_ID_LSB);
+    for (int i = 0; i < sizeof(device_info_store_t); i++)
+        _eepromInterface.update(offset++, dev.bytes[i]);
 
-	// Major: 1 byte
-	int tmp = atoi(strtok(fwVersionStr, "."));
-    _eepromInterface.update(offset++, tmp & 0xFF);
-
-	// Minor: 1 byte
-	tmp = atoi(strtok(NULL, "."));
-    _eepromInterface.update(offset++, tmp & 0xFF);
-
-	// Patch: two bytes
-	tmp = atoi(strtok(NULL, "."));
-    _eepromInterface.update(offset++, (tmp >> 8) & 0xFF); // MSB
-    _eepromInterface.update(offset++, tmp & 0xFF);        // LSB
+    return offset;
 }
 
-void MemoryService::store()
+int MemoryService::updateMidiConfig()
 {
+    int offset = sizeof(device_info_store_t);
     midi_config_store_t cfg(_midiConfig);
-    calibration_store_t cal(_calibrationConfig);
-
-    int offset = 0;
-
-    writeDeviceVersion(offset);
 
     for (int i = 0; i < sizeof(midi_config_store_t); i++)
         _eepromInterface.update(offset++, cfg.bytes[i]);
 
+    return offset;
+}
+
+int MemoryService::updateCalibration()
+{
+    int offset = 7 + sizeof(midi_config_store_t);
+
+    calibration_store_t cal(_calibrationConfig);
     for (int i = 0; i < sizeof(calibration_store_t);  i++)
         _eepromInterface.update(offset++, cal.bytes[i]);
+
+    return offset;
+}
+
+void MemoryService::store()
+{
+    int offset = 0;
+
+    offset = updateDeviceInfo();
+    offset = updateMidiConfig();
+    offset = updateCalibration();
 }
 
 void MemoryService::restore()
@@ -97,7 +124,7 @@ void MemoryService::restore()
 
     int offset = 0;
 
-    if (readDeviceVersion(offset))
+    if (readDeviceInfo(offset))
     {
         for (int i = 0; i < sizeof(midi_config_store_t); i++)
             cfg.bytes[i] = _eepromInterface.read(offset++);
