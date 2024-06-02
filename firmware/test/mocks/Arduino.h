@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string.h>
 #include <stdlib.h>
+#include <stddef.h>
 
 #include "SerialPrinter.h"
 

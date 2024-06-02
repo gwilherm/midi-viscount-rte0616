@@ -2,7 +2,6 @@
 #include "IEEPROMInterface.h"
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
-#include <cstdint>
 
 #define MANUFACTURER_ID 0x31 	// Viscount Manufacturer ID
 #define PRODUCT_ID_MSB  0x06
@@ -23,6 +22,15 @@ typedef struct {
     uint16_t margin;
     uint16_t vseg[NB_VSEG];
 } calibration_store_t;
+
+#pragma pack(push, 1)
+typedef struct {
+    device_info_store_t dev;
+    midi_config_store_t cfg;
+    calibration_store_t cal;
+} memory_storage_t ;
+#pragma pack(pop)
+
 
 MemoryService::MemoryService(IEEPROMInterface& eepromInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig):
     _eepromInterface(eepromInterface),
@@ -45,7 +53,7 @@ bool MemoryService::readDeviceInfo(int& offset)
 
 int MemoryService::updateDeviceInfo()
 {
-    int offset = 0;
+    int offset = offsetof(memory_storage_t, dev);
     device_info_store_t dev = {
         .manu_id = MANUFACTURER_ID,
         .prod_id = { PRODUCT_ID_MSB, PRODUCT_ID_LSB }
@@ -69,7 +77,8 @@ int MemoryService::updateDeviceInfo()
 
 int MemoryService::updateMidiConfig()
 {
-    int offset = sizeof(device_info_store_t);
+    int offset = offsetof(memory_storage_t, cfg);
+
     midi_config_store_t cfg = {
         .channel = _midiConfig.getChannel(),
         .octave = _midiConfig.getOctave()
@@ -84,7 +93,7 @@ int MemoryService::updateMidiConfig()
 
 int MemoryService::updateCalibration()
 {
-    int offset = 7 + sizeof(midi_config_store_t);
+    int offset = offsetof(memory_storage_t, cal);
 
     calibration_store_t cal = {
         .margin = _calibrationConfig.getMargin(),
