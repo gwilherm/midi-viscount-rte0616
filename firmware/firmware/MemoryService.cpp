@@ -50,6 +50,12 @@ bool MemoryService::checkDeviceInfo()
     return ret;
 }
 
+void MemoryService::update(const uint8_t* pData, int size, int offset)
+{
+    for (int i = 0; i < size; i++)
+        _eepromInterface.update(offset++, *pData++);
+}
+
 void MemoryService::updateDeviceInfo()
 {
     int offset = offsetof(memory_storage_t, dev);
@@ -67,9 +73,7 @@ void MemoryService::updateDeviceInfo()
     dev.fw_ver[2] = (tmp >> 8) & 0xFF;
     dev.fw_ver[3] = tmp & 0xFF;
 
-    uint8_t* ptr = (uint8_t*)&dev;
-    for (int i = 0; i < sizeof(device_info_store_t); i++)
-        _eepromInterface.update(offset++, *ptr++);
+    update((uint8_t*)&dev, sizeof(device_info_store_t), offset);
 }
 
 void MemoryService::updateMidiConfig()
@@ -81,9 +85,7 @@ void MemoryService::updateMidiConfig()
         .octave = _midiConfig.getOctave()
     };
 
-    uint8_t* ptr = (uint8_t*)&cfg;
-    for (int i = 0; i < sizeof(cfg); i++)
-        _eepromInterface.update(offset++, *ptr++);
+    update((uint8_t*)&cfg, sizeof(midi_config_store_t), offset);
 }
 
 void MemoryService::updateCalibration()
@@ -100,9 +102,7 @@ void MemoryService::updateCalibration()
         }
     };
 
-    uint8_t* ptr = (uint8_t*)&cal;
-    for (int i = 0; i < sizeof(calibration_store_t);  i++)
-        _eepromInterface.update(offset++, *ptr++);
+    update((uint8_t*)&cal, sizeof(calibration_store_t), offset);
 }
 
 void MemoryService::store()

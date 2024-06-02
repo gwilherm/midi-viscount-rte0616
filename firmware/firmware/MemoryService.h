@@ -21,6 +21,7 @@ public:
 protected:
     void updateDeviceInfo();
     bool checkDeviceInfo();
+    void update(const uint8_t* pData, int size, int offset = 0);
 
 protected:
     IEEPROMInterface& _eepromInterface;
