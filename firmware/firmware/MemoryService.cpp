@@ -38,15 +38,14 @@ MemoryService::MemoryService(IEEPROMInterface& eepromInterface, MidiConfig& midi
     _calibrationConfig(calibrationConfig)
 {}
 
-bool MemoryService::readDeviceInfo(int& offset)
+bool MemoryService::checkDeviceInfo()
 {
     bool ret = true;
+    int offset = 0;
 
     ret &= (MANUFACTURER_ID == _eepromInterface.read(offset++));
     ret &= (PRODUCT_ID_MSB  == _eepromInterface.read(offset++));
     ret &= (PRODUCT_ID_LSB  == _eepromInterface.read(offset++));
-
-    offset += 4;
 
     return ret;
 }
@@ -121,28 +120,20 @@ void MemoryService::store()
 
 void MemoryService::restore()
 {
-    midi_config_store_t cfg;
-    calibration_store_t cal;
-    uint8_t* ptr;
+    memory_storage_t mem;
+    uint8_t* ptr = (uint8_t*)&mem;
 
-    int offset = 0;
-
-    if (readDeviceInfo(offset))
+    if (checkDeviceInfo())
     {
-        ptr = (uint8_t*)&cfg;
-        for (int i = 0; i < sizeof(midi_config_store_t); i++)
-            *ptr++ = _eepromInterface.read(offset++);
+        for (int i = 0; i < sizeof(memory_storage_t); i++)
+            *ptr++ = _eepromInterface.read(i);
 
-        ptr = (uint8_t*)&cal;
-        for (int i = 0; i < sizeof(calibration_store_t);  i++)
-            *ptr++ = _eepromInterface.read(offset++);
+        _midiConfig.setChannel(mem.cfg.channel);
+        _midiConfig.setOctave(mem.cfg.octave);
 
-        _midiConfig.setChannel(cfg.channel);
-        _midiConfig.setOctave(cfg.octave);
-
-        _calibrationConfig.setMargin(cal.margin);
+        _calibrationConfig.setMargin(mem.cal.margin);
         for (int i = 0; i < NB_VSEG; i++)
-            _calibrationConfig.setVSeg(i, cal.vseg[i]);
+            _calibrationConfig.setVSeg(i, mem.cal.vseg[i]);
     }
     else {
         factoryReset();

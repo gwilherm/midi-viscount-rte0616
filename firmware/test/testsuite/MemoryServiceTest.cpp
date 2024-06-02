@@ -86,13 +86,21 @@ TEST_F(MemoryServiceTest, store)
 
 TEST_F(MemoryServiceTest, restore)
 {
-    /* Device Version */
-    EXPECT_CALL(_eepromInterfaceMock, read(0))
-        .WillOnce(Return(0x31));
-    EXPECT_CALL(_eepromInterfaceMock, read(1))
-        .WillOnce(Return(0x06));
-    EXPECT_CALL(_eepromInterfaceMock, read(2))
-        .WillOnce(Return(0x16));
+    /* Check device mem + read Device Version */
+    EXPECT_CALL(_eepromInterfaceMock, read(0)).Times(2)
+        .WillRepeatedly(Return(0x31));
+    EXPECT_CALL(_eepromInterfaceMock, read(1)).Times(2)
+        .WillRepeatedly(Return(0x06));
+    EXPECT_CALL(_eepromInterfaceMock, read(2)).Times(2)
+        .WillRepeatedly(Return(0x16));
+    EXPECT_CALL(_eepromInterfaceMock, read(3))
+        .WillOnce(Return(0x01));
+    EXPECT_CALL(_eepromInterfaceMock, read(4))
+        .WillOnce(Return(0x02));
+    EXPECT_CALL(_eepromInterfaceMock, read(5))
+        .WillOnce(Return(0x00));
+    EXPECT_CALL(_eepromInterfaceMock, read(6))
+        .WillOnce(Return(0x03));
 
     /* MIDI Config */
     EXPECT_CALL(_eepromInterfaceMock, read(7))

@@ -20,7 +20,7 @@ public:
 
 protected:
     int updateDeviceInfo();
-    bool readDeviceInfo(int& offset);
+    bool checkDeviceInfo();
 
 protected:
     IEEPROMInterface& _eepromInterface;
