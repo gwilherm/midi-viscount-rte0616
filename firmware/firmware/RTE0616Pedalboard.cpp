@@ -19,10 +19,10 @@ PedalInterface RTE0616Pedalboard::_pedalInterface;
 USBMIDIInterface RTE0616Pedalboard::_midiInterface;
 EEPROMInterface RTE0616Pedalboard::_eepromInterface;
 
-MIDISysexService RTE0616Pedalboard::_sysexService(RTE0616Pedalboard::_midiInterface, RTE0616Pedalboard::_midiConfig, RTE0616Pedalboard::_calibrationConfig);
+MemoryService RTE0616Pedalboard::_memService(_eepromInterface, _midiConfig, _calibrationConfig);
+MIDISysexService RTE0616Pedalboard::_sysexService(RTE0616Pedalboard::_midiInterface, RTE0616Pedalboard::_midiConfig, RTE0616Pedalboard::_calibrationConfig, RTE0616Pedalboard::_memService);
 MIDINotesService RTE0616Pedalboard::_notesService(RTE0616Pedalboard::_midiInterface, RTE0616Pedalboard::_midiConfig, RTE0616Pedalboard::_hwInterface);
 MIDICCService RTE0616Pedalboard::_ccService(RTE0616Pedalboard::_midiInterface, RTE0616Pedalboard::_midiConfig, RTE0616Pedalboard::_pedalInterface);
-MemoryService RTE0616Pedalboard::_memService(_eepromInterface, _midiConfig, _calibrationConfig); 
 
 RTE0616Pedalboard::RTE0616Pedalboard()
 {}
