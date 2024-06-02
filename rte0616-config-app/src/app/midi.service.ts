@@ -32,11 +32,12 @@ enum SYSEX_SUB_CMD {
   SUBCMD_NO_SUBCMD = 0,
 	SUBCMD_GET,
 	SUBCMD_SET,
+	SUBCMD_STORE
 }
 
 enum SYSEX_MODE {
 	MODE_STANDARD = 1,
-	MODE_MEASURE,
+	MODE_MEASURE
 }
 
 export class FirmwareVersion {
@@ -287,6 +288,16 @@ export class MidiService implements EventListenerObject {
     }
   }
 
+  async sendStoreConfigurationRequest() {
+    if (this.input && this.output) {
+      console.log('Sending Store Config Sysex request to ' + this.output.name)
+      this.output.send([SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CONFIGURATION, SYSEX_SUB_CMD.SUBCMD_STORE, SYSEX_SUFFIX])
+    }
+    else {
+      this.getInputOutputError()
+    }
+  }
+
   async sendGetCalibrationRequest() {
     if (this.input && this.output) {
       console.log('Sending Get Calibration Sysex request to ' + this.output.name)
@@ -306,6 +317,17 @@ export class MidiService implements EventListenerObject {
       this.getInputOutputError()
     }
   }
+
+  async sendStoreCalibrationRequest() {
+    if (this.input && this.output) {
+      console.log('Sending Store Calibration Sysex request to ' + this.output.name)
+      this.output.send([SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CALIBRATION, SYSEX_SUB_CMD.SUBCMD_STORE, SYSEX_SUFFIX])
+    }
+    else {
+      this.getInputOutputError()
+    }
+  }
+
   getInputOutputError(): Error {
     let error = new Error()
     if (!this.input)  error.message = 'Invalid input device'

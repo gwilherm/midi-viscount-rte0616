@@ -25,4 +25,8 @@ export class ConfigureComponent implements OnInit {
   onSend() {
     this._midiService.sendSetConfigurationRequest(this._midiConfig)
   }
+
+  onStore() {
+    this._midiService.sendStoreConfigurationRequest()
+  }
 }

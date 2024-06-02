@@ -110,6 +110,19 @@ target_compile_options(cc_service_test PRIVATE -g)
 configure_test(cc_service_test)
 
 
+# MemoryService test
+add_executable(memory_service_test
+        ${firmware_src_dir}/MemoryService.cpp
+        ${mocks_dir}/SerialPrinter.cpp
+        ${testsuite}/MemoryServiceTest.cpp)
+target_include_directories(memory_service_test PUBLIC
+        ${firmware_src_dir}
+        ${testsuite}
+        ${mocks_dir})
+target_compile_options(memory_service_test PRIVATE -g -DFW_VERSION="1.2.3")
+configure_test(memory_service_test)
+
+
 # FullChain test
 add_executable(full_chain_test
         ${firmware_src_dir}/MIDINotesService.cpp

@@ -3,11 +3,13 @@
 #define RTE0616_PEDALBOARD_H
 
 #include "CalibrationConfig.h"
+#include "EEPROMInterface.h"
 #include "MIDICCService.h"
 #include "MIDIConfig.h"
 #include "MIDINotesService.h"
 #include "MIDISysexService.h"
 #include "HardwareInterface.h"
+#include "MemoryService.h"
 #include "PedalInterface.h"
 #include "USBMIDIInterface.h"
 
@@ -26,9 +28,11 @@ public:
     static HardwareInterface _hwInterface;
     static PedalInterface _pedalInterface;
     static USBMIDIInterface _midiInterface;
+    static EEPROMInterface _eepromInterface;
     static MIDISysexService _sysexService;
     static MIDINotesService _notesService;
     static MIDICCService _ccService;
+    static MemoryService _memService;
 };
 
 #endif

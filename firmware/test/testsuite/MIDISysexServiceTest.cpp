@@ -5,6 +5,7 @@
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
 #include "USBMIDIMock.h"
+#include "MemoryServiceMock.h"
 #include "MIDISysexService.h"
 
 SerialPrinter Serial;
@@ -17,7 +18,7 @@ SerialPrinter Serial;
 
 class MIDISysexServiceTest : public ::testing::Test {
 public:
-    MIDISysexServiceTest() : _sysexService(_usbMidiMock, _midiConfig, _calibrationConfig)
+    MIDISysexServiceTest() : _sysexService(_usbMidiMock, _midiConfig, _calibrationConfig, _memServiceMock)
     {};
 
     void SetUp(void) {
@@ -29,6 +30,7 @@ protected:
     MidiConfig _midiConfig;
     CalibrationConfig _calibrationConfig;
     ::testing::StrictMock<USBMIDIMock> _usbMidiMock;
+    MemoryServiceMock _memServiceMock;
     MIDISysexService _sysexService;
 };
 
@@ -64,6 +66,15 @@ TEST_F(MIDISysexServiceTest, handle_get_midi_config)
 
     EXPECT_CALL(_usbMidiMock, sendSysEx(_, _))
     .WillOnce(Invoke(EXPECT_SYSEX(exp_resp2)));
+
+    _sysexService.handleSysEx(req, sizeof(req));
+}
+
+TEST_F(MIDISysexServiceTest, handle_store_midi_config)
+{
+    uint8_t req[] = { 0xF0, 0x31, 0x06, 0x16, 0x01, 0x03, 0xF7 };
+
+    EXPECT_CALL(_memServiceMock, updateMidiConfig());
 
     _sysexService.handleSysEx(req, sizeof(req));
 }
@@ -110,6 +121,15 @@ TEST_F(MIDISysexServiceTest, handle_get_calibration_config)
     _sysexService.handleSysEx(req, sizeof(req));
 }
 
+TEST_F(MIDISysexServiceTest, handle_store_calibration_config)
+{
+    uint8_t req[] = { 0xF0, 0x31, 0x06, 0x16, 0x02, 0x03, 0xF7 };
+
+    EXPECT_CALL(_memServiceMock, updateCalibration());
+
+    _sysexService.handleSysEx(req, sizeof(req));
+}
+
 TEST_F(MIDISysexServiceTest, handle_set_calibration_config)
 {
     uint8_t req[] = { 0xF0, 0x31, 0x06, 0x16, 0x02, 0x02, 0, 12, 0, 1, 0, 2, 0, 3, 0, 4, 0xF7 };
@@ -145,4 +165,13 @@ TEST_F(MIDISysexServiceTest, send_measures)
     .WillOnce(Invoke(EXPECT_SYSEX(exp_resp)));
 
     _sysexService.sendMeasures(measures, 8);
+}
+
+TEST_F(MIDISysexServiceTest, handle_factory_reset)
+{
+    uint8_t req[] = { 0xF0, 0x31, 0x06, 0x16, 0x7F, 0xF7 };
+
+    EXPECT_CALL(_memServiceMock, factoryReset());
+
+    _sysexService.handleSysEx(req, sizeof(req));
 }
