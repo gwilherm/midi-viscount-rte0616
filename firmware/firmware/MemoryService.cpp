@@ -50,7 +50,7 @@ bool MemoryService::checkDeviceInfo()
     return ret;
 }
 
-int MemoryService::updateDeviceInfo()
+void MemoryService::updateDeviceInfo()
 {
     int offset = offsetof(memory_storage_t, dev);
     device_info_store_t dev = {
@@ -70,11 +70,9 @@ int MemoryService::updateDeviceInfo()
     uint8_t* ptr = (uint8_t*)&dev;
     for (int i = 0; i < sizeof(device_info_store_t); i++)
         _eepromInterface.update(offset++, *ptr++);
-
-    return offset;
 }
 
-int MemoryService::updateMidiConfig()
+void MemoryService::updateMidiConfig()
 {
     int offset = offsetof(memory_storage_t, cfg);
 
@@ -86,11 +84,9 @@ int MemoryService::updateMidiConfig()
     uint8_t* ptr = (uint8_t*)&cfg;
     for (int i = 0; i < sizeof(cfg); i++)
         _eepromInterface.update(offset++, *ptr++);
-
-    return offset;
 }
 
-int MemoryService::updateCalibration()
+void MemoryService::updateCalibration()
 {
     int offset = offsetof(memory_storage_t, cal);
 
@@ -107,8 +103,6 @@ int MemoryService::updateCalibration()
     uint8_t* ptr = (uint8_t*)&cal;
     for (int i = 0; i < sizeof(calibration_store_t);  i++)
         _eepromInterface.update(offset++, *ptr++);
-
-    return offset;
 }
 
 void MemoryService::store()

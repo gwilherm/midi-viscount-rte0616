@@ -15,11 +15,11 @@ public:
     void store();
     void factoryReset();
 
-    int updateMidiConfig();
-    int updateCalibration();
+    void updateMidiConfig();
+    void updateCalibration();
 
 protected:
-    int updateDeviceInfo();
+    void updateDeviceInfo();
     bool checkDeviceInfo();
 
 protected:
