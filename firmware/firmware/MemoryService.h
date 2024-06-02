@@ -4,8 +4,9 @@
 #include "CalibrationConfig.h"
 #include "IEEPROMInterface.h"
 #include "MIDIConfig.h"
+#include "IMemoryService.h"
 
-class MemoryService
+class MemoryService : public IMemoryService
 {
 public:
     MemoryService(IEEPROMInterface& eepromInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig);

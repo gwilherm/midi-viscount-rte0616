@@ -31,6 +31,7 @@ typedef enum {
 	SUBCMD_NO_SUBCMD = 0,
 	SUBCMD_GET,
 	SUBCMD_SET,
+	SUBCMD_STORE,
 	SUBCMD_MAX
 } pdlbrd_sysex_sub_cmd_t;
 
@@ -43,10 +44,11 @@ bool isArrayEqual(const uint8_t* a, const uint8_t* b, const unsigned size)
 	return true;
 }
 
-MIDISysexService::MIDISysexService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig):
+MIDISysexService::MIDISysexService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig, IMemoryService& memoryService):
 	_usbMidiInterface(usbMidiInterface),
 	_midiConfig(midiConfig),
 	_calibrationConfig(calibrationConfig),
+	_memoryService(memoryService),
 	_shouldSendMeasures(false)
 {
     initSysexIdentResponse();
@@ -125,6 +127,14 @@ void MIDISysexService::handleGetConfiguration()
 	_usbMidiInterface.sendSysEx(sizeof(data), data);
 }
 
+void MIDISysexService::handleStoreConfiguration()
+{
+#if defined (FW_DEBUG)
+	Serial.println("handleStoreConfiguration");
+#endif
+	_memoryService.updateMidiConfig();
+}
+
 void MIDISysexService::handleSetConfiguration(uint8_t* data)
 {
 #if defined (FW_DEBUG)
@@ -159,6 +169,14 @@ void MIDISysexService::handleGetCalibration()
 	_usbMidiInterface.sendSysEx(sizeof(data), data);
 }
 
+void MIDISysexService::handleStoreCalibration()
+{
+#if defined (FW_DEBUG)
+	Serial.println("handleStoreCalibration");
+#endif
+	_memoryService.updateCalibration();
+}
+
 void MIDISysexService::handleSetCalibration(uint8_t* data)
 {
 #if defined (FW_DEBUG)
@@ -181,6 +199,14 @@ void MIDISysexService::handleSetCalibration(uint8_t* data)
 	handleGetCalibration();
 }
 
+void MIDISysexService::handleFactoryReset()
+{
+#if defined (FW_DEBUG)
+	Serial.println("handleFactoryReset");
+#endif
+	_memoryService.factoryReset();
+}
+
 void MIDISysexService::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data, int data_size)
 {
 #if defined (FW_DEBUG)
@@ -196,6 +222,8 @@ void MIDISysexService::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data
 		{
 			if (data[0] == SUBCMD_GET)
 				handleGetConfiguration();
+			if (data[0] == SUBCMD_STORE)
+				handleStoreConfiguration();
 			if ((data[0] == SUBCMD_SET) && (data_size == 3))
 				handleSetConfiguration(&data[1]);
 		}
@@ -205,6 +233,8 @@ void MIDISysexService::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data
 		{
 			if (data[0] == SUBCMD_GET)
 				handleGetCalibration();
+			if (data[0] == SUBCMD_STORE)
+				handleStoreCalibration();
 			if ((data[0] == SUBCMD_SET) && (data_size == 11))
 				handleSetCalibration(&data[1]);
 		}
@@ -212,6 +242,9 @@ void MIDISysexService::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data
 	case CMD_MEASURES_REQUEST:
 		if (data_size > 0)
 			handleMeasuresRequest(static_cast<pdlbrd_measures_request_t>(data[0]));
+		break;
+	case CMD_FACTORY_RESET:
+		handleFactoryReset();
 		break;
 	default:
 #if defined (FW_DEBUG)
