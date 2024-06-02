@@ -116,4 +116,8 @@ export class CalibrateComponent implements AfterViewInit {
   onSend() {
     this._midiService.sendSetCalibrationRequest(this._calibration)
   }
+
+  onStore() {
+    this._midiService.sendStoreCalibrationRequest()
+  }
 }
