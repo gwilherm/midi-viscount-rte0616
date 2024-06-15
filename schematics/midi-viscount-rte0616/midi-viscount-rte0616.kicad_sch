@@ -4,6 +4,9 @@
 	(generator_version "8.0")
 	(uuid "0229559f-f7f7-4794-b448-1eb3003d7ee5")
 	(paper "A4")
+	(title_block
+		(rev "1.1")
+	)
 	(lib_symbols
 		(symbol "Connector:Conn_01x01_Pin"
 			(pin_names
@@ -1426,6 +1429,12 @@
 		(uuid "5ab347aa-7bbd-4573-8c7a-ba3a2d6f032e")
 	)
 	(junction
+		(at 152.4 54.61)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "5b357648-c18b-48e2-90ee-fbbe40be0ff1")
+	)
+	(junction
 		(at 198.12 81.28)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1450,10 +1459,10 @@
 		(uuid "732f92c2-11df-4b16-8821-e3ce9f3a8721")
 	)
 	(junction
-		(at 151.13 52.07)
+		(at 152.4 52.07)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "7d510126-9483-4093-bba7-d38854ac413d")
+		(uuid "79aadd4f-51b0-47aa-9470-fd9497109ca0")
 	)
 	(junction
 		(at 111.76 67.31)
@@ -1468,12 +1477,6 @@
 		(uuid "8b45920c-51b3-47c3-95f8-83431cb85cd0")
 	)
 	(junction
-		(at 151.13 54.61)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "ea83c090-ed56-4fd8-8c8c-f8d4b887c91e")
-	)
-	(junction
 		(at 111.76 59.69)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1481,13 +1484,33 @@
 	)
 	(wire
 		(pts
-			(xy 92.71 57.15) (xy 138.43 57.15)
+			(xy 92.71 54.61) (xy 139.7 54.61)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "07dde1f9-d434-4b6c-bf13-568fc4e4568a")
+		(uuid "009b7684-bd4e-46b0-83bc-24a077d5dd26")
+	)
+	(wire
+		(pts
+			(xy 92.71 52.07) (xy 139.7 52.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "01bafed2-d730-4739-83bc-727da57234a7")
+	)
+	(wire
+		(pts
+			(xy 123.19 46.99) (xy 139.7 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "07e4346e-2dc4-4c6b-ad0f-c519ed646467")
 	)
 	(wire
 		(pts
@@ -1508,6 +1531,16 @@
 			(type default)
 		)
 		(uuid "0d69be93-2bef-4b83-9e13-f7460d504a11")
+	)
+	(wire
+		(pts
+			(xy 92.71 57.15) (xy 139.7 57.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0f36177e-0848-4f1c-b5e3-a37fc50888f6")
 	)
 	(wire
 		(pts
@@ -1561,16 +1594,6 @@
 	)
 	(wire
 		(pts
-			(xy 204.47 44.45) (xy 151.13 44.45)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1ae703cf-bbde-48ee-9e1c-75b20a89fd31")
-	)
-	(wire
-		(pts
 			(xy 43.18 54.61) (xy 43.18 33.02)
 		)
 		(stroke
@@ -1578,6 +1601,16 @@
 			(type default)
 		)
 		(uuid "1d2f0943-8213-432c-8b6b-b2d4772406d9")
+	)
+	(wire
+		(pts
+			(xy 152.4 44.45) (xy 204.47 44.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1ddd95af-1ef5-455d-a4cd-d724061cd00e")
 	)
 	(wire
 		(pts
@@ -1631,6 +1664,26 @@
 	)
 	(wire
 		(pts
+			(xy 152.4 46.99) (xy 198.12 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "27b76692-4aa8-4938-92d9-4c38677cae59")
+	)
+	(wire
+		(pts
+			(xy 152.4 52.07) (xy 152.4 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "344b5cc1-baf8-4353-9e0e-d364c36ebc0b")
+	)
+	(wire
+		(pts
 			(xy 110.49 59.69) (xy 111.76 59.69)
 		)
 		(stroke
@@ -1668,16 +1721,6 @@
 			(type default)
 		)
 		(uuid "41c783b1-efe9-4a2f-87c1-edd2c46a13b5")
-	)
-	(wire
-		(pts
-			(xy 198.12 46.99) (xy 151.13 46.99)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "46ee4c27-9bc8-462a-a30f-7a456bc000dc")
 	)
 	(wire
 		(pts
@@ -1721,16 +1764,6 @@
 	)
 	(wire
 		(pts
-			(xy 151.13 52.07) (xy 151.13 54.61)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "55e82a5a-bb14-47a5-9568-675b52067fb2")
-	)
-	(wire
-		(pts
 			(xy 40.64 59.69) (xy 40.64 35.56)
 		)
 		(stroke
@@ -1758,16 +1791,6 @@
 			(type default)
 		)
 		(uuid "5c51bbbc-0646-4de5-98e3-9569ff38598e")
-	)
-	(wire
-		(pts
-			(xy 151.13 52.07) (xy 168.91 52.07)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5c87a280-6ea4-43f4-95e5-f3ed95dbbc6c")
 	)
 	(wire
 		(pts
@@ -1801,13 +1824,13 @@
 	)
 	(wire
 		(pts
-			(xy 129.54 41.91) (xy 138.43 41.91)
+			(xy 152.4 54.61) (xy 152.4 57.15)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "63a132b9-f961-4aa1-9820-eda1285c3a74")
+		(uuid "5e67443e-5b1a-4157-9f10-44eda7569c1b")
 	)
 	(wire
 		(pts
@@ -1911,16 +1934,6 @@
 	)
 	(wire
 		(pts
-			(xy 151.13 54.61) (xy 151.13 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "88c3b5ea-e85e-4c65-bd55-b8f3afb8d169")
-	)
-	(wire
-		(pts
 			(xy 53.34 74.93) (xy 218.44 74.93)
 		)
 		(stroke
@@ -1928,6 +1941,16 @@
 			(type default)
 		)
 		(uuid "91b0f5c4-9ec1-4053-9005-9f853f8e11ab")
+	)
+	(wire
+		(pts
+			(xy 92.71 49.53) (xy 139.7 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "941050c2-3b50-4192-a5ca-f833038b1760")
 	)
 	(wire
 		(pts
@@ -1948,16 +1971,6 @@
 			(type default)
 		)
 		(uuid "98f0671a-d1a8-4f07-a632-5fd439759686")
-	)
-	(wire
-		(pts
-			(xy 151.13 49.53) (xy 187.96 49.53)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a2c56c22-e4d8-4ee0-acd0-bb956225be83")
 	)
 	(wire
 		(pts
@@ -1998,6 +2011,16 @@
 			(type default)
 		)
 		(uuid "b0106dcd-c4fa-420c-930a-61a3eaf96a8d")
+	)
+	(wire
+		(pts
+			(xy 152.4 49.53) (xy 187.96 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b5509023-26db-45de-b41c-05bd9e33a962")
 	)
 	(wire
 		(pts
@@ -2048,16 +2071,6 @@
 			(type default)
 		)
 		(uuid "c3d48118-edaa-4e76-8c6d-3d858ff8a9ce")
-	)
-	(wire
-		(pts
-			(xy 92.71 49.53) (xy 138.43 49.53)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c43ed182-bc7b-4c82-98d3-13bbd108bd71")
 	)
 	(wire
 		(pts
@@ -2141,13 +2154,13 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 44.45) (xy 138.43 44.45)
+			(xy 118.11 44.45) (xy 139.7 44.45)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "d2700f72-2549-414e-9032-9bc0bbdf5bf6")
+		(uuid "d31fe99c-b65d-4553-8313-431eaad7d17c")
 	)
 	(wire
 		(pts
@@ -2211,13 +2224,13 @@
 	)
 	(wire
 		(pts
-			(xy 92.71 52.07) (xy 138.43 52.07)
+			(xy 152.4 52.07) (xy 168.91 52.07)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "e67eb79f-ebf4-4337-a043-00af072548af")
+		(uuid "e1d1480e-7883-42e0-b3ed-57316082ba7a")
 	)
 	(wire
 		(pts
@@ -2228,6 +2241,16 @@
 			(type default)
 		)
 		(uuid "e8c8b00e-e5b0-431a-941f-e005c56662ab")
+	)
+	(wire
+		(pts
+			(xy 152.4 41.91) (xy 218.44 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e9c7e569-fd35-4861-b491-0a1d5e2ab87e")
 	)
 	(wire
 		(pts
@@ -2281,33 +2304,13 @@
 	)
 	(wire
 		(pts
-			(xy 123.19 46.99) (xy 138.43 46.99)
+			(xy 129.54 41.91) (xy 139.7 41.91)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "f8238cd1-d60a-4780-937e-074d33d07166")
-	)
-	(wire
-		(pts
-			(xy 92.71 54.61) (xy 138.43 54.61)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fad71fc5-7064-4cef-ac01-6614fa645114")
-	)
-	(wire
-		(pts
-			(xy 151.13 41.91) (xy 218.44 41.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fb7e38eb-5c25-466f-816c-c4b28e6d3af1")
+		(uuid "fa5d71fb-c936-424b-8f98-ce75710737dd")
 	)
 	(wire
 		(pts
@@ -2425,10 +2428,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "1097404d-ff17-49cd-8844-41b8b45c5eab")
 		(property "Reference" "J9"
-			(at 106.045 54.61 0)
+			(at 105.664 58.674 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2441,6 +2443,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -2490,10 +2493,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "1aab9c43-2c0b-492a-a990-cfd4b66a8511")
 		(property "Reference" "J2"
-			(at 99.695 62.23 0)
+			(at 99.822 66.294 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2501,11 +2503,12 @@
 			)
 		)
 		(property "Value" "Conn_01x01_Pin"
-			(at 99.695 64.77 0)
+			(at 101.346 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -2555,10 +2558,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "22089582-46e1-4b65-ae72-d1d114cfbde8")
-		(property "Reference" "J6"
-			(at 106.045 62.23 0)
+		(property "Reference" "J3"
+			(at 105.664 66.294 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2566,11 +2568,12 @@
 			)
 		)
 		(property "Value" "Conn_01x01_Pin"
-			(at 106.045 64.77 0)
+			(at 106.68 69.596 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -2606,7 +2609,7 @@
 		(instances
 			(project "midi-viscount-rte0616"
 				(path "/0229559f-f7f7-4794-b448-1eb3003d7ee5"
-					(reference "J6")
+					(reference "J3")
 					(unit 1)
 				)
 			)
@@ -2693,7 +2696,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "38a8c17a-c814-466e-a212-cfbe3cd61763")
 		(property "Reference" "U1"
 			(at 74.93 31.75 0)
@@ -2712,7 +2714,7 @@
 			)
 		)
 		(property "Footprint" "promicro:ProMicro"
-			(at 77.47 85.09 0)
+			(at 75.438 71.12 0)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -2898,10 +2900,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "52a3de8a-c071-42f1-88c7-5e5ed645465b")
-		(property "Reference" "J4"
-			(at 99.695 57.15 0)
+		(property "Reference" "J6"
+			(at 99.822 61.214 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2909,11 +2910,12 @@
 			)
 		)
 		(property "Value" "Conn_01x01_Pin"
-			(at 99.695 59.69 0)
+			(at 97.79 65.532 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -2949,7 +2951,7 @@
 		(instances
 			(project "midi-viscount-rte0616"
 				(path "/0229559f-f7f7-4794-b448-1eb3003d7ee5"
-					(reference "J4")
+					(reference "J6")
 					(unit 1)
 				)
 			)
@@ -2963,10 +2965,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "53350e4d-d65f-4ee4-a42b-342eb6dfb8c7")
-		(property "Reference" "J8"
-			(at 106.045 57.15 0)
+		(property "Reference" "J7"
+			(at 105.664 61.214 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2974,11 +2975,12 @@
 			)
 		)
 		(property "Value" "Conn_01x01_Pin"
-			(at 106.045 59.69 0)
+			(at 120.65 61.722 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -3014,7 +3016,7 @@
 		(instances
 			(project "midi-viscount-rte0616"
 				(path "/0229559f-f7f7-4794-b448-1eb3003d7ee5"
-					(reference "J8")
+					(reference "J7")
 					(unit 1)
 				)
 			)
@@ -3028,10 +3030,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "54889c31-8e8f-4a91-a7e0-e0e3d2b8e192")
-		(property "Reference" "J11"
-			(at 50.165 46.99 0)
+		(property "Reference" "J12"
+			(at 49.784 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3039,11 +3040,12 @@
 			)
 		)
 		(property "Value" "Conn_01x01_Pin"
-			(at 50.165 49.53 0)
+			(at 27.178 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -3079,7 +3081,7 @@
 		(instances
 			(project "midi-viscount-rte0616"
 				(path "/0229559f-f7f7-4794-b448-1eb3003d7ee5"
-					(reference "J11")
+					(reference "J12")
 					(unit 1)
 				)
 			)
@@ -3093,10 +3095,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "5cd76eb6-2301-4a95-bf1a-f3e1a63f6c1a")
-		(property "Reference" "J12"
-			(at 43.815 44.45 0)
+		(property "Reference" "J11"
+			(at 45.212 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3104,11 +3105,12 @@
 			)
 		)
 		(property "Value" "Conn_01x01_Pin"
-			(at 43.815 46.99 0)
+			(at 22.352 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -3144,7 +3146,7 @@
 		(instances
 			(project "midi-viscount-rte0616"
 				(path "/0229559f-f7f7-4794-b448-1eb3003d7ee5"
-					(reference "J12")
+					(reference "J11")
 					(unit 1)
 				)
 			)
@@ -3158,10 +3160,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "634ce591-cc9b-46d8-9fb7-afe3a768593d")
 		(property "Reference" "J13"
-			(at 43.815 46.99 0)
+			(at 45.212 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3169,11 +3170,12 @@
 			)
 		)
 		(property "Value" "Conn_01x01_Pin"
-			(at 43.815 49.53 0)
+			(at 27.178 56.896 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -3362,10 +3364,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "a496032c-f2bb-4ce5-aeec-b71fc1dfbdde")
-		(property "Reference" "J3"
-			(at 99.695 59.69 0)
+		(property "Reference" "J4"
+			(at 99.822 63.754 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3373,11 +3374,12 @@
 			)
 		)
 		(property "Value" "Conn_01x01_Pin"
-			(at 99.695 62.23 0)
+			(at 96.012 71.12 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -3413,7 +3415,7 @@
 		(instances
 			(project "midi-viscount-rte0616"
 				(path "/0229559f-f7f7-4794-b448-1eb3003d7ee5"
-					(reference "J3")
+					(reference "J4")
 					(unit 1)
 				)
 			)
@@ -3427,10 +3429,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "a4c34e7b-18b5-4664-878e-973e1632f12f")
 		(property "Reference" "J10"
-			(at 50.165 44.45 0)
+			(at 49.784 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3438,11 +3439,12 @@
 			)
 		)
 		(property "Value" "Conn_01x01_Pin"
-			(at 50.165 46.99 0)
+			(at 22.606 52.578 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -3492,10 +3494,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "a7f7f9c8-c7ea-4cfe-9a36-0c2e9f2d9673")
-		(property "Reference" "J5"
-			(at 99.695 54.61 0)
+		(property "Reference" "J8"
+			(at 99.822 58.674 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3508,6 +3509,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -3543,7 +3545,7 @@
 		(instances
 			(project "midi-viscount-rte0616"
 				(path "/0229559f-f7f7-4794-b448-1eb3003d7ee5"
-					(reference "J5")
+					(reference "J8")
 					(unit 1)
 				)
 			)
@@ -3551,16 +3553,15 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_02x07_Odd_Even")
-		(at 143.51 49.53 0)
+		(at 147.32 49.53 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "c949012d-95eb-4563-bc9e-1f8c95dccc90")
 		(property "Reference" "J1"
-			(at 144.78 35.56 0)
+			(at 146.05 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3568,7 +3569,7 @@
 			)
 		)
 		(property "Value" "Conn_02x07_Odd_Even"
-			(at 144.78 38.1 0)
+			(at 146.05 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3576,7 +3577,7 @@
 			)
 		)
 		(property "Footprint" "Connector_IDC:IDC-Header_2x07_P2.54mm_Vertical"
-			(at 143.51 49.53 0)
+			(at 147.32 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3585,7 +3586,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 143.51 49.53 0)
+			(at 147.32 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3594,7 +3595,7 @@
 			)
 		)
 		(property "Description" "Generic connector, double row, 02x07, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 143.51 49.53 0)
+			(at 147.32 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3661,10 +3662,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "e0a78f27-eb18-4789-9204-dcbabc3572e0")
-		(property "Reference" "J7"
-			(at 106.045 59.69 0)
+		(property "Reference" "J5"
+			(at 105.664 63.754 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3672,11 +3672,12 @@
 			)
 		)
 		(property "Value" "Conn_01x01_Pin"
-			(at 106.045 62.23 0)
+			(at 97.79 73.66 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -3712,7 +3713,7 @@
 		(instances
 			(project "midi-viscount-rte0616"
 				(path "/0229559f-f7f7-4794-b448-1eb3003d7ee5"
-					(reference "J7")
+					(reference "J5")
 					(unit 1)
 				)
 			)
