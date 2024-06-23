@@ -2,10 +2,6 @@
 
 MIDIfied Viscount 270 Pedalboard "RTE0616"
 
-## Schematics
-
-![schematics](doc/midi-viscount-rte0616.svg)
-
 ## Compile and flash
 
 Compile using arduino-cli
@@ -50,3 +46,9 @@ cd rte0616-config-app
 npm run build:desktop
 npm run start:desktop
 ```
+
+# Schematics
+
+![](doc/midi-viscount-rte0616-sch.png)
+
+![](doc/midi-viscount-rte0616-pcb.png)

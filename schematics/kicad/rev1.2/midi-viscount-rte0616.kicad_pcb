@@ -7,6 +7,9 @@
 		(legacy_teardrops no)
 	)
 	(paper "A4")
+	(title_block
+		(rev "1.3")
+	)
 	(layers
 		(0 "F.Cu" signal)
 		(31 "B.Cu" signal)
@@ -73,11 +76,11 @@
 			(plotinvisibletext no)
 			(sketchpadsonfab no)
 			(subtractmaskfromsilk no)
-			(outputformat 1)
+			(outputformat 5)
 			(mirror no)
 			(drillshape 0)
 			(scaleselection 1)
-			(outputdirectory "/home/gwilherm/Bureau/gerber/")
+			(outputdirectory "../../doc/")
 		)
 	)
 	(net 0 "")
@@ -106,6 +109,112 @@
 	(net 23 "Net-(J1-Pin_11)")
 	(net 24 "Net-(J1-Pin_2)")
 	(net 25 "Net-(J1-Pin_5)")
+	(footprint "MountingHole:MountingHole_3.2mm_M3_ISO7380"
+		(layer "F.Cu")
+		(uuid "065ceed1-cee7-43ec-a420-a60606c2dce0")
+		(at 47.6 39)
+		(descr "Mounting Hole 3.2mm, no annular, M3, ISO7380")
+		(tags "mounting hole 3.2mm no annular m3 iso7380")
+		(property "Reference" "REF**"
+			(at 0 -3.85 0)
+			(layer "F.SilkS")
+			(uuid "95bcd080-1088-4c65-b5ce-88ed8432382a")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "MountingHole_3.2mm_M3_ISO7380"
+			(at 0 3.85 0)
+			(layer "F.Fab")
+			(uuid "502f8604-de2a-46f9-a7e8-d1ede1a30593")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "46609da0-cf18-4227-acfc-42bdaf4448eb")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "301409f1-91f4-4059-bfa4-be9d39d5c97c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "c7d8abda-5483-426c-80a6-874d2711a23e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr exclude_from_pos_files exclude_from_bom)
+		(fp_circle
+			(center 0 0)
+			(end 2.85 0)
+			(stroke
+				(width 0.15)
+				(type solid)
+			)
+			(fill none)
+			(layer "Cmts.User")
+			(uuid "f74bb6e0-e795-4a6d-b410-1d5c21423dac")
+		)
+		(fp_circle
+			(center 0 0)
+			(end 3.1 0)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(fill none)
+			(layer "F.CrtYd")
+			(uuid "d605d11a-1fb2-4537-b97f-35b01719aa0b")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(uuid "eb6d7563-3d2d-4c22-9f46-1e150ce295b0")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "" np_thru_hole circle
+			(at 0 0)
+			(size 3.2 3.2)
+			(drill 3.2)
+			(layers "*.Cu" "*.Mask")
+			(uuid "97e32d89-80c0-4bb9-8b26-8de8f28f8c8c")
+		)
+	)
 	(footprint "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
 		(layer "F.Cu")
 		(uuid "1257e823-9001-4e8e-902b-4441774c7872")
@@ -357,6 +466,112 @@
 			(rotate
 				(xyz 0 0 0)
 			)
+		)
+	)
+	(footprint "MountingHole:MountingHole_3.2mm_M3_ISO7380"
+		(layer "F.Cu")
+		(uuid "1b1bac8e-40c2-49d1-84ca-83e81ba82d06")
+		(at 134.4 39)
+		(descr "Mounting Hole 3.2mm, no annular, M3, ISO7380")
+		(tags "mounting hole 3.2mm no annular m3 iso7380")
+		(property "Reference" "REF**"
+			(at 0 -3.85 0)
+			(layer "F.SilkS")
+			(uuid "e90a16de-c405-4d74-bcaf-b6a3bd9f0f9b")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "MountingHole_3.2mm_M3_ISO7380"
+			(at 0 3.85 0)
+			(layer "F.Fab")
+			(uuid "26f682b2-ccf5-4416-8416-8d321c085580")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "a0ea09f8-1e3e-4706-941a-aa36ca70030e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "99606693-a75b-4959-bc09-b6570efa98d8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "932736ad-c190-420a-91d2-5af91f0d770e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr exclude_from_pos_files exclude_from_bom)
+		(fp_circle
+			(center 0 0)
+			(end 2.85 0)
+			(stroke
+				(width 0.15)
+				(type solid)
+			)
+			(fill none)
+			(layer "Cmts.User")
+			(uuid "43ff1b3b-4f16-43de-845d-cd65fdc50360")
+		)
+		(fp_circle
+			(center 0 0)
+			(end 3.1 0)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(fill none)
+			(layer "F.CrtYd")
+			(uuid "1b73ebd1-4677-47eb-9e00-c06a7e2ccc7e")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(uuid "5e4dbe41-fb8b-4c0c-bff4-e5afad1854dc")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "" np_thru_hole circle
+			(at 0 0)
+			(size 3.2 3.2)
+			(drill 3.2)
+			(layers "*.Cu" "*.Mask")
+			(uuid "6f7b46c8-c8c3-4bd6-91aa-1c5c562d0750")
 		)
 	)
 	(footprint "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -1371,6 +1586,112 @@
 			)
 		)
 	)
+	(footprint "MountingHole:MountingHole_3.2mm_M3_ISO7380"
+		(layer "F.Cu")
+		(uuid "42077b3b-5443-4116-8753-b655df44d421")
+		(at 134.4 81.6)
+		(descr "Mounting Hole 3.2mm, no annular, M3, ISO7380")
+		(tags "mounting hole 3.2mm no annular m3 iso7380")
+		(property "Reference" "REF**"
+			(at 0 -3.85 0)
+			(layer "F.SilkS")
+			(uuid "522ed82c-01bb-41c7-8eb2-e519a07fe9c6")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "MountingHole_3.2mm_M3_ISO7380"
+			(at 0 3.85 0)
+			(layer "F.Fab")
+			(uuid "f4ab1544-0582-45cb-a5d1-355ccffbef23")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "016c7d73-a069-4419-94f5-aaeae8420816")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "b4299d0b-abec-4af7-b972-35865c9c52fd")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "3d79da37-8dad-42a5-9954-156c4bcd1a45")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr exclude_from_pos_files exclude_from_bom)
+		(fp_circle
+			(center 0 0)
+			(end 2.85 0)
+			(stroke
+				(width 0.15)
+				(type solid)
+			)
+			(fill none)
+			(layer "Cmts.User")
+			(uuid "c7abb31b-7e90-4e6d-a98c-9de3dccc9388")
+		)
+		(fp_circle
+			(center 0 0)
+			(end 3.1 0)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(fill none)
+			(layer "F.CrtYd")
+			(uuid "6836ef18-6a45-491b-9d7c-d9d8678d93d5")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(uuid "f263e5ff-2aa3-4a08-b56b-9b6d5ebfe3cd")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "" np_thru_hole circle
+			(at 0 0)
+			(size 3.2 3.2)
+			(drill 3.2)
+			(layers "*.Cu" "*.Mask")
+			(uuid "06a9ed81-2f55-46bf-be26-105096042bb7")
+		)
+	)
 	(footprint "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
 		(layer "F.Cu")
 		(uuid "44f65584-0e37-44f0-8b41-cd4553bfbef2")
@@ -1877,112 +2198,6 @@
 			)
 		)
 	)
-	(footprint "MountingHole:MountingHole_2.2mm_M2_ISO7380"
-		(layer "F.Cu")
-		(uuid "65352fc1-4f06-4838-bb83-a60827f2c4a6")
-		(at 47.6 81.6)
-		(descr "Mounting Hole 2.2mm, no annular, M2, ISO7380")
-		(tags "mounting hole 2.2mm no annular m2 iso7380")
-		(property "Reference" "REF**"
-			(at -13 -2.1 0)
-			(layer "F.SilkS")
-			(uuid "20461b41-5530-4c0f-b055-2af4d43a85ff")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Value" "MountingHole_2.2mm_M2_ISO7380"
-			(at -15.6 6.4 0)
-			(layer "F.Fab")
-			(uuid "06950853-1152-463a-b4a7-180ae0adad17")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_ISO7380"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "2d771bf4-791b-4ae5-87cb-47ed151a81c1")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "638ea0a6-6582-441c-8eaf-585dd2baad21")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "f193ee23-847c-4fcc-8a14-0966db3d1e7e")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(attr exclude_from_pos_files exclude_from_bom)
-		(fp_circle
-			(center 0 0)
-			(end 1.75 0)
-			(stroke
-				(width 0.15)
-				(type solid)
-			)
-			(fill none)
-			(layer "Cmts.User")
-			(uuid "217861cf-87bc-46aa-8dcf-68e241002638")
-		)
-		(fp_circle
-			(center 0 0)
-			(end 2 0)
-			(stroke
-				(width 0.05)
-				(type solid)
-			)
-			(fill none)
-			(layer "F.CrtYd")
-			(uuid "2d781860-af1c-4eed-900b-ac3ce459628c")
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "14898d45-2c3f-4deb-aca4-8d0a37981a66")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(pad "" np_thru_hole circle
-			(at 0 0)
-			(size 2.2 2.2)
-			(drill 2.2)
-			(layers "*.Cu" "*.Mask")
-			(uuid "ce16f828-4bb7-446b-8ee1-cb424aaa3137")
-		)
-	)
 	(footprint "promicro:ProMicro"
 		(layer "F.Cu")
 		(uuid "70a58c87-13f2-4494-976f-83754d3a6c83")
@@ -2476,6 +2691,112 @@
 			(pinfunction "RAW")
 			(pintype "power_out")
 			(uuid "4a950393-210b-4484-a589-ef61492467d3")
+		)
+	)
+	(footprint "MountingHole:MountingHole_3.2mm_M3_ISO7380"
+		(layer "F.Cu")
+		(uuid "7af91e53-19ae-43c0-96cd-1082032bfe33")
+		(at 47.6 81.6)
+		(descr "Mounting Hole 3.2mm, no annular, M3, ISO7380")
+		(tags "mounting hole 3.2mm no annular m3 iso7380")
+		(property "Reference" "REF**"
+			(at 0 -3.85 0)
+			(layer "F.SilkS")
+			(uuid "eba79884-c350-422e-b625-cff0c7d7f6af")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "MountingHole_3.2mm_M3_ISO7380"
+			(at 0 3.85 0)
+			(layer "F.Fab")
+			(uuid "a97720be-efe5-44fb-94a7-66c5c423a9c4")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "a8cc280d-a15a-45e9-93fd-c1027866d3dd")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "0ed516b9-7626-40d5-b717-09d389967713")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "41faa5ec-8338-4972-bfed-44d16feb1a71")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr exclude_from_pos_files exclude_from_bom)
+		(fp_circle
+			(center 0 0)
+			(end 2.85 0)
+			(stroke
+				(width 0.15)
+				(type solid)
+			)
+			(fill none)
+			(layer "Cmts.User")
+			(uuid "c4b5421b-c7a7-4f27-8b37-2e0d32ab2995")
+		)
+		(fp_circle
+			(center 0 0)
+			(end 3.1 0)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(fill none)
+			(layer "F.CrtYd")
+			(uuid "66b68765-383b-4c19-9521-15e0e25b7331")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(uuid "e56257a7-a1d4-42ca-90ff-4408d219aac6")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "" np_thru_hole circle
+			(at 0 0)
+			(size 3.2 3.2)
+			(drill 3.2)
+			(layers "*.Cu" "*.Mask")
+			(uuid "aec651e5-0b37-47f6-ad3b-dbd8899bc457")
 		)
 	)
 	(footprint "Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical"
@@ -3595,112 +3916,6 @@
 			(rotate
 				(xyz 0 0 0)
 			)
-		)
-	)
-	(footprint "MountingHole:MountingHole_2.2mm_M2_ISO7380"
-		(layer "F.Cu")
-		(uuid "ad9d105e-4348-4d33-aa76-90b188bca7bf")
-		(at 47.6 39)
-		(descr "Mounting Hole 2.2mm, no annular, M2, ISO7380")
-		(tags "mounting hole 2.2mm no annular m2 iso7380")
-		(property "Reference" "REF**"
-			(at -10.9 -4.5 0)
-			(layer "F.SilkS")
-			(uuid "bc985df8-67b5-4945-89d8-8420776e4799")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Value" "MountingHole_2.2mm_M2_ISO7380"
-			(at -19.8 2.8 0)
-			(layer "F.Fab")
-			(uuid "d6865eb1-38f7-4f92-a0b9-62e0ea27e8de")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_ISO7380"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "9e2153c7-964a-401d-b703-e6d4770ff7e6")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "ffdcc81f-0938-4356-9b77-b8afb6e71ee7")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "909a7044-8376-4bfb-be33-95821db20890")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(attr exclude_from_pos_files exclude_from_bom)
-		(fp_circle
-			(center 0 0)
-			(end 1.75 0)
-			(stroke
-				(width 0.15)
-				(type solid)
-			)
-			(fill none)
-			(layer "Cmts.User")
-			(uuid "a898a236-5403-4007-8552-b2d43777afe2")
-		)
-		(fp_circle
-			(center 0 0)
-			(end 2 0)
-			(stroke
-				(width 0.05)
-				(type solid)
-			)
-			(fill none)
-			(layer "F.CrtYd")
-			(uuid "9b89bc8c-1fbc-4bc0-93f6-f70428f0b4d3")
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "18e37653-3eb5-429b-af57-25e7b5f12389")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(pad "" np_thru_hole circle
-			(at 0 0)
-			(size 2.2 2.2)
-			(drill 2.2)
-			(layers "*.Cu" "*.Mask")
-			(uuid "f5ef4748-3d53-426f-b266-65ea2f695e92")
 		)
 	)
 	(footprint "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -4968,112 +5183,6 @@
 			)
 		)
 	)
-	(footprint "MountingHole:MountingHole_2.2mm_M2_ISO7380"
-		(layer "F.Cu")
-		(uuid "e5cb8558-4a2e-4abe-b0cc-72baab950c4c")
-		(at 134.4 81.6)
-		(descr "Mounting Hole 2.2mm, no annular, M2, ISO7380")
-		(tags "mounting hole 2.2mm no annular m2 iso7380")
-		(property "Reference" "REF**"
-			(at 7.9 -1.9 0)
-			(layer "F.SilkS")
-			(uuid "ecf5e628-e123-4bbd-b869-4f0c14642c16")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Value" "MountingHole_2.2mm_M2_ISO7380"
-			(at 1.3 8.3 0)
-			(layer "F.Fab")
-			(uuid "34110e59-b348-4d0e-bda6-21230a8ec850")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_ISO7380"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "a9527bf3-ac43-4c72-84e4-53365418fab9")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "9b16deda-6f75-4ab6-b1b1-a3507ee1506e")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "cc872a83-4def-475d-8814-45de31cf4151")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(attr exclude_from_pos_files exclude_from_bom)
-		(fp_circle
-			(center 0 0)
-			(end 1.75 0)
-			(stroke
-				(width 0.15)
-				(type solid)
-			)
-			(fill none)
-			(layer "Cmts.User")
-			(uuid "c0c72cba-7132-45d0-b2f8-7e7b3b52e2cd")
-		)
-		(fp_circle
-			(center 0 0)
-			(end 2 0)
-			(stroke
-				(width 0.05)
-				(type solid)
-			)
-			(fill none)
-			(layer "F.CrtYd")
-			(uuid "8bfd4b8b-3199-40e2-b4de-cd02e1ab4dc6")
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "349012cd-3c83-4589-9720-a1aa7dbc9a87")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(pad "" np_thru_hole circle
-			(at 0 0)
-			(size 2.2 2.2)
-			(drill 2.2)
-			(layers "*.Cu" "*.Mask")
-			(uuid "f9a272d9-4d71-4cd1-9984-d8f563284774")
-		)
-	)
 	(footprint "Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical"
 		(layer "F.Cu")
 		(uuid "ee4d1e10-6d73-4ace-9720-c76149dc6d2e")
@@ -5348,112 +5457,6 @@
 			(rotate
 				(xyz 0 0 0)
 			)
-		)
-	)
-	(footprint "MountingHole:MountingHole_2.2mm_M2_ISO7380"
-		(layer "F.Cu")
-		(uuid "f925210e-2029-4d79-986b-6b7867e89b90")
-		(at 134.4 39)
-		(descr "Mounting Hole 2.2mm, no annular, M2, ISO7380")
-		(tags "mounting hole 2.2mm no annular m2 iso7380")
-		(property "Reference" "REF**"
-			(at 7.8 -2.75 0)
-			(layer "F.SilkS")
-			(uuid "11414cc7-7881-446d-9f36-d92bc6c00e17")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Value" "MountingHole_2.2mm_M2_ISO7380"
-			(at 18.4 3.1 0)
-			(layer "F.Fab")
-			(uuid "57ff4c02-93c5-4046-8222-dd1e0360bbaa")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_ISO7380"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "37987222-fb22-4883-9993-6fe26d8ae969")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "95a6197c-3f6a-4636-b00b-4819e7771775")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "ccd0eb74-efec-4bcc-aa9b-2189d43a2440")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(attr exclude_from_pos_files exclude_from_bom)
-		(fp_circle
-			(center 0 0)
-			(end 1.75 0)
-			(stroke
-				(width 0.15)
-				(type solid)
-			)
-			(fill none)
-			(layer "Cmts.User")
-			(uuid "d74adc23-4665-4806-89a8-93a273c9bbbd")
-		)
-		(fp_circle
-			(center 0 0)
-			(end 2 0)
-			(stroke
-				(width 0.05)
-				(type solid)
-			)
-			(fill none)
-			(layer "F.CrtYd")
-			(uuid "b80041a7-0818-44ab-81a8-6048e4752b68")
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "e686d0ad-91de-49be-b9e8-4499764d3a99")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(pad "" np_thru_hole circle
-			(at 0 0)
-			(size 2.2 2.2)
-			(drill 2.2)
-			(layers "*.Cu" "*.Mask")
-			(uuid "5bd9e601-dbf9-4069-b78b-ef7fe2eda6f7")
 		)
 	)
 	(gr_rect
