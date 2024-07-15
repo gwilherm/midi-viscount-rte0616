@@ -9,17 +9,16 @@
 class MIDINotesService {
 public:
     MIDINotesService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, IHardwareInterface& hwInterface);
-    virtual ~MIDINotesService() = default;
 
     void setup() {};
-    void loop();
+    virtual void loop() = 0;
 
-private:
+    void sendNote(IMIDIInterface::note_state_t state, pdlbrd_key_t key);
+
+protected:
     IMIDIInterface& _usbMidiInterface;
     MidiConfig& _midiConfig;
     IHardwareInterface& _hwInterface;
-
-    pdlbrd_key_t _currentKey;
 };
 
 #endif

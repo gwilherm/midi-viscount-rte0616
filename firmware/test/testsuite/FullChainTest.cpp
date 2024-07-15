@@ -3,7 +3,7 @@
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
 #include "HardwareInterface.h"
-#include "MIDINotesService.h"
+#include "MonodicNotesService.h"
 #include "USBMIDIMock.h"
 #include "SerialPrinter.h"
 
@@ -24,7 +24,7 @@ protected:
     MidiConfig _midiConfig;
     CalibrationConfig _calibrationConfig;
     HardwareInterface _hwInterface;
-    MIDINotesService _notesService;
+    MonodicNotesService _notesService;
 };
 
 std::unique_ptr<NiceMock<ArduinoMock>> ArduinoTestFixture::_arduinoMock;
@@ -53,7 +53,7 @@ TEST_F(FullChainTest, note_c2_on_off)
     EXPECT_CALL(*_arduinoMock, analogRead)
         .WillOnce(Return(830)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
 
-    EXPECT_CALL(_usbMidiMock, sendNoteOn(36, 1));
+    EXPECT_CALL(_usbMidiMock, sendNote(IMIDIInterface::NOTE_ON, 36, 1));
 
     _hwInterface.loop();
     _notesService.loop();
@@ -73,7 +73,7 @@ TEST_F(FullChainTest, note_c2_on_off)
     EXPECT_CALL(*_arduinoMock, analogRead)
         .WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
 
-    EXPECT_CALL(_usbMidiMock, sendNoteOff(36, 1));
+    EXPECT_CALL(_usbMidiMock, sendNote(IMIDIInterface::NOTE_OFF, 36, 1));
 
     _hwInterface.loop();
     _notesService.loop();
@@ -98,7 +98,7 @@ TEST_F(FullChainTest, note_f3_on_off)
     EXPECT_CALL(*_arduinoMock, analogRead)
         .WillOnce(Return(1023)).WillOnce(Return(326)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
 
-    EXPECT_CALL(_usbMidiMock, sendNoteOn(53, 1));
+    EXPECT_CALL(_usbMidiMock, sendNote(IMIDIInterface::NOTE_ON, 53, 1));
 
     _hwInterface.loop();
     _notesService.loop();
@@ -118,7 +118,7 @@ TEST_F(FullChainTest, note_f3_on_off)
     EXPECT_CALL(*_arduinoMock, analogRead)
         .WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023)).WillOnce(Return(1023));
 
-    EXPECT_CALL(_usbMidiMock, sendNoteOff(53, 1));
+    EXPECT_CALL(_usbMidiMock, sendNote(IMIDIInterface::NOTE_OFF, 53, 1));
 
     _hwInterface.loop();
     _notesService.loop();

@@ -18,11 +18,9 @@ public:
 
     virtual void setHandleSystemExclusive(void (*fptr)(uint8_t * array, unsigned size));
 
-    virtual void sendNoteOn(uint8_t inNoteNumber,
-                            uint8_t inChannel);
-
-    virtual void sendNoteOff(uint8_t inNoteNumber,
-                            uint8_t inChannel);
+    virtual void sendNote(noteState state,
+                          uint8_t inNoteNumber,
+                          uint8_t inChannel);
 
     virtual void sendCC(uint8_t inControlNumber,
                         uint8_t inControlValue,

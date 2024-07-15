@@ -82,18 +82,34 @@ target_compile_options(sysex_service_test PRIVATE -g -DFW_DEBUG -DFW_VERSION="1.
 configure_test(sysex_service_test)
 
 
-# MIDINotesService test
-add_executable(notes_service_test
+# MonodicNotesService test
+add_executable(mono_notes_service_test
         ${firmware_src_dir}/MIDINotesService.cpp
+        ${firmware_src_dir}/MonodicNotesService.cpp
         ${firmware_src_dir}/pdlbrdkeys.cpp
         ${mocks_dir}/SerialPrinter.cpp
-        ${testsuite}/MIDINotesServiceTest.cpp)
-target_include_directories(notes_service_test PUBLIC
+        ${testsuite}/MonodicNotesServiceTest.cpp)
+target_include_directories(mono_notes_service_test PUBLIC
         ${firmware_src_dir}
         ${testsuite}
         ${mocks_dir})
-target_compile_options(notes_service_test PRIVATE -g -DFW_DEBUG)
-configure_test(notes_service_test)
+target_compile_options(mono_notes_service_test PRIVATE -g -DFW_DEBUG)
+configure_test(mono_notes_service_test)
+
+
+# PolyphonicNotesService test
+add_executable(poly_notes_service_test
+        ${firmware_src_dir}/MIDINotesService.cpp
+        ${firmware_src_dir}/PolyphonicNotesService.cpp
+        ${firmware_src_dir}/pdlbrdkeys.cpp
+        ${mocks_dir}/SerialPrinter.cpp
+        ${testsuite}/PolyphonicNotesServiceTest.cpp)
+target_include_directories(poly_notes_service_test PUBLIC
+        ${firmware_src_dir}
+        ${testsuite}
+        ${mocks_dir})
+target_compile_options(poly_notes_service_test PRIVATE -g -DFW_DEBUG)
+configure_test(poly_notes_service_test)
 
 
 # MIDICCService test
@@ -126,6 +142,7 @@ configure_test(memory_service_test)
 # FullChain test
 add_executable(full_chain_test
         ${firmware_src_dir}/MIDINotesService.cpp
+        ${firmware_src_dir}/MonodicNotesService.cpp
         ${firmware_src_dir}/HardwareInterface.cpp
         ${firmware_src_dir}/pdlbrdkeys.cpp
         ${mocks_dir}/Arduino.cpp

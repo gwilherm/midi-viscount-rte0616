@@ -2,7 +2,7 @@
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
 #include "HardwareInterfaceMock.h"
-#include "MIDINotesService.h"
+#include "MonodicNotesService.h"
 #include "USBMIDIMock.h"
 #include "SerialPrinter.h"
 #include <cstdint>
@@ -11,9 +11,9 @@ SerialPrinter Serial;
 
 using namespace ::testing;
 
-class MIDINotesServiceTest : public Test {
+class MonodicNotesServiceTest : public Test {
 public:
-    MIDINotesServiceTest():
+    MonodicNotesServiceTest():
         _midiConfig(1, 3),
         _notesService(_usbMidiMock, _midiConfig, _hwInterfaceMock)
     {};
@@ -25,18 +25,18 @@ protected:
     MidiConfig _midiConfig;
     CalibrationConfig _calibrationConfig;
     HardwareInterfaceMock _hwInterfaceMock;
-    MIDINotesService _notesService;
+    MonodicNotesService _notesService;
 
     int8_t _segmentedValues[NB_PIN];
 };
 
-TEST_F(MIDINotesServiceTest, setup)
+TEST_F(MonodicNotesServiceTest, setup)
 {
     _notesService.setup();
 }
 
 // Press and release every pedal from C2 to D4
-TEST_F(MIDINotesServiceTest, note_each_on_off)
+TEST_F(MonodicNotesServiceTest, monodic_note_each_on_off)
 {
     int expected_note = 36; // C2
     for (int seg = 0; seg < PDLBRD_NB_SEG; seg++)
@@ -47,7 +47,7 @@ TEST_F(MIDINotesServiceTest, note_each_on_off)
             EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
             .WillOnce(Return(_segmentedValues));
 
-            EXPECT_CALL(_usbMidiMock, sendNoteOn(expected_note, 1));
+            EXPECT_CALL(_usbMidiMock, sendNote(IMIDIInterface::NOTE_ON, expected_note, 1));
             
             _notesService.loop();
 
@@ -55,7 +55,7 @@ TEST_F(MIDINotesServiceTest, note_each_on_off)
             EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
             .WillOnce(Return(_segmentedValues));
 
-            EXPECT_CALL(_usbMidiMock, sendNoteOff(expected_note, 1));
+            EXPECT_CALL(_usbMidiMock, sendNote(IMIDIInterface::NOTE_OFF, expected_note, 1));
 
             _notesService.loop();
 
@@ -65,7 +65,7 @@ TEST_F(MIDINotesServiceTest, note_each_on_off)
 }
 
 // Press every pedal from C2 to D4 but do not release any
-TEST_F(MIDINotesServiceTest, monodic_up_prio)
+TEST_F(MonodicNotesServiceTest, monodic_up_prio)
 {
     int expected_note = 36; // C2
     for (int seg = 0; seg < PDLBRD_NB_SEG; seg++)
@@ -78,7 +78,7 @@ TEST_F(MIDINotesServiceTest, monodic_up_prio)
                 EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
                 .WillOnce(Return(_segmentedValues));
 
-                EXPECT_CALL(_usbMidiMock, sendNoteOff(expected_note-1, 1));
+                EXPECT_CALL(_usbMidiMock, sendNote(IMIDIInterface::NOTE_OFF, expected_note-1, 1));
 
                 _notesService.loop();
             }
@@ -87,7 +87,7 @@ TEST_F(MIDINotesServiceTest, monodic_up_prio)
             EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
             .WillOnce(Return(_segmentedValues));
 
-            EXPECT_CALL(_usbMidiMock, sendNoteOn(expected_note, 1));
+            EXPECT_CALL(_usbMidiMock, sendNote(IMIDIInterface::NOTE_ON, expected_note, 1));
             
             _notesService.loop();
 
@@ -97,13 +97,13 @@ TEST_F(MIDINotesServiceTest, monodic_up_prio)
 }
 
 // Press D4, nothing happens if we press any lower key
-TEST_F(MIDINotesServiceTest, monodic_down_not_prio)
+TEST_F(MonodicNotesServiceTest, monodic_down_not_prio)
 {
     _segmentedValues[2] = PDLBRD_SEG_4; //D4
     EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
     .WillOnce(Return(_segmentedValues));
 
-    EXPECT_CALL(_usbMidiMock, sendNoteOn(62, 1));
+    EXPECT_CALL(_usbMidiMock, sendNote(IMIDIInterface::NOTE_ON, 62, 1));
     
     _notesService.loop();
 
@@ -123,7 +123,7 @@ TEST_F(MIDINotesServiceTest, monodic_down_not_prio)
     }
 }
 
-TEST_F(MIDINotesServiceTest, note_octave_6)
+TEST_F(MonodicNotesServiceTest, note_octave_6)
 {
     _midiConfig.setOctave(6);
 
@@ -131,8 +131,7 @@ TEST_F(MIDINotesServiceTest, note_octave_6)
     EXPECT_CALL(_hwInterfaceMock, getSegmentedValues)
     .WillOnce(Return(_segmentedValues));
 
-    EXPECT_CALL(_usbMidiMock, sendNoteOn(72, 1));
+    EXPECT_CALL(_usbMidiMock, sendNote(IMIDIInterface::NOTE_ON, 72, 1));
     
     _notesService.loop();
 }
-

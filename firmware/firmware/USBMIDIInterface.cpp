@@ -28,16 +28,14 @@ void USBMIDIInterface::setHandleSystemExclusive(void (*fptr)(uint8_t * array, un
     _usbMidiInterface.setHandleSystemExclusive(fptr);
 }
 
-void USBMIDIInterface::sendNoteOn(uint8_t inNoteNumber,
-                                    uint8_t inChannel)
+void USBMIDIInterface::sendNote(note_state_t state,
+                                uint8_t inNoteNumber,
+                                uint8_t inChannel)
 {
-    _usbMidiInterface.sendNoteOn(inNoteNumber, FULL_VELOCITY, inChannel);
-}
-
-void USBMIDIInterface::sendNoteOff(uint8_t inNoteNumber,
-                                    uint8_t inChannel)
-{
-    _usbMidiInterface.sendNoteOff(inNoteNumber, 0, inChannel);
+    if (noteState == NOTE_ON)
+        _usbMidiInterface.sendNoteOn(inNoteNumber, FULL_VELOCITY, inChannel);
+    else
+        _usbMidiInterface.sendNoteOff(inNoteNumber, 0, inChannel);
 }
 
 void USBMIDIInterface::sendCC(uint8_t inControlNumber,
