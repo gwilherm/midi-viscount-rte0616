@@ -27,8 +27,8 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     device_info_store_t dev;
-    midi_config_store_t cfg;
     calibration_store_t cal;
+    midi_config_store_t cfg;
 } memory_storage_t ;
 #pragma pack(pop)
 
@@ -110,8 +110,8 @@ void MemoryService::updateCalibration()
 void MemoryService::store()
 {
     updateDeviceInfo();
-    updateMidiConfig();
     updateCalibration();
+    updateMidiConfig();
 }
 
 void MemoryService::restore()
@@ -124,13 +124,13 @@ void MemoryService::restore()
         for (int i = 0; i < sizeof(memory_storage_t); i++)
             *ptr++ = _eepromInterface.read(i);
 
-        _midiConfig.setChannel(mem.cfg.channel);
-        _midiConfig.setOctave(mem.cfg.octave);
-        _midiConfig.setKeyboardMode((MidiConfig::keyboard_mode_t) mem.cfg.mode);
-
         _calibrationConfig.setMargin(mem.cal.margin);
         for (int i = 0; i < NB_VSEG; i++)
             _calibrationConfig.setVSeg(i, mem.cal.vseg[i]);
+
+        _midiConfig.setChannel(mem.cfg.channel);
+        _midiConfig.setOctave(mem.cfg.octave);
+        _midiConfig.setKeyboardMode((MidiConfig::keyboard_mode_t) mem.cfg.mode);
     }
     else {
         factoryReset();
@@ -139,7 +139,7 @@ void MemoryService::restore()
 
 void MemoryService::factoryReset()
 {
-    _midiConfig.reset();
     _calibrationConfig.reset();
+    _midiConfig.reset();
     store();
 }
