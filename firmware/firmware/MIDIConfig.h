@@ -15,8 +15,8 @@ public:
     } keyboard_mode_t;
 
 public:
-    MidiConfig() : _channel(DEFAULT_MIDI_CHANNEL), _octave(DEFAULT_OCTAVE) {};
-    MidiConfig(uint8_t channel, uint8_t octave) : _channel(channel), _octave(octave) {};
+    MidiConfig() : _channel(DEFAULT_MIDI_CHANNEL), _octave(DEFAULT_OCTAVE), _kbd_mode(MONODIC_UP) {};
+    MidiConfig(uint8_t channel, uint8_t octave, keyboard_mode_t mode) : _channel(channel), _octave(octave), _kbd_mode(mode) {};
     virtual ~MidiConfig() = default;
 
     inline uint8_t getChannel() { return _channel; };

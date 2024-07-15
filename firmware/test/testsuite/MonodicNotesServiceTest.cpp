@@ -14,7 +14,7 @@ using namespace ::testing;
 class MonodicNotesServiceTest : public Test {
 public:
     MonodicNotesServiceTest():
-        _midiConfig(1, 3),
+        _midiConfig(1, 3, MidiConfig::MONODIC_UP),
         _notesService(_usbMidiMock, _midiConfig, _hwInterfaceMock)
     {};
 

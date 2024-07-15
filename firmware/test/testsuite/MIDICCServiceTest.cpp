@@ -14,7 +14,7 @@ using namespace ::testing;
 class MIDICCServiceTest : public Test {
 public:
     MIDICCServiceTest():
-        _midiConfig(1, 3),
+        _midiConfig(1, 3, MidiConfig::MONODIC_UP),
         _ccService(_usbMidiMock, _midiConfig, _pedalInterfaceMock)
     {};
 

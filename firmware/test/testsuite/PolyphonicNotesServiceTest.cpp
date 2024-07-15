@@ -14,7 +14,7 @@ using namespace ::testing;
 class PolyphonicNotesServiceTest : public Test {
 public:
     PolyphonicNotesServiceTest():
-        _midiConfig(1, 3),
+        _midiConfig(1, 3, MidiConfig::MONODIC_UP),
         _notesService(_usbMidiMock, _midiConfig, _hwInterfaceMock)
     {};
 

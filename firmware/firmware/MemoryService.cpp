@@ -16,6 +16,7 @@ typedef struct {
 typedef struct {
     uint8_t channel;
     uint8_t octave;
+    uint8_t mode;
 } midi_config_store_t;
 
 typedef struct {
@@ -82,7 +83,8 @@ void MemoryService::updateMidiConfig()
 
     midi_config_store_t cfg = {
         .channel = _midiConfig.getChannel(),
-        .octave = _midiConfig.getOctave()
+        .octave = _midiConfig.getOctave(),
+        .mode = _midiConfig.getKeyboardMode()
     };
 
     update((uint8_t*)&cfg, sizeof(midi_config_store_t), offset);
@@ -124,6 +126,7 @@ void MemoryService::restore()
 
         _midiConfig.setChannel(mem.cfg.channel);
         _midiConfig.setOctave(mem.cfg.octave);
+        _midiConfig.setKeyboardMode((MidiConfig::keyboard_mode_t) mem.cfg.mode);
 
         _calibrationConfig.setMargin(mem.cal.margin);
         for (int i = 0; i < NB_VSEG; i++)
