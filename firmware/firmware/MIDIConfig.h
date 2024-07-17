@@ -11,7 +11,8 @@ class MidiConfig
 public:
     typedef enum {
         MONODIC_UP = 0,
-        POLYPHONIC = 1
+        POLYPHONIC = 1,
+        KEYBOARD_MODE_MAX = POLYPHONIC
     } keyboard_mode_t;
 
 public:

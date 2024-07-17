@@ -52,7 +52,7 @@ TEST_F(MIDISysexServiceTest, handle_get_midi_config)
 {
     uint8_t req[] = { 0xF0, 0x31, 0x06, 0x16, 0x01, 0x01, 0xF7 };
                                                              // Default values
-    const uint8_t exp_resp1[] = { 0x31, 0x06, 0x16, 0x01, 0x00, 1, 3 };
+    const uint8_t exp_resp1[] = { 0x31, 0x06, 0x16, 0x01, 0x00, 1, 3, 0 };
 
     using namespace ::testing;
     EXPECT_CALL(_usbMidiMock, sendSysEx(_, _))
@@ -62,7 +62,8 @@ TEST_F(MIDISysexServiceTest, handle_get_midi_config)
 
     _midiConfig.setChannel(12);
     _midiConfig.setOctave(1);
-    const uint8_t exp_resp2[] = { 0x31, 0x06, 0x16, 0x01, 0x00, 12, 1 };
+    _midiConfig.setKeyboardMode(MidiConfig::POLYPHONIC);
+    const uint8_t exp_resp2[] = { 0x31, 0x06, 0x16, 0x01, 0x00, 12, 1, 1 };
 
     EXPECT_CALL(_usbMidiMock, sendSysEx(_, _))
     .WillOnce(Invoke(EXPECT_SYSEX(exp_resp2)));
@@ -81,8 +82,8 @@ TEST_F(MIDISysexServiceTest, handle_store_midi_config)
 
 TEST_F(MIDISysexServiceTest, handle_set_midi_config)
 {
-    uint8_t req[] = { 0xF0, 0x31, 0x06, 0x16, 0x01, 0x02, 12, 6, 0xF7 };
-    const uint8_t exp_resp[] = { 0x31, 0x06, 0x16, 0x01, 0x00, 12, 6 };
+    uint8_t req[] = { 0xF0, 0x31, 0x06, 0x16, 0x01, 0x02, 12, 6, 1, 0xF7 };
+    const uint8_t exp_resp[] = { 0x31, 0x06, 0x16, 0x01, 0x00, 12, 6, 1 };
 
     using namespace ::testing;
     EXPECT_CALL(_usbMidiMock, sendSysEx(_, _))
@@ -92,6 +93,7 @@ TEST_F(MIDISysexServiceTest, handle_set_midi_config)
 
     EXPECT_EQ(_midiConfig.getChannel(), 12);
     EXPECT_EQ(_midiConfig.getOctave(), 6);
+    EXPECT_EQ(_midiConfig.getKeyboardMode(), MidiConfig::POLYPHONIC);
 }
 
 TEST_F(MIDISysexServiceTest, handle_get_calibration_config)
