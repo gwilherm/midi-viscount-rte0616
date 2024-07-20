@@ -30,11 +30,6 @@ protected:
     int8_t _segmentedValues[NB_PIN];
 };
 
-TEST_F(MonodicNotesServiceTest, setup)
-{
-    _notesService.setup();
-}
-
 // Press and release every pedal from C2 to D4
 TEST_F(MonodicNotesServiceTest, monodic_note_each_on_off)
 {

@@ -3,12 +3,20 @@
 
 #include <Arduino.h>
 
+#define MIDI_MAXVAL 127
+
 class IMIDIInterface {
 public:
     typedef enum {
         NOTE_OFF = 0,
         NOTE_ON = 1
     } note_state_t;
+
+    typedef enum {
+        CC_EXPRESSION = 11,
+        CC_SUSTAIN = 64,
+        CC_ALL_NOTES_OFF = 123
+    } control_change_t;
 
 public:
     virtual void sendSysEx(unsigned inLength,

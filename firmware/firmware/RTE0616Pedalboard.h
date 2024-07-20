@@ -6,11 +6,14 @@
 #include "EEPROMInterface.h"
 #include "MIDICCService.h"
 #include "MIDIConfig.h"
-#include "MIDINotesService.h"
+#include "IMIDINotesService.h"
+#include "MIDINotesServiceManager.h"
 #include "MIDISysexService.h"
 #include "HardwareInterface.h"
 #include "MemoryService.h"
+#include "MonodicNotesService.h"
 #include "PedalInterface.h"
+#include "PolyphonicNotesService.h"
 #include "USBMIDIInterface.h"
 
 class RTE0616Pedalboard
@@ -30,7 +33,9 @@ public:
     static USBMIDIInterface _midiInterface;
     static EEPROMInterface _eepromInterface;
     static MIDISysexService _sysexService;
-    static MIDINotesService _notesService;
+    static MonodicNotesService _monoNotesService;
+    static PolyphonicNotesService _polyNotesService; 
+    static MIDINotesServiceManager _notesServiceManager;
     static MIDICCService _ccService;
     static MemoryService _memService;
 };

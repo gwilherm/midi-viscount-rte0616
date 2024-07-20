@@ -29,11 +29,6 @@ protected:
 
 std::unique_ptr<NiceMock<ArduinoMock>> ArduinoTestFixture::_arduinoMock;
 
-TEST_F(FullChainTest, setup)
-{
-    _notesService.setup();
-}
-
 TEST_F(FullChainTest, note_c2_on_off)
 {
     int millis = 0;

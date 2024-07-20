@@ -1,10 +1,19 @@
 #include "PolyphonicNotesService.h"
+#include "pdlbrdkeys.h"
 
 PolyphonicNotesService::PolyphonicNotesService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, IHardwareInterface& hwInterface) :
-    MIDINotesService(usbMidiInterface, midiConfig, hwInterface),
+    _usbMidiInterface(usbMidiInterface),
+    _midiConfig(midiConfig),
+    _hwInterface(hwInterface),
     _lastPinSegment{	PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG,
                         PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG, PDLBRD_NO_SEG }
 {}
+
+void PolyphonicNotesService::reset()
+{
+    for (int pin = 0; pin < NB_PIN; pin++)
+        _lastPinSegment[pin] = PDLBRD_NO_SEG;
+}
 
 void PolyphonicNotesService::loop()
 {
@@ -17,10 +26,10 @@ void PolyphonicNotesService::loop()
         if (pinSegment[pin] != _lastPinSegment[pin])
         {
             if (_lastPinSegment[pin] != PDLBRD_NO_SEG)
-                sendNote(IMIDIInterface::NOTE_OFF, PDLBRD_KEY_MAP[_lastPinSegment[pin]][pin]);
+                sendNote(_usbMidiInterface, _midiConfig, IMIDIInterface::NOTE_OFF, PDLBRD_KEY_MAP[_lastPinSegment[pin]][pin]);
 
             if (pinSegment[pin] != PDLBRD_NO_SEG)
-                sendNote(IMIDIInterface::NOTE_ON, k);
+                sendNote(_usbMidiInterface, _midiConfig, IMIDIInterface::NOTE_ON, k);
 
             _lastPinSegment[pin] = pinSegment[pin];
         }

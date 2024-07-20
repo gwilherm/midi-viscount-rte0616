@@ -2,6 +2,7 @@
 #define USB_MIDI_INTERFACE_H
 
 #include "IMIDIInterface.h"
+#include "MIDIConfig.h"
 
 #include <USB-MIDI.h>
 
@@ -18,7 +19,7 @@ public:
 
     virtual void setHandleSystemExclusive(void (*fptr)(uint8_t * array, unsigned size));
 
-    virtual void sendNote(noteState state,
+    virtual void sendNote(IMIDIInterface::note_state_t state,
                           uint8_t inNoteNumber,
                           uint8_t inChannel);
 

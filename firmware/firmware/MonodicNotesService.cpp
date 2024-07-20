@@ -1,9 +1,17 @@
 #include "MonodicNotesService.h"
+#include "pdlbrdkeys.h"
 
 MonodicNotesService::MonodicNotesService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, IHardwareInterface& hwInterface) :
-    MIDINotesService(usbMidiInterface, midiConfig, hwInterface),
+    _usbMidiInterface(usbMidiInterface),
+    _midiConfig(midiConfig),
+    _hwInterface(hwInterface),
     _currentKey(PDLBRD_NO_KEY_PRESSED)
 {}
+
+void MonodicNotesService::reset()
+{
+    _currentKey = PDLBRD_NO_KEY_PRESSED;
+}
 
 void MonodicNotesService::loop()
 {
@@ -26,11 +34,11 @@ void MonodicNotesService::loop()
     if (_currentKey != newKey) {
 
         if (_currentKey != PDLBRD_NO_KEY_PRESSED) {
-            sendNote(IMIDIInterface::NOTE_OFF, _currentKey);
+            sendNote(_usbMidiInterface, _midiConfig, IMIDIInterface::NOTE_OFF, _currentKey);
         }
 
         if (newKey != PDLBRD_NO_KEY_PRESSED) {
-            sendNote(IMIDIInterface::NOTE_ON, newKey);
+            sendNote(_usbMidiInterface, _midiConfig, IMIDIInterface::NOTE_ON, newKey);
         }
 
         _currentKey = newKey;

@@ -30,11 +30,6 @@ protected:
     int8_t _segmentedValues[NB_PIN];
 };
 
-TEST_F(PolyphonicNotesServiceTest, setup)
-{
-    _notesService.setup();
-}
-
 // Press every pedal from C2 to D4
 TEST_F(PolyphonicNotesServiceTest, poly_each_on)
 {
