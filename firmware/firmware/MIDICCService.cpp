@@ -11,17 +11,17 @@ MIDICCService::MIDICCService(IMIDIInterface& usbMidiInterface, MidiConfig& midiC
 void MIDICCService::loop()
 {
     uint8_t expressionValue = _pedalInterface.getExpressionValue() / 8;
-    if (expressionValue > 127) expressionValue = 127;
+    if (expressionValue > MIDI_MAXVAL) expressionValue = MIDI_MAXVAL;
     if (expressionValue != _lastExpressionValue)
     {
-        _usbMidiInterface.sendCC(_expressionCC, expressionValue, _midiConfig.getChannel());
+        _usbMidiInterface.sendCC(IMIDIInterface::CC_EXPRESSION, expressionValue, _midiConfig.getChannel());
         _lastExpressionValue = expressionValue;
     }
 
     bool sustainState = _pedalInterface.getSwitchState(0);
     if (sustainState != _lastSustainState)
     {
-        _usbMidiInterface.sendCC(_sustainCC, (sustainState? 127:0), _midiConfig.getChannel());
+        _usbMidiInterface.sendCC(IMIDIInterface::CC_SUSTAIN, (sustainState? MIDI_MAXVAL:0), _midiConfig.getChannel());
         _lastSustainState = sustainState;
     }
 }

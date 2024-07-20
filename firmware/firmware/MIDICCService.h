@@ -19,8 +19,6 @@ private:
     MidiConfig& _midiConfig;
     IPedalInterface& _pedalInterface;
 
-    const uint8_t _expressionCC = 11;
-    const uint8_t _sustainCC = 64;
     uint8_t _lastExpressionValue;
     bool _lastSustainState;
 };
