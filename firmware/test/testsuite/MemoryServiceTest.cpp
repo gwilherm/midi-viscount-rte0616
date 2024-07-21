@@ -3,7 +3,6 @@
 #include "EEPROMInterfaceMock.h"
 #include "MemoryService.h"
 #include "SerialPrinter.h"
-#include <cstdint>
 
 SerialPrinter Serial;
 
@@ -97,8 +96,8 @@ TEST_F(MemoryServiceTest, restore)
         .WillRepeatedly(Return(0x06));
     EXPECT_CALL(_eepromInterfaceMock, read(2)).Times(2)
         .WillRepeatedly(Return(0x16));
-    EXPECT_CALL(_eepromInterfaceMock, read(3))
-        .WillOnce(Return(0x01));
+    EXPECT_CALL(_eepromInterfaceMock, read(3)).Times(2)
+        .WillRepeatedly(Return(0x01));
     EXPECT_CALL(_eepromInterfaceMock, read(4))
         .WillOnce(Return(0x02));
     EXPECT_CALL(_eepromInterfaceMock, read(5))
@@ -199,7 +198,26 @@ TEST_F(MemoryServiceTest, restore_unexpected_data)
     EXPECT_CALL(_eepromInterfaceMock, read(1))
         .WillOnce(Return('A'));
     EXPECT_CALL(_eepromInterfaceMock, read(2))
+        .WillOnce(Return('A'));
+    EXPECT_CALL(_eepromInterfaceMock, read(3))
         .WillOnce(Return('D'));
+
+    EXPECT_FACTORY_RESET_CALLS();
+
+    _memoryService.restore();
+}
+
+TEST_F(MemoryServiceTest, restore_old_version)
+{
+    /* Device Version */
+    EXPECT_CALL(_eepromInterfaceMock, read(0))
+        .WillOnce(Return(0x31));
+    EXPECT_CALL(_eepromInterfaceMock, read(1))
+        .WillOnce(Return(0x06));
+    EXPECT_CALL(_eepromInterfaceMock, read(2))
+        .WillOnce(Return(0x16));
+    EXPECT_CALL(_eepromInterfaceMock, read(3))
+        .WillOnce(Return(0));
 
     EXPECT_FACTORY_RESET_CALLS();
 
