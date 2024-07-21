@@ -55,18 +55,18 @@ target_compile_options(hw_int_test PRIVATE -g -DFW_DEBUG_VERBOSE_HWINT_PROCESS -
 configure_test(hw_int_test)
 
 
-# PedalInterface test
-add_executable(pedal_int_test
-        ${firmware_src_dir}/PedalInterface.cpp
+# ExtraPedalInterface test
+add_executable(extra_pedal_int_test
+        ${firmware_src_dir}/ExtraPedalInterface.cpp
         ${mocks_dir}/Arduino.cpp
         ${mocks_dir}/SerialPrinter.cpp
-        ${testsuite}/PedalInterfaceTest.cpp)
-target_include_directories(pedal_int_test PUBLIC
+        ${testsuite}/ExtraPedalInterfaceTest.cpp)
+target_include_directories(extra_pedal_int_test PUBLIC
         ${firmware_src_dir}
         ${testsuite}
         ${mocks_dir})
-target_compile_options(pedal_int_test PRIVATE -g)
-configure_test(pedal_int_test)
+target_compile_options(extra_pedal_int_test PRIVATE -g)
+configure_test(extra_pedal_int_test)
 
 
 # MIDISysexService test

@@ -1,14 +1,14 @@
 #ifndef PEDAL_INTERFACE_MOCK_H
 #define PEDAL_INTERFACE_MOCK_H
 
-#include "IPedalInterface.h"
+#include "IExtraPedalInterface.h"
 
 #include <gmock/gmock.h>
 
-class PedalInterfaceMock : public IPedalInterface {
+class ExtraPedalInterfaceMock : public IExtraPedalInterface {
   public:
-    PedalInterfaceMock() = default;
-    virtual ~PedalInterfaceMock() = default;
+    ExtraPedalInterfaceMock() = default;
+    virtual ~ExtraPedalInterfaceMock() = default;
 
     MOCK_METHOD(uint32_t, getExpressionValue, ());
 

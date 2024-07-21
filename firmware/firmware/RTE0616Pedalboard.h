@@ -12,7 +12,7 @@
 #include "HardwareInterface.h"
 #include "MemoryService.h"
 #include "MonodicNotesService.h"
-#include "PedalInterface.h"
+#include "ExtraPedalInterface.h"
 #include "PolyphonicNotesService.h"
 #include "USBMIDIInterface.h"
 
@@ -29,7 +29,7 @@ public:
     static MidiConfig _midiConfig;
     static CalibrationConfig _calibrationConfig;
     static HardwareInterface _hwInterface;
-    static PedalInterface _pedalInterface;
+    static ExtraPedalInterface _extraPedalInterface;
     static USBMIDIInterface _midiInterface;
     static EEPROMInterface _eepromInterface;
     static MIDISysexService _sysexService;

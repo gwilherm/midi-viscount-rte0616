@@ -3,12 +3,12 @@
 
 #include "IMIDIInterface.h"
 #include "MIDIConfig.h"
-#include "IPedalInterface.h"
+#include "IExtraPedalInterface.h"
 #include "pdlbrdkeys.h"
 
 class MIDICCService {
 public:
-    MIDICCService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, IPedalInterface& pedalInterface);
+    MIDICCService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, IExtraPedalInterface& pedalInterface);
     virtual ~MIDICCService() = default;
 
     void setup() {};
@@ -17,7 +17,7 @@ public:
 private:
     IMIDIInterface& _usbMidiInterface;
     MidiConfig& _midiConfig;
-    IPedalInterface& _pedalInterface;
+    IExtraPedalInterface& _extraPedalInterface;
 
     uint8_t _lastExpressionValue;
     bool _lastSustainState;
