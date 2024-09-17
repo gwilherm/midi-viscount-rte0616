@@ -1,15 +1,19 @@
-#include "MIDINotesService.h"
+#include "MonodicNotesService.h"
+#include "pdlbrdkeys.h"
 
-#define TONES_IN_OCTAVE 12
-
-MIDINotesService::MIDINotesService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, IHardwareInterface& hwInterface) :
+MonodicNotesService::MonodicNotesService(IMIDIInterface& usbMidiInterface, MidiConfig& midiConfig, IHardwareInterface& hwInterface) :
     _usbMidiInterface(usbMidiInterface),
     _midiConfig(midiConfig),
     _hwInterface(hwInterface),
     _currentKey(PDLBRD_NO_KEY_PRESSED)
 {}
 
-void MIDINotesService::loop()
+void MonodicNotesService::reset()
+{
+    _currentKey = PDLBRD_NO_KEY_PRESSED;
+}
+
+void MonodicNotesService::loop()
 {
     pdlbrd_key_t newKey = PDLBRD_NO_KEY_PRESSED;
     int8_t* pinSegment = _hwInterface.getSegmentedValues();
@@ -28,10 +32,15 @@ void MIDINotesService::loop()
 #endif
 
     if (_currentKey != newKey) {
-        if (_currentKey != PDLBRD_NO_KEY_PRESSED)
-            _usbMidiInterface.sendNoteOff((_midiConfig.getOctave()*TONES_IN_OCTAVE)+_currentKey, _midiConfig.getChannel());
-        if (newKey != PDLBRD_NO_KEY_PRESSED)
-            _usbMidiInterface.sendNoteOn((_midiConfig.getOctave()*TONES_IN_OCTAVE)+newKey, _midiConfig.getChannel());
+
+        if (_currentKey != PDLBRD_NO_KEY_PRESSED) {
+            sendNote(_usbMidiInterface, _midiConfig, IMIDIInterface::NOTE_OFF, _currentKey);
+        }
+
+        if (newKey != PDLBRD_NO_KEY_PRESSED) {
+            sendNote(_usbMidiInterface, _midiConfig, IMIDIInterface::NOTE_ON, newKey);
+        }
+
         _currentKey = newKey;
     }
 }

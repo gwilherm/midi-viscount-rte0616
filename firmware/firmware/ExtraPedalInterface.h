@@ -1,16 +1,16 @@
-#ifndef PEDAL_INTERFACE_H
-#define PEDAL_INTERFACE_H
+#ifndef EXTRA_PEDAL_INTERFACE_H
+#define EXTRA_PEDAL_INTERFACE_H
 
-#include "IPedalInterface.h"
+#include "IExtraPedalInterface.h"
 
 #include <Arduino.h>
 
 #define NB_SWITCH 5
 
-class PedalInterface : public IPedalInterface {
+class ExtraPedalInterface : public IExtraPedalInterface {
 public:
-    PedalInterface();
-    virtual ~PedalInterface() = default;
+    ExtraPedalInterface();
+    virtual ~ExtraPedalInterface() = default;
 
     void setup();
     void loop();

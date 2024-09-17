@@ -1,13 +1,13 @@
-#include "PedalInterface.h"
+#include "ExtraPedalInterface.h"
 
-PedalInterface::PedalInterface():
+ExtraPedalInterface::ExtraPedalInterface():
     _expressionValue(1023),
     _switchState{HIGH, HIGH, HIGH, HIGH, HIGH},
     _lastSwitchState{HIGH, HIGH, HIGH, HIGH, HIGH},
     _lastSwitchChange{0, 0, 0, 0, 0}
 {}
 
-void PedalInterface::setup()
+void ExtraPedalInterface::setup()
 {
     // Expression pedal (last analog pin)
     pinMode(_expressionPin, INPUT_PULLUP);
@@ -17,7 +17,7 @@ void PedalInterface::setup()
         pinMode(_switchPin[i], INPUT_PULLUP);
 }
 
-void PedalInterface::loop()
+void ExtraPedalInterface::loop()
 {
     _expressionValue = analogRead(_expressionPin);
 

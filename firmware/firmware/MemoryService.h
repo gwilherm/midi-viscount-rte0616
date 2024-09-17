@@ -28,6 +28,7 @@ protected:
     IEEPROMInterface& _eepromInterface;
     MidiConfig& _midiConfig;
     CalibrationConfig& _calibrationConfig;
+    int _fwVer[3];
 };
 
 #endif

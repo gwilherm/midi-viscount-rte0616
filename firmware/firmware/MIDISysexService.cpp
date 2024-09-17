@@ -1,5 +1,6 @@
 #include "MIDISysexService.h"
 #include "CalibrationConfig.h"
+#include "MIDIConfig.h"
 
 #include <stdint.h>
 
@@ -16,16 +17,6 @@
 uint8_t SYSEX_REQ_PREFIX[] = { 0xf0, DEVICE_ID };
 uint8_t SYSEX_IDENT_REQ[]  = { 0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7 }; // f1,      f2,     p1, p2,   v1,   v2,   v3,   v4
 uint8_t SYSEX_IDENT_RES[]  = {       0x7e, 0x01, 0x06, 0x02, MANU_ID, 0x00, MANU_ID, PRODUCT_ID, 0x00, 0x00, 0x00, 0x00 };
-
-typedef union
-{
-    struct cfg
-    {
-        uint8_t channel;
-        uint8_t octave;
-    } cfg;
-    uint8_t bytes[sizeof(struct cfg)];
-} midi_config_t;
 
 typedef enum {
 	SUBCMD_NO_SUBCMD = 0,
@@ -123,7 +114,7 @@ void MIDISysexService::handleGetConfiguration()
 #if defined (FW_DEBUG)
 	Serial.println("handleGetConfiguration");
 #endif
-	uint8_t data[] = { DEVICE_ID, CMD_CONFIGURATION, SUBCMD_NO_SUBCMD, _midiConfig.getChannel(), _midiConfig.getOctave() };
+	uint8_t data[] = { DEVICE_ID, CMD_CONFIGURATION, SUBCMD_NO_SUBCMD, _midiConfig.getChannel(), _midiConfig.getOctave(), _midiConfig.getKeyboardMode() };
 	_usbMidiInterface.sendSysEx(sizeof(data), data);
 }
 
@@ -146,6 +137,9 @@ void MIDISysexService::handleSetConfiguration(uint8_t* data)
 
 	if ((data[1] >= MIN_OCTAVE) && (data[1] <= MAX_OCTAVE))
 		_midiConfig.setOctave(data[1]);
+
+	if ((data[2] >= 0) && (data[2] <= MidiConfig::KEYBOARD_MODE_MAX))
+		_midiConfig.setKeyboardMode((MidiConfig::keyboard_mode_t) data[2]);
 
 	// Acknowledge
 	handleGetConfiguration();
@@ -224,7 +218,7 @@ void MIDISysexService::handleCommand(const pdlbrd_sysex_cmd_t cmd, uint8_t* data
 				handleGetConfiguration();
 			if (data[0] == SUBCMD_STORE)
 				handleStoreConfiguration();
-			if ((data[0] == SUBCMD_SET) && (data_size == 3))
+			if ((data[0] == SUBCMD_SET) && (data_size == 4))
 				handleSetConfiguration(&data[1]);
 		}
 		break;

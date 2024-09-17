@@ -4,23 +4,23 @@
 #include "SerialPrinter.h"
 #include "MIDIConfig.h"
 #include "CalibrationConfig.h"
-#include "PedalInterface.h"
+#include "ExtraPedalInterface.h"
 #include "ArduinoTestFixture.h"
 
 SerialPrinter Serial;
 
-class PedalInterfaceTest : public ArduinoTestFixture
+class ExtraPedalInterfaceTest : public ArduinoTestFixture
 {
 public:
-    PedalInterfaceTest() {};
+    ExtraPedalInterfaceTest() {};
 
 protected:
-    PedalInterface _pedalInterface;
+    ExtraPedalInterface _extraPedalInterface;
 };
 
 std::unique_ptr<::testing::NiceMock<ArduinoMock>> ArduinoTestFixture::_arduinoMock;
 
-TEST_F(PedalInterfaceTest, setup)
+TEST_F(ExtraPedalInterfaceTest, setup)
 {
     // // All analog pins are pulled up
     EXPECT_CALL(*_arduinoMock, pinMode(A10, INPUT_PULLUP));
@@ -30,10 +30,10 @@ TEST_F(PedalInterfaceTest, setup)
     EXPECT_CALL(*_arduinoMock, pinMode(15, INPUT_PULLUP));
     EXPECT_CALL(*_arduinoMock, pinMode(16, INPUT_PULLUP));
 
-    _pedalInterface.setup();
+    _extraPedalInterface.setup();
 }
 
-TEST_F(PedalInterfaceTest, loop_check_calls)
+TEST_F(ExtraPedalInterfaceTest, loop_check_calls)
 {
     // All analog pins are read once
     EXPECT_CALL(*_arduinoMock, analogRead(A10));
@@ -46,36 +46,36 @@ TEST_F(PedalInterfaceTest, loop_check_calls)
     // Debounced
     EXPECT_CALL(*_arduinoMock, millis()).WillRepeatedly(::testing::Return(0));
 
-    _pedalInterface.loop();
+    _extraPedalInterface.loop();
 }
 
-TEST_F(PedalInterfaceTest, loop_get_expression_value)
+TEST_F(ExtraPedalInterfaceTest, loop_get_expression_value)
 {
     EXPECT_CALL(*_arduinoMock, analogRead)
         .WillOnce(::testing::Return(0))
         .WillOnce(::testing::Return(1023));
 
-    _pedalInterface.loop();
-    uint32_t exprValue = _pedalInterface.getExpressionValue();
+    _extraPedalInterface.loop();
+    uint32_t exprValue = _extraPedalInterface.getExpressionValue();
     EXPECT_EQ(exprValue, 0);
 
-    _pedalInterface.loop();
-    exprValue = _pedalInterface.getExpressionValue();
+    _extraPedalInterface.loop();
+    exprValue = _extraPedalInterface.getExpressionValue();
     EXPECT_EQ(exprValue, 1023);
 }
 
-TEST_F(PedalInterfaceTest, loop_get_switch_value_50ms)
+TEST_F(ExtraPedalInterfaceTest, loop_get_switch_value_50ms)
 {
     EXPECT_CALL(*_arduinoMock, millis())
         .WillRepeatedly(::testing::Return(0));
     EXPECT_CALL(*_arduinoMock, digitalRead)
         .WillRepeatedly(::testing::Return(HIGH));
 
-    _pedalInterface.loop();
+    _extraPedalInterface.loop();
 
     for (int i = 0; i < NB_SWITCH; i++)
     {
-        bool swState = _pedalInterface.getSwitchState(i);
+        bool swState = _extraPedalInterface.getSwitchState(i);
         EXPECT_EQ(swState, false);
     }
 
@@ -85,16 +85,16 @@ TEST_F(PedalInterfaceTest, loop_get_switch_value_50ms)
     EXPECT_CALL(*_arduinoMock, digitalRead)
     .WillRepeatedly(::testing::Return(LOW));
 
-    _pedalInterface.loop();
+    _extraPedalInterface.loop();
 
     for (int i = 0; i < NB_SWITCH; i++)
     {
-        bool swState = _pedalInterface.getSwitchState(i);
+        bool swState = _extraPedalInterface.getSwitchState(i);
         EXPECT_EQ(swState, false);
     }
 }
 
-TEST_F(PedalInterfaceTest, loop_get_switch_value_51ms)
+TEST_F(ExtraPedalInterfaceTest, loop_get_switch_value_51ms)
 {
     int curTimeMs = 0;
 
@@ -103,11 +103,11 @@ TEST_F(PedalInterfaceTest, loop_get_switch_value_51ms)
     EXPECT_CALL(*_arduinoMock, digitalRead)
         .WillRepeatedly(::testing::Return(HIGH));
 
-    _pedalInterface.loop();
+    _extraPedalInterface.loop();
 
     for (int i = 0; i < NB_SWITCH; i++)
     {
-        bool swState = _pedalInterface.getSwitchState(i);
+        bool swState = _extraPedalInterface.getSwitchState(i);
         EXPECT_EQ(swState, false);
     }
 
@@ -116,11 +116,11 @@ TEST_F(PedalInterfaceTest, loop_get_switch_value_51ms)
     EXPECT_CALL(*_arduinoMock, digitalRead)
     .WillRepeatedly(::testing::Return(LOW));
 
-    _pedalInterface.loop();
+    _extraPedalInterface.loop();
 
     for (int i = 0; i < NB_SWITCH; i++)
     {
-        bool swState = _pedalInterface.getSwitchState(i);
+        bool swState = _extraPedalInterface.getSwitchState(i);
         EXPECT_EQ(swState, false);
     }
 
@@ -129,11 +129,11 @@ TEST_F(PedalInterfaceTest, loop_get_switch_value_51ms)
     EXPECT_CALL(*_arduinoMock, digitalRead)
     .WillRepeatedly(::testing::Return(LOW));
 
-    _pedalInterface.loop();
+    _extraPedalInterface.loop();
 
     for (int i = 0; i < NB_SWITCH; i++)
     {
-        bool swState = _pedalInterface.getSwitchState(i);
+        bool swState = _extraPedalInterface.getSwitchState(i);
         EXPECT_EQ(swState, true);
     }
 }

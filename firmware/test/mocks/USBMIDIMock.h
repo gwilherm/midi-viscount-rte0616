@@ -14,9 +14,7 @@ class USBMIDIMock : public IMIDIInterface {
 
     MOCK_METHOD(void, setHandleSystemExclusive, (void (*fptr)(uint8_t *, unsigned)));
 
-    MOCK_METHOD(void, sendNoteOn, (uint8_t, uint8_t));
-
-    MOCK_METHOD(void, sendNoteOff, (uint8_t, uint8_t));
+    MOCK_METHOD(void, sendNote, (IMIDIInterface::note_state_t, uint8_t, uint8_t));
 
     MOCK_METHOD(void, sendCC, (uint8_t, uint8_t, uint8_t));
 };

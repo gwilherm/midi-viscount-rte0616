@@ -8,6 +8,14 @@
             <mat-label>Octave</mat-label>
             <input matInput name="octave" type="number" min="1" max="6" [(ngModel)]="this._midiConfig.octave" >
         </mat-form-field>
+        <mat-form-field>
+            <mat-label>Keyboard mode</mat-label>
+            <mat-select name="mode" [(ngModel)]="this._midiConfig.keyboardMode">
+                <mat-option *ngFor="let mode of this._modes" [value]="mode.value" >
+                    {{mode.viewValue}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
         <div class="row">
             <button mat-flat-button type="submit" color="primary" (click)="onSend()">Send</button>
             <button mat-flat-button type="button" color="accent" (click)="onStore()">Store</button>

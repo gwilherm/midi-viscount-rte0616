@@ -16,6 +16,7 @@ typedef struct {
 typedef struct {
     uint8_t channel;
     uint8_t octave;
+    uint8_t mode;
 } midi_config_store_t;
 
 typedef struct {
@@ -26,8 +27,8 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     device_info_store_t dev;
-    midi_config_store_t cfg;
     calibration_store_t cal;
+    midi_config_store_t cfg;
 } memory_storage_t ;
 #pragma pack(pop)
 
@@ -35,8 +36,14 @@ typedef struct {
 MemoryService::MemoryService(IEEPROMInterface& eepromInterface, MidiConfig& midiConfig, CalibrationConfig& calibrationConfig):
     _eepromInterface(eepromInterface),
     _midiConfig(midiConfig),
-    _calibrationConfig(calibrationConfig)
-{}
+    _calibrationConfig(calibrationConfig),
+    _fwVer{0,0,0}
+{
+    char* fwVersionStr = strdup(FW_VERSION);
+    _fwVer[0] = atoi(strtok(fwVersionStr, "."));
+    _fwVer[1] = atoi(strtok(NULL, "."));
+    _fwVer[2] = atoi(strtok(NULL, "."));
+}
 
 bool MemoryService::checkDeviceInfo()
 {
@@ -46,6 +53,9 @@ bool MemoryService::checkDeviceInfo()
     ret &= (MANUFACTURER_ID == _eepromInterface.read(offset++));
     ret &= (PRODUCT_ID_MSB  == _eepromInterface.read(offset++));
     ret &= (PRODUCT_ID_LSB  == _eepromInterface.read(offset++));
+
+    // Major update needs a factory reset
+    ret &= (_fwVer[0]  == _eepromInterface.read(offset++));
 
     return ret;
 }
@@ -64,14 +74,10 @@ void MemoryService::updateDeviceInfo()
         .prod_id = { PRODUCT_ID_MSB, PRODUCT_ID_LSB }
     };
 
-    char* fwVersionStr = strdup(FW_VERSION);
-    int tmp = atoi(strtok(fwVersionStr, "."));
-    dev.fw_ver[0] = tmp & 0xFF;
-    tmp = atoi(strtok(NULL, "."));
-    dev.fw_ver[1] = tmp & 0xFF;
-    tmp = atoi(strtok(NULL, "."));
-    dev.fw_ver[2] = (tmp >> 8) & 0xFF;
-    dev.fw_ver[3] = tmp & 0xFF;
+    dev.fw_ver[0] = _fwVer[0] & 0xFF;
+    dev.fw_ver[1] = _fwVer[1] & 0xFF;
+    dev.fw_ver[2] = (_fwVer[2] >> 8) & 0xFF;
+    dev.fw_ver[3] = _fwVer[2] & 0xFF;
 
     update((uint8_t*)&dev, sizeof(device_info_store_t), offset);
 }
@@ -82,7 +88,8 @@ void MemoryService::updateMidiConfig()
 
     midi_config_store_t cfg = {
         .channel = _midiConfig.getChannel(),
-        .octave = _midiConfig.getOctave()
+        .octave = _midiConfig.getOctave(),
+        .mode = _midiConfig.getKeyboardMode()
     };
 
     update((uint8_t*)&cfg, sizeof(midi_config_store_t), offset);
@@ -108,8 +115,8 @@ void MemoryService::updateCalibration()
 void MemoryService::store()
 {
     updateDeviceInfo();
-    updateMidiConfig();
     updateCalibration();
+    updateMidiConfig();
 }
 
 void MemoryService::restore()
@@ -122,12 +129,13 @@ void MemoryService::restore()
         for (int i = 0; i < sizeof(memory_storage_t); i++)
             *ptr++ = _eepromInterface.read(i);
 
-        _midiConfig.setChannel(mem.cfg.channel);
-        _midiConfig.setOctave(mem.cfg.octave);
-
         _calibrationConfig.setMargin(mem.cal.margin);
         for (int i = 0; i < NB_VSEG; i++)
             _calibrationConfig.setVSeg(i, mem.cal.vseg[i]);
+
+        _midiConfig.setChannel(mem.cfg.channel);
+        _midiConfig.setOctave(mem.cfg.octave);
+        _midiConfig.setKeyboardMode((MidiConfig::keyboard_mode_t) mem.cfg.mode);
     }
     else {
         factoryReset();
@@ -136,7 +144,7 @@ void MemoryService::restore()
 
 void MemoryService::factoryReset()
 {
-    _midiConfig.reset();
     _calibrationConfig.reset();
+    _midiConfig.reset();
     store();
 }

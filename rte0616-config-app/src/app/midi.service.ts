@@ -21,6 +21,11 @@ const PDLBRD_MAX_PIN_VAL = 1023
 const PDLBRD_MIN_MARGIN = 1
 const PDLBRD_MAX_MARGIN = 1023
 
+export enum PDLBRD_MODE {
+  MODE_MONODIC_UP = 0,
+  MODE_POLYPHONIC,
+}
+
 enum SYSEX_CMD {
   CMD_CONFIGURATION = 1,
 	CMD_CALIBRATION,
@@ -50,7 +55,7 @@ export class FirmwareVersion {
 }
 
 export class DeviceMIDIConfig {
-  constructor(public channel = MIDI_MIN_CHAN, public octave = PDLBRD_MIN_OCTAVE)
+  constructor(public channel = MIDI_MIN_CHAN, public octave = PDLBRD_MIN_OCTAVE, public keyboardMode = PDLBRD_MODE.MODE_MONODIC_UP)
   {}
 }
 
@@ -83,19 +88,21 @@ function decodeFirmwareVersion(data: Uint8Array): FirmwareVersion {
 function decodeDeviceMidiConfig(data: Uint8Array): DeviceMIDIConfig {
   let chan = data!.at(0)!
   let oct = data!.at(1)!
+  let mode = data!.at(2)!
 
   // Clamp
   if (chan < MIDI_MIN_CHAN) chan = MIDI_MIN_CHAN
   if (chan > MIDI_MAX_CHAN) chan = MIDI_MAX_CHAN
   if (oct < PDLBRD_MIN_OCTAVE) oct = PDLBRD_MIN_OCTAVE
   if (oct > PDLBRD_MAX_OCTAVE) oct = PDLBRD_MAX_OCTAVE
+  if ((mode < 0) || (mode > PDLBRD_MODE.MODE_POLYPHONIC)) mode = PDLBRD_MODE.MODE_MONODIC_UP;
 
-  return new DeviceMIDIConfig(chan, oct);
+  return new DeviceMIDIConfig(chan, oct, mode);
 }
 
 function encodeDeviceMidiConfig(midiConfig: DeviceMIDIConfig): Array<number> {
   return [SYSEX_PREFIX, MANU_ID, ...PRODUCT_ID, SYSEX_CMD.CMD_CONFIGURATION, SYSEX_SUB_CMD.SUBCMD_SET,
-    midiConfig.channel, midiConfig.octave,
+    midiConfig.channel, midiConfig.octave, midiConfig.keyboardMode,
     SYSEX_SUFFIX];
 }
 
@@ -216,7 +223,8 @@ export class MidiService implements EventListenerObject {
         if (isEqualBytes(ev.data!.slice(1,4), Uint8Array.from([MANU_ID, ...PRODUCT_ID]))) {
           switch (ev.data!.at(4)) {
             case SYSEX_CMD.CMD_CONFIGURATION:
-                this.midiConfig$.next(decodeDeviceMidiConfig(ev.data!.slice(6, 8)))
+                console.log(ev.data!.slice(6, 9))
+                this.midiConfig$.next(decodeDeviceMidiConfig(ev.data!.slice(6, 9)))
               break;
               case SYSEX_CMD.CMD_CALIBRATION:
                   this.calibration$.next(decodeDeviceCalibration(ev.data!.slice(6, 16)))
